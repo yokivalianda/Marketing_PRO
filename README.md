@@ -10,7 +10,7 @@
 **Aplikasi web real-time untuk monitoring dan pengelolaan data konsumen properti.**
 Dapat diinstall di HP (PWA), mendukung multi-user, dan sinkronisasi data secara langsung ke seluruh tim.
 
-[🚀 **Buka Demo**](https://yokivalianda.github.io/Marketing_PRO//demo.html) · [📱 **Buka Aplikasi**](https://marketing-pro-id.vercel.app/) · [⭐ **Beri Bintang**](#)
+[🚀 **Buka Demo**](https://yokivalianda.github.io/Marketing_PRO/demo.html) · [📱 **Buka Aplikasi**](https://marketing-pro-id.vercel.app/) · [⭐ **Beri Bintang**](#)
 
 </div>
 
