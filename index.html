@@ -1277,6 +1277,48 @@ html.theme-anim *::after {
   transform: translateX(24px);
   background: #fff;
 }
+
+/* ── Auth sub-view: lupa password & set password baru ── */
+.auth-link-row {
+  display: flex; justify-content: flex-end; margin-top: 10px;
+}
+.auth-link {
+  font-size: 12px; font-weight: 600; color: var(--brand-light);
+  cursor: pointer; background: none; border: none;
+  padding: 4px 0; transition: opacity .2s; font-family: var(--font-body);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.auth-link:hover { opacity: .75; }
+
+.auth-success {
+  font-size: 13px; color: var(--emerald);
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.2);
+  border-radius: var(--r-sm); padding: 10px 14px;
+  margin-bottom: 14px; display: none; line-height: 1.5;
+}
+.auth-success.show { display: block; animation: fadeUp .3s ease; }
+
+.auth-back {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--text-2);
+  cursor: pointer; background: none; border: none;
+  padding: 0 0 16px; font-family: var(--font-body);
+  transition: color .2s;
+}
+.auth-back:hover { color: var(--text-1); }
+.auth-back::before { content: '←'; font-size: 15px; }
+
+/* password strength indicator */
+.pass-strength {
+  height: 4px; border-radius: 2px; margin-top: 6px;
+  background: var(--bg-elevated); overflow: hidden;
+  display: none;
+}
+.pass-strength.show { display: block; }
+.pass-strength-fill {
+  height: 100%; border-radius: 2px; transition: width .3s, background .3s;
+}
 </style>
 </head>
 <body>
@@ -1301,41 +1343,103 @@ html.theme-anim *::after {
       <div class="auth-mark">🎯</div>
       <div class="auth-wordmark">Market<em>Pro</em></div>
     </div>
-    <div class="auth-heading">Selamat Datang</div>
-    <div class="auth-sub">Masuk ke workspace marketing Anda</div>
-    <div class="auth-tabs">
-      <button class="auth-tab on" id="tabMasuk" onclick="switchAuthTab('masuk')">Masuk</button>
-      <button class="auth-tab" id="tabDaftar" onclick="switchAuthTab('daftar')">Daftar</button>
-    </div>
-    <div class="auth-error" id="authErr"></div>
 
-    <div id="formMasuk">
-      <div class="field">
-        <label class="field-label">Email</label>
-        <input type="email" class="field-input" id="inEmail" placeholder="email@perusahaan.com"/>
+    <!-- ── Panel 1: Masuk / Daftar ── -->
+    <div id="authPanelMain">
+      <div class="auth-heading">Selamat Datang</div>
+      <div class="auth-sub">Masuk ke workspace marketing Anda</div>
+      <div class="auth-tabs">
+        <button class="auth-tab on" id="tabMasuk" onclick="switchAuthTab('masuk')">Masuk</button>
+        <button class="auth-tab" id="tabDaftar" onclick="switchAuthTab('daftar')">Daftar</button>
       </div>
-      <div class="field">
-        <label class="field-label">Password</label>
-        <input type="password" class="field-input" id="inPass" placeholder="Password Anda"/>
+      <div class="auth-error" id="authErr"></div>
+
+      <!-- Form Masuk -->
+      <div id="formMasuk">
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="field-input" id="inEmail" placeholder="email@perusahaan.com"
+            onkeydown="if(event.key==='Enter')document.getElementById('inPass').focus()"/>
+        </div>
+        <div class="field">
+          <label class="field-label">Password</label>
+          <input type="password" class="field-input" id="inPass" placeholder="Password Anda"
+            onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="btn-primary" id="btnMasuk" onclick="doLogin()">Masuk →</button>
+        <div class="auth-link-row">
+          <button class="auth-link" onclick="showForgotPanel()">Lupa password?</button>
+        </div>
       </div>
-      <button class="btn-primary" id="btnMasuk" onclick="doLogin()">Masuk →</button>
+
+      <!-- Form Daftar -->
+      <div id="formDaftar" style="display:none">
+        <div class="field">
+          <label class="field-label">Nama Lengkap</label>
+          <input type="text" class="field-input" id="inRegName" placeholder="Nama marketing Anda"/>
+        </div>
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="field-input" id="inRegEmail" placeholder="email@perusahaan.com"/>
+        </div>
+        <div class="field">
+          <label class="field-label">Password</label>
+          <input type="password" class="field-input" id="inRegPass" placeholder="Minimal 6 karakter"
+            oninput="checkPassStrength(this.value)"/>
+          <div class="pass-strength" id="passStrength">
+            <div class="pass-strength-fill" id="passStrengthFill"></div>
+          </div>
+        </div>
+        <button class="btn-primary" id="btnDaftar" onclick="doRegister()">Buat Akun →</button>
+      </div>
     </div>
 
-    <div id="formDaftar" style="display:none">
-      <div class="field">
-        <label class="field-label">Nama Lengkap</label>
-        <input type="text" class="field-input" id="inRegName" placeholder="Nama marketing Anda"/>
+    <!-- ── Panel 2: Lupa Password ── -->
+    <div id="authPanelForgot" style="display:none">
+      <button class="auth-back" onclick="showMainPanel()">Kembali ke login</button>
+      <div class="auth-heading" style="font-size:20px">Lupa Password?</div>
+      <div class="auth-sub">Masukkan email Anda — kami kirimkan link untuk reset password.</div>
+      <div class="auth-error" id="forgotErr"></div>
+      <div class="auth-success" id="forgotOk">
+        📧 Link reset password sudah dikirim ke email Anda!<br/>
+        <span style="color:var(--text-3);font-size:12px">Cek inbox atau folder spam. Link berlaku 1 jam.</span>
       </div>
-      <div class="field">
-        <label class="field-label">Email</label>
-        <input type="email" class="field-input" id="inRegEmail" placeholder="email@perusahaan.com"/>
+      <div id="forgotForm">
+        <div class="field">
+          <label class="field-label">Email Akun</label>
+          <input type="email" class="field-input" id="forgotEmail" placeholder="email@perusahaan.com"
+            onkeydown="if(event.key==='Enter')doForgotPassword()"/>
+        </div>
+        <button class="btn-primary" id="btnForgot" onclick="doForgotPassword()">Kirim Link Reset →</button>
       </div>
-      <div class="field">
-        <label class="field-label">Password</label>
-        <input type="password" class="field-input" id="inRegPass" placeholder="Minimal 6 karakter"/>
-      </div>
-      <button class="btn-primary" id="btnDaftar" onclick="doRegister()">Buat Akun →</button>
     </div>
+
+    <!-- ── Panel 3: Set Password Baru (dari link email) ── -->
+    <div id="authPanelNewPass" style="display:none">
+      <div class="auth-heading" style="font-size:20px">Password Baru</div>
+      <div class="auth-sub">Buat password baru untuk akun Anda.</div>
+      <div class="auth-error" id="newPassErr"></div>
+      <div class="auth-success" id="newPassOk">
+        ✅ Password berhasil diubah! Silakan masuk.
+      </div>
+      <div id="newPassForm">
+        <div class="field">
+          <label class="field-label">Password Baru</label>
+          <input type="password" class="field-input" id="newPassInput" placeholder="Minimal 6 karakter"
+            oninput="checkPassStrength(this.value,'newPassStrength','newPassFill')"/>
+          <div class="pass-strength" id="newPassStrength">
+            <div class="pass-strength-fill" id="newPassFill"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Konfirmasi Password</label>
+          <input type="password" class="field-input" id="newPassConfirm" placeholder="Ulangi password baru"
+            onkeydown="if(event.key==='Enter')doSetNewPassword()"/>
+        </div>
+        <button class="btn-primary" id="btnNewPass" onclick="doSetNewPassword()">Simpan Password Baru →</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -1737,6 +1841,25 @@ async function init() {
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     setLoadTxt('Memeriksa sesi...');
+
+    // Handle password recovery link from email BEFORE normal session check
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery')) {
+      hideSplash();
+      showAuth();
+      // Let Supabase process the token from the URL hash automatically
+      // then show the new-password panel once session is ready
+      sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          hideAuth();
+          document.getElementById('auth').classList.add('show');
+          showNewPassPanel();
+          history.replaceState(null, '', window.location.pathname);
+        }
+      });
+      return;
+    }
+
     const { data:{ session } } = await sb.auth.getSession();
     if (session) { await afterLogin(session.user); }
     else { hideSplash(); showAuth(); }
@@ -1767,38 +1890,199 @@ function showAuthErr(m) { const e=document.getElementById('authErr'); e.textCont
 function hideAuthErr()  { document.getElementById('authErr').classList.remove('show'); }
 
 async function doLogin() {
-  const email=document.getElementById('inEmail').value.trim();
-  const pass=document.getElementById('inPass').value;
-  if (!email||!pass) { showAuthErr('Email dan password wajib diisi'); return; }
+  const email = document.getElementById('inEmail').value.trim();
+  const pass  = document.getElementById('inPass').value;
+  if (!email || !pass) { showAuthErr('Email dan password wajib diisi'); return; }
   setBtnLoading('btnMasuk', true, 'Memproses...');
   hideAuthErr();
   try {
-    const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) throw error;
     await afterLogin(data.user);
-  } catch(e) { showAuthErr(e.message||'Login gagal'); setBtnLoading('btnMasuk',false,'Masuk →'); }
+  } catch(e) {
+    const msg = e.message || '';
+    if (msg.includes('Invalid login') || msg.includes('credentials')) {
+      showAuthErr('Email atau password salah. Coba lagi atau klik "Lupa password?"');
+    } else {
+      showAuthErr(msg || 'Login gagal. Periksa koneksi Anda.');
+    }
+    setBtnLoading('btnMasuk', false, 'Masuk →');
+  }
 }
 
 async function doRegister() {
-  const name=document.getElementById('inRegName').value.trim();
-  const email=document.getElementById('inRegEmail').value.trim();
-  const pass=document.getElementById('inRegPass').value;
-  if (!name||!email||!pass) { showAuthErr('Semua kolom wajib diisi'); return; }
-  if (pass.length<6) { showAuthErr('Password minimal 6 karakter'); return; }
+  const name  = document.getElementById('inRegName').value.trim();
+  const email = document.getElementById('inRegEmail').value.trim();
+  const pass  = document.getElementById('inRegPass').value;
+  if (!name || !email || !pass) { showAuthErr('Semua kolom wajib diisi'); return; }
+  if (pass.length < 6) { showAuthErr('Password minimal 6 karakter'); return; }
   setBtnLoading('btnDaftar', true, 'Mendaftar...');
   try {
-    const {data,error} = await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+    const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
     if (error) throw error;
-    await sb.from('profiles').upsert({id:data.user.id,email,full_name:name,role:'marketing',target:5});
-    showToast('Akun dibuat! Silakan masuk.','✅');
+    await sb.from('profiles').upsert({ id: data.user.id, email, full_name: name, role: 'marketing', target: 5 });
+    showToast('Akun dibuat! Silakan masuk.', '✅');
     switchAuthTab('masuk');
-    document.getElementById('inEmail').value=email;
-    setBtnLoading('btnDaftar',false,'Buat Akun →');
-  } catch(e) { showAuthErr(e.message||'Pendaftaran gagal'); setBtnLoading('btnDaftar',false,'Buat Akun →'); }
+    document.getElementById('inEmail').value = email;
+    setBtnLoading('btnDaftar', false, 'Buat Akun →');
+  } catch(e) {
+    showAuthErr(e.message || 'Pendaftaran gagal.');
+    setBtnLoading('btnDaftar', false, 'Buat Akun →');
+  }
+}
+
+// ── PANEL NAVIGATION ─────────────────────────────
+function showMainPanel() {
+  document.getElementById('authPanelMain').style.display  = 'block';
+  document.getElementById('authPanelForgot').style.display = 'none';
+  document.getElementById('authPanelNewPass').style.display = 'none';
+  document.getElementById('authErr').classList.remove('show');
+  document.getElementById('forgotErr').classList.remove('show');
+  document.getElementById('forgotOk').classList.remove('show');
+  document.getElementById('forgotForm').style.display = 'block';
+}
+
+function showForgotPanel() {
+  document.getElementById('authPanelMain').style.display   = 'none';
+  document.getElementById('authPanelForgot').style.display = 'block';
+  document.getElementById('authPanelNewPass').style.display = 'none';
+  // Pre-fill email from login form if available
+  const loginEmail = document.getElementById('inEmail').value.trim();
+  if (loginEmail) document.getElementById('forgotEmail').value = loginEmail;
+  hideAuthErr();
+  document.getElementById('forgotErr').classList.remove('show');
+  document.getElementById('forgotOk').classList.remove('show');
+  document.getElementById('forgotForm').style.display = 'block';
+  setTimeout(() => document.getElementById('forgotEmail').focus(), 100);
+}
+
+function showNewPassPanel() {
+  document.getElementById('authPanelMain').style.display    = 'none';
+  document.getElementById('authPanelForgot').style.display  = 'none';
+  document.getElementById('authPanelNewPass').style.display = 'block';
+  document.getElementById('newPassErr').classList.remove('show');
+  document.getElementById('newPassOk').classList.remove('show');
+  document.getElementById('newPassForm').style.display = 'block';
+  setTimeout(() => document.getElementById('newPassInput').focus(), 100);
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────
+async function doForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) {
+    showForgotErr('Masukkan email Anda terlebih dahulu');
+    return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showForgotErr('Format email tidak valid');
+    return;
+  }
+  setBtnLoading('btnForgot', true, 'Mengirim...');
+  document.getElementById('forgotErr').classList.remove('show');
+  try {
+    // redirectTo: URL halaman setelah user klik link di email
+    // Supabase akan append #access_token=...&type=recovery ke URL ini
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) throw error;
+    // Sembunyikan form, tampilkan pesan sukses
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('forgotOk').classList.add('show');
+  } catch(e) {
+    // Supabase tidak membedakan email terdaftar/tidak (security reason)
+    // Tetap tampilkan sukses untuk mencegah email enumeration
+    document.getElementById('forgotForm').style.display = 'none';
+    document.getElementById('forgotOk').classList.add('show');
+    console.warn('resetPasswordForEmail:', e.message);
+  } finally {
+    setBtnLoading('btnForgot', false, 'Kirim Link Reset →');
+  }
+}
+
+// ── SET PASSWORD BARU ─────────────────────────────
+async function doSetNewPassword() {
+  const newPass     = document.getElementById('newPassInput').value;
+  const confirmPass = document.getElementById('newPassConfirm').value;
+  if (!newPass) { showNewPassErr('Password baru tidak boleh kosong'); return; }
+  if (newPass.length < 6) { showNewPassErr('Password minimal 6 karakter'); return; }
+  if (newPass !== confirmPass) { showNewPassErr('Konfirmasi password tidak cocok'); return; }
+  setBtnLoading('btnNewPass', true, 'Menyimpan...');
+  document.getElementById('newPassErr').classList.remove('show');
+  try {
+    const { error } = await sb.auth.updateUser({ password: newPass });
+    if (error) throw error;
+    // Sukses — tampilkan pesan, sembunyikan form, lalu redirect ke login
+    document.getElementById('newPassForm').style.display = 'none';
+    document.getElementById('newPassOk').classList.add('show');
+    // Sign out supaya user login fresh dengan password baru
+    await sb.auth.signOut();
+    setTimeout(() => {
+      showMainPanel();
+      switchAuthTab('masuk');
+      showToast('Password berhasil diubah! Silakan masuk.', '✅');
+    }, 2200);
+  } catch(e) {
+    showNewPassErr(e.message || 'Gagal mengubah password. Coba minta link reset ulang.');
+    setBtnLoading('btnNewPass', false, 'Simpan Password Baru →');
+  }
+}
+
+// ── ERROR HELPERS ─────────────────────────────────
+function showForgotErr(msg) {
+  const el = document.getElementById('forgotErr');
+  el.textContent = msg; el.classList.add('show');
+}
+function showNewPassErr(msg) {
+  const el = document.getElementById('newPassErr');
+  el.textContent = msg; el.classList.add('show');
+}
+
+// ── PASSWORD STRENGTH ─────────────────────────────
+function checkPassStrength(val, barId = 'passStrength', fillId = 'passStrengthFill') {
+  const bar  = document.getElementById(barId);
+  const fill = document.getElementById(fillId);
+  if (!bar || !fill) return;
+  if (!val) { bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  let score = 0;
+  if (val.length >= 6)  score++;
+  if (val.length >= 10) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const pct   = Math.min((score / 5) * 100, 100);
+  const color = score <= 1 ? '#f43f5e' : score <= 3 ? '#f59e0b' : '#10b981';
+  const label = score <= 1 ? 'Lemah' : score <= 3 ? 'Sedang' : 'Kuat';
+  fill.style.width = pct + '%';
+  fill.style.background = color;
+  fill.title = label;
+}
+
+// ── DETECT PASSWORD RECOVERY FROM URL ────────────
+// Supabase adds #access_token=...&type=recovery when user clicks the reset link.
+// We intercept this on page load and jump straight to the new-password panel.
+function checkPasswordRecoveryLink() {
+  const hash = window.location.hash;
+  if (hash.includes('type=recovery') || hash.includes('type=email_change')) {
+    // Parse the fragment and exchange it for a session so updateUser works
+    sb.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        // Already authenticated via the recovery token — show new password panel
+        hideSplash();
+        hideAuth();
+        document.getElementById('auth').classList.add('show');
+        showNewPassPanel();
+        // Clean the URL hash so it doesn't re-trigger on refresh
+        history.replaceState(null, '', window.location.pathname);
+      }
+    });
+  }
 }
 
 function setBtnLoading(id, loading, txt) {
-  const b=document.getElementById(id); b.disabled=loading; b.textContent=txt;
+  const b = document.getElementById(id);
+  if (!b) return;
+  b.disabled = loading; b.textContent = txt;
 }
 
 async function doLogout() {
