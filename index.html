@@ -1141,154 +1141,6 @@ input, select, textarea, button { font-family: var(--font-body); }
 .av7 { background: linear-gradient(135deg,#ec4899,#db2777); }
 
 select option { background: #111118; color: var(--text-1); }
-html.light select option { background: #fff; color: #0f0f1a; }
-
-/* ── PLAN BADGE in header ── */
-.plan-badge {
-  font-size: 9px; font-weight: 800; text-transform: uppercase;
-  letter-spacing: .8px; padding: 2px 8px; border-radius: var(--r-full);
-  flex-shrink: 0; border: 1px solid;
-}
-.plan-badge.free    { background: rgba(74,74,104,.15); color: var(--text-3); border-color: rgba(74,74,104,.2); }
-.plan-badge.trial   { background: rgba(245,158,11,.15); color: var(--amber); border-color: rgba(245,158,11,.25); }
-.plan-badge.pro     { background: rgba(99,102,241,.15); color: var(--brand-light); border-color: rgba(99,102,241,.25); }
-.plan-badge.bisnis  { background: rgba(16,185,129,.15); color: var(--emerald); border-color: rgba(16,185,129,.25); }
-
-/* ── TRIAL BANNER ── */
-.trial-banner {
-  background: linear-gradient(90deg, rgba(245,158,11,.12), rgba(99,102,241,.1));
-  border-bottom: 1px solid rgba(245,158,11,.2);
-  padding: 9px max(env(safe-area-inset-right),18px) 9px max(env(safe-area-inset-left),18px);
-  display: none; align-items: center; justify-content: space-between; gap: 10px;
-}
-.trial-banner.show { display: flex; }
-.trial-banner-txt { font-size: 12px; font-weight: 600; color: var(--amber); }
-.trial-banner-sub { font-size: 10px; color: var(--text-3); margin-top: 1px; }
-.trial-upgrade-btn {
-  padding: 6px 14px; border-radius: var(--r-full);
-  background: var(--brand); border: none; color: #fff;
-  font-size: 11px; font-weight: 700; cursor: pointer;
-  flex-shrink: 0; font-family: var(--font-body);
-  transition: all .2s; white-space: nowrap;
-}
-.trial-upgrade-btn:active { transform: scale(.95); }
-
-/* ── PLAN CARD in Pengaturan ── */
-.plan-current-card {
-  background: var(--bg-elevated); border: 1px solid var(--glass-border);
-  border-radius: var(--r-lg); padding: 16px; margin-bottom: 0;
-  position: relative; overflow: hidden;
-}
-.plan-current-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-}
-.plan-current-card.free::before    { background: var(--text-3); }
-.plan-current-card.trial::before   { background: var(--amber); }
-.plan-current-card.pro::before     { background: var(--brand); }
-.plan-current-card.bisnis::before  { background: var(--emerald); }
-.plan-name-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.plan-name-big { font-size: 18px; font-weight: 800; letter-spacing: -.5px; }
-.plan-price { font-size: 13px; color: var(--text-2); font-weight: 500; }
-.plan-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.plan-feat { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-.plan-feat-ico { font-size: 13px; flex-shrink: 0; }
-.plan-feat-txt { color: var(--text-2); }
-.plan-feat-txt.locked { color: var(--text-4); text-decoration: line-through; }
-.plan-usage { background: var(--bg-raised); border-radius: var(--r-sm); padding: 10px 12px; margin-bottom: 12px; }
-.plan-usage-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 5px; }
-.plan-usage-row span:last-child { font-weight: 700; font-family: var(--font-mono); }
-.plan-usage-bar { height: 5px; background: var(--bg-float); border-radius: 3px; overflow: hidden; }
-.plan-usage-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
-.btn-upgrade {
-  width: 100%; padding: 13px;
-  background: linear-gradient(135deg, var(--brand), #4338ca);
-  border: none; border-radius: var(--r-md); color: #fff;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  font-family: var(--font-body); transition: all .2s;
-  box-shadow: 0 6px 20px rgba(99,102,241,.35);
-}
-.btn-upgrade:active { transform: scale(.98); }
-.btn-upgrade.bisnis-upgrade {
-  background: linear-gradient(135deg, var(--emerald), #047857);
-  box-shadow: 0 6px 20px rgba(16,185,129,.3);
-}
-
-/* ── UPGRADE MODAL (Pricing sheet) ── */
-.pricing-grid { display: flex; flex-direction: column; gap: 12px; }
-.pricing-card {
-  background: var(--bg-elevated); border: 1.5px solid var(--glass-border);
-  border-radius: var(--r-lg); padding: 18px; position: relative;
-  transition: border-color .2s;
-}
-.pricing-card.popular {
-  border-color: rgba(99,102,241,.4);
-  background: linear-gradient(135deg, rgba(99,102,241,.08), var(--bg-elevated));
-}
-.popular-badge {
-  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
-  background: var(--brand); color: #fff; font-size: 10px; font-weight: 800;
-  padding: 3px 14px; border-radius: 0 0 10px 10px; letter-spacing: .5px;
-  white-space: nowrap;
-}
-.pc-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
-.pc-name { font-size: 16px; font-weight: 800; letter-spacing: -.4px; }
-.pc-price-big { font-size: 24px; font-weight: 800; font-family: var(--font-mono); letter-spacing: -1.5px; }
-.pc-price-sub { font-size: 11px; color: var(--text-3); }
-.pc-feats { display: flex; flex-direction: column; gap: 7px; margin-bottom: 16px; }
-.pc-feat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); }
-.pc-feat-check { font-size: 13px; flex-shrink: 0; }
-.pc-feat.locked { color: var(--text-4); }
-.btn-select-plan {
-  width: 100%; padding: 12px; border-radius: var(--r-md); border: none;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  font-family: var(--font-body); transition: all .2s;
-}
-.btn-select-plan.current {
-  background: var(--bg-raised); color: var(--text-3);
-  border: 1.5px solid var(--glass-border); cursor: default;
-}
-.btn-select-plan.upgrade-pro {
-  background: linear-gradient(135deg, var(--brand), #4338ca);
-  color: #fff; box-shadow: 0 6px 20px rgba(99,102,241,.3);
-}
-.btn-select-plan.upgrade-bisnis {
-  background: linear-gradient(135deg, var(--emerald), #047857);
-  color: #fff; box-shadow: 0 6px 20px rgba(16,185,129,.25);
-}
-.btn-select-plan:active { transform: scale(.98); }
-
-/* ── LIMIT WALL (fitur terkunci) ── */
-.limit-wall {
-  position: fixed; inset: 0; z-index: 600;
-  background: rgba(0,0,0,.8); backdrop-filter: blur(8px);
-  display: none; align-items: center; justify-content: center; padding: 24px;
-}
-.limit-wall.show { display: flex; }
-.limit-card {
-  background: var(--bg-overlay); border: 1px solid var(--glass-border-hi);
-  border-radius: var(--r-xl); padding: 32px 28px; max-width: 360px; width: 100%;
-  text-align: center; box-shadow: var(--shadow-lg);
-  animation: fadeUp .3s ease;
-}
-.limit-icon { font-size: 44px; margin-bottom: 14px; }
-.limit-title { font-size: 20px; font-weight: 800; letter-spacing: -.6px; margin-bottom: 6px; }
-.limit-sub { font-size: 13px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; }
-.limit-btns { display: flex; flex-direction: column; gap: 10px; }
-.btn-limit-upgrade {
-  width: 100%; padding: 14px; border-radius: var(--r-md); border: none;
-  background: linear-gradient(135deg,var(--brand),#4338ca);
-  color: #fff; font-size: 15px; font-weight: 700; cursor: pointer;
-  font-family: var(--font-body); box-shadow: var(--shadow-brand);
-  transition: all .2s;
-}
-.btn-limit-upgrade:active { transform: scale(.98); }
-.btn-limit-cancel {
-  width: 100%; padding: 11px; border-radius: var(--r-md);
-  background: none; border: 1.5px solid var(--glass-border);
-  color: var(--text-2); font-size: 14px; font-weight: 600;
-  cursor: pointer; font-family: var(--font-body); transition: all .2s;
-}
-.btn-limit-cancel:active { opacity: .7; }
 html.light select option { background: #ffffff; color: #0f0f1a; }
 
 /* ════════════════════════════════════════
@@ -1632,22 +1484,12 @@ html.theme-anim *::after {
         <span class="pill-uname" id="hName">—</span>
         <span class="pill-role" id="hRole">Marketing</span>
       </div>
-      <span class="plan-badge free" id="hPlanBadge">Free</span>
       <button class="hbtn" id="themeBtnHdr" onclick="quickToggleTheme()" title="Ganti tema">🌙</button>
       <button class="hbtn" onclick="openNotif()" id="notifBtn">
         🔔<span class="notif-pip" id="notifPip"></span>
       </button>
     </div>
   </header>
-
-  <!-- TRIAL BANNER -->
-  <div class="trial-banner" id="trialBanner">
-    <div>
-      <div class="trial-banner-txt" id="trialTxt">⏳ Trial aktif — sisa X hari</div>
-      <div class="trial-banner-sub">Upgrade sebelum trial berakhir agar data tidak terkunci</div>
-    </div>
-    <button class="trial-upgrade-btn" onclick="openUpgradeModal()">Upgrade →</button>
-  </div>
 
   <!-- SCROLL CONTENT -->
   <div class="scroll-area" id="scrollArea">
@@ -1779,13 +1621,6 @@ html.theme-anim *::after {
         <button class="btn-install" onclick="triggerInstall()">Install</button>
       </div>
 
-      <div class="set-group" id="planGrp">
-        <div class="set-group-label">Paket Langganan</div>
-        <div id="planCardWrap">
-          <!-- Rendered dynamically by renderPlanCard() -->
-        </div>
-      </div>
-
       <div class="set-group">
         <div class="set-group-label">Profil Saya</div>
         <div class="set-form">
@@ -1864,7 +1699,7 @@ html.theme-anim *::after {
       </div>
 
       <div style="text-align:center;padding:24px 20px;color:var(--text-4);font-size:11px;font-weight:500">
-        MarketPro v4.0 · SaaS · Real-time · Multi-user · PWA
+        MarketPro v3.0 · Real-time · Multi-user · PWA
       </div>
     </div>
 
@@ -1885,39 +1720,6 @@ html.theme-anim *::after {
       <span class="tab-ico">⚙️</span>Pengaturan
     </button>
   </nav>
-</div>
-
-<!-- ══ UPGRADE MODAL (Pricing Sheet) ══ -->
-<div class="modal-ov" id="modalUpgrade">
-  <div class="modal-sheet">
-    <div class="sheet-pill"></div>
-    <div class="sheet-head">
-      <div class="sheet-title">🚀 Pilih Paket</div>
-      <button class="sheet-close" onclick="closeModal('modalUpgrade')">✕</button>
-    </div>
-    <div class="sheet-body">
-      <div style="font-size:13px;color:var(--text-2);margin-bottom:18px;line-height:1.6">
-        Pilih paket yang sesuai untuk tim Anda. Semua paket berbayar sudah termasuk uji coba 14 hari gratis.
-      </div>
-      <div class="pricing-grid" id="pricingGrid"></div>
-      <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text-4)">
-        Hemat 20% dengan pembayaran tahunan · Batalkan kapan saja
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ LIMIT WALL ══ -->
-<div class="limit-wall" id="limitWall">
-  <div class="limit-card">
-    <div class="limit-icon" id="limitIcon">🔒</div>
-    <div class="limit-title" id="limitTitle">Fitur Terkunci</div>
-    <div class="limit-sub" id="limitSub">Upgrade paket untuk mengakses fitur ini.</div>
-    <div class="limit-btns">
-      <button class="btn-limit-upgrade" onclick="closeWall();openUpgradeModal()">Lihat Paket Upgrade →</button>
-      <button class="btn-limit-cancel" onclick="closeWall()">Nanti saja</button>
-    </div>
-  </div>
 </div>
 
 <!-- ══ MODAL: TAMBAH/EDIT ══ -->
@@ -2330,22 +2132,14 @@ async function afterLogin(user) {
     ({data:prof} = await sb.from('profiles').select('*').eq('id',user.id).single());
   }
   myProf = prof;
-  setLoadTxt('Memuat workspace...');
-  await loadWorkspace();
   setLoadTxt('Memuat data...');
   await Promise.all([loadProfs(), loadKons()]);
-
-  // Only start realtime if plan allows it
-  if (canUseFeature('realtime')) setupRealtime();
-
+  setupRealtime();
   hideSplash(); hideAuth();
   const shell=document.getElementById('shell');
   shell.style.display='flex'; shell.classList.add('show');
   updateHeaderUI();
-  updatePlanBadge();
-  updateTrialBanner();
   setupAdminUI();
-  applyPlanRestrictions();
   renderDash(); renderKons();
 }
 
@@ -2370,13 +2164,10 @@ function updateHeaderUI() {
 }
 
 function setupAdminUI() {
-  const isAdmin = myWsRole === 'owner' || myWsRole === 'admin';
+  const isAdmin = myProf?.role === 'admin';
   document.getElementById('teamSec').style.display   = isAdmin ? 'block' : 'none';
   document.getElementById('rankSec').style.display   = isAdmin ? 'block' : 'none';
   document.getElementById('adminGrp').style.display  = isAdmin ? 'block' : 'none';
-  // Only show plan group to owner
-  const planGrp = document.getElementById('planGrp');
-  if (planGrp) planGrp.style.display = isOwner ? 'block' : 'none';
   document.getElementById('adminBar').classList.toggle('show', isAdmin);
   if (isAdmin) fillAdminSel();
 }
@@ -2387,13 +2178,8 @@ async function loadProfs() {
   allProfs = data || [];
 }
 async function loadKons() {
-  if (!myProf?.active_workspace_id) { allKons = []; return; }
-  let q = sb.from('konsumen')
-    .select('*')
-    .eq('workspace_id', myProf.active_workspace_id)
-    .order('created_at',{ascending:false});
-  // Marketing only see their own; admin/owner see all in workspace
-  if (myWsRole === 'marketing') q = q.eq('owner_id', me.id);
+  let q = sb.from('konsumen').select('*').order('created_at',{ascending:false});
+  if (myProf?.role !== 'admin') q = q.eq('owner_id', me.id);
   const {data} = await q;
   allKons = data || [];
   updateNotifPip();
@@ -2402,11 +2188,9 @@ async function loadKons() {
 // ── REALTIME ─────────────────────────────────────
 function setupRealtime() {
   if (rtChan) sb.removeChannel(rtChan);
-  const wid = myProf?.active_workspace_id;
-  rtChan = sb.channel('kons-rt-' + (wid || 'global'))
-    .on('postgres_changes', {event:'*',schema:'public',table:'konsumen',
-      filter: wid ? `workspace_id=eq.${wid}` : undefined}, async p => {
-      const isAdmin = myWsRole === 'owner' || myWsRole === 'admin';
+  rtChan = sb.channel('kons-rt')
+    .on('postgres_changes', {event:'*',schema:'public',table:'konsumen'}, async p => {
+      const isAdmin = myProf?.role==='admin';
       const mine = p.new?.owner_id===me.id || p.old?.owner_id===me.id;
       if (!isAdmin && !mine) return;
       if (p.eventType==='INSERT') {
@@ -2453,9 +2237,8 @@ async function saveKons() {
       if (error) throw error;
       showToast('Data diperbarui','✅');
     } else {
-      obj.owner_id    = me.id;
-      obj.owner_name  = myProf?.full_name || me.email;
-      obj.workspace_id = myProf?.active_workspace_id;
+      obj.owner_id   = me.id;
+      obj.owner_name = myProf?.full_name || me.email;
       obj.berkas = {ktp:false,kk:false,slip:false,tabungan:false,npwp:false,surat:false};
       obj.log = [{action:'Konsumen ditambahkan',time:new Date().toISOString(),note:obj.catatan}];
       const {error} = await sb.from('konsumen').insert(obj);
@@ -2504,7 +2287,6 @@ function switchPage(p) {
   document.getElementById('scrollArea').scrollTop = 0;
   if (p==='dashboard')  renderDash();
   if (p==='laporan')    renderLap();
-  if (p==='pengaturan') renderPlanCard();
 }
 
 // ── DASHBOARD ─────────────────────────────────────
@@ -2667,8 +2449,6 @@ function openDetail(id) {
 }
 
 function openAddModal() {
-  // Gate: check konsumen limit for free plan
-  if (!gateKonsumen()) return;
   document.getElementById('mAddTitle').textContent = 'Tambah Konsumen';
   document.getElementById('editId').value = '';
   document.getElementById('btnHapus').style.display = 'none';
@@ -2811,7 +2591,6 @@ async function updateRole(uid, role) {
 
 // ── EXPORT ───────────────────────────────────────
 function exportData() {
-  if (!gateExport()) return;
   const blob=new Blob([JSON.stringify(allKons,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='marketpro-export.json'; a.click();
   showToast('Data diekspor','📤');
@@ -2909,358 +2688,6 @@ function quickToggleTheme() {
   const btn = document.getElementById('themeBtnHdr');
   if (btn) btn.textContent = isNowLight ? '☀️' : '🌙';
   showToast(isNowLight ? 'Tema terang aktif ☀️' : 'Tema gelap aktif 🌙', '');
-}
-
-// ══════════════════════════════════════════════════
-// PLAN & SUBSCRIPTION SYSTEM
-// ══════════════════════════════════════════════════
-
-// Plan definitions (mirrors plan_limits view in Supabase)
-const PLANS = {
-  free:   { name:'Free',   price:0,       maxMembers:1,    maxKons:30,   realtime:false, laporanTim:false, exportData:false, whiteLabel:false },
-  pro:    { name:'Pro',    price:99000,   maxMembers:5,    maxKons:null, realtime:true,  laporanTim:true,  exportData:true,  whiteLabel:false },
-  bisnis: { name:'Bisnis', price:249000,  maxMembers:20,   maxKons:null, realtime:true,  laporanTim:true,  exportData:true,  whiteLabel:true  },
-};
-
-let myWorkspace = null;   // workspace object
-let mySub = null;         // subscription object
-let myWsRole = 'marketing'; // role in workspace: 'owner'|'admin'|'marketing'
-let isOwner = false;
-
-// ── LOAD WORKSPACE ───────────────────────────────
-async function loadWorkspace() {
-  if (!myProf?.active_workspace_id) return;
-  const wid = myProf.active_workspace_id;
-
-  // Load workspace
-  const { data: ws } = await sb.from('workspaces').select('*').eq('id', wid).single();
-  myWorkspace = ws;
-
-  // Load subscription
-  const { data: subs } = await sb.from('subscriptions')
-    .select('*').eq('workspace_id', wid)
-    .order('created_at', { ascending: false }).limit(1);
-  mySub = subs?.[0] || null;
-
-  // Load my role in workspace
-  const { data: mem } = await sb.from('workspace_members')
-    .select('role').eq('workspace_id', wid).eq('user_id', me.id).single();
-  myWsRole = mem?.role || 'marketing';
-  isOwner = myWsRole === 'owner';
-}
-
-// ── EFFECTIVE PLAN ───────────────────────────────
-function getEffectivePlan() {
-  if (!mySub) return 'free';
-  const now = new Date();
-  if (mySub.status === 'trialing' && new Date(mySub.trial_ends_at) > now) {
-    // During trial, show the plan they're trialing (free by default)
-    return mySub.plan || 'free';
-  }
-  if (mySub.status === 'active' && new Date(mySub.current_period_end) > now) {
-    return mySub.plan;
-  }
-  return 'free';
-}
-
-function isTrialing() {
-  if (!mySub) return false;
-  return mySub.status === 'trialing' && new Date(mySub.trial_ends_at) > new Date();
-}
-
-function trialDaysLeft() {
-  if (!mySub || !isTrialing()) return 0;
-  return Math.max(0, Math.ceil((new Date(mySub.trial_ends_at) - new Date()) / 86400000));
-}
-
-function canUseFeature(feature) {
-  const plan = getEffectivePlan();
-  return PLANS[plan]?.[feature] === true;
-}
-
-function canAddKonsumen() {
-  const plan = getEffectivePlan();
-  const max = PLANS[plan]?.maxKons;
-  if (max === null) return true;
-  return allKons.length < max;
-}
-
-function canAddMember() {
-  const plan = getEffectivePlan();
-  const max = PLANS[plan]?.maxMembers;
-  if (max === null) return true;
-  const memberCount = allProfs.filter(p => p.active_workspace_id === myProf?.active_workspace_id).length;
-  return memberCount < max;
-}
-
-// ── UI: TRIAL BANNER ─────────────────────────────
-function updateTrialBanner() {
-  const banner = document.getElementById('trialBanner');
-  const txt    = document.getElementById('trialTxt');
-  if (!banner) return;
-
-  if (isTrialing()) {
-    const days = trialDaysLeft();
-    const plan = getEffectivePlan();
-    if (days <= 3) {
-      txt.textContent = `🚨 Trial berakhir dalam ${days} hari!`;
-      txt.style.color = 'var(--rose)';
-    } else {
-      txt.textContent = `⏳ Trial aktif · sisa ${days} hari`;
-      txt.style.color = 'var(--amber)';
-    }
-    banner.classList.add('show');
-    // Hide banner if already on Pro/Bisnis after trial converted
-  } else {
-    banner.classList.remove('show');
-  }
-}
-
-// ── UI: HEADER PLAN BADGE ────────────────────────
-function updatePlanBadge() {
-  const badge = document.getElementById('hPlanBadge');
-  if (!badge) return;
-  const plan = getEffectivePlan();
-  const trial = isTrialing();
-
-  if (trial) {
-    badge.textContent = 'Trial';
-    badge.className = 'plan-badge trial';
-  } else if (plan === 'pro') {
-    badge.textContent = 'Pro';
-    badge.className = 'plan-badge pro';
-  } else if (plan === 'bisnis') {
-    badge.textContent = 'Bisnis';
-    badge.className = 'plan-badge bisnis';
-  } else {
-    badge.textContent = 'Free';
-    badge.className = 'plan-badge free';
-  }
-}
-
-// ── UI: PLAN CARD in Pengaturan ──────────────────
-function renderPlanCard() {
-  const wrap = document.getElementById('planCardWrap');
-  if (!wrap) return;
-  const plan  = getEffectivePlan();
-  const pInfo = PLANS[plan];
-  const trial = isTrialing();
-  const days  = trialDaysLeft();
-  const konsUsed = allKons.length;
-  const konsMax  = pInfo.maxKons;
-
-  const features = [
-    { key:'realtime',   icon:'⚡', label:'Real-time sync' },
-    { key:'laporanTim', icon:'📊', label:'Laporan & ranking tim' },
-    { key:'exportData', icon:'📤', label:'Export data Excel/PDF' },
-    { key:'whiteLabel', icon:'🎨', label:'White-label & custom brand' },
-  ];
-
-  const usageHtml = konsMax !== null ? `
-    <div class="plan-usage">
-      <div class="plan-usage-row">
-        <span>Konsumen</span>
-        <span>${konsUsed} / ${konsMax}</span>
-      </div>
-      <div class="plan-usage-bar">
-        <div class="plan-usage-fill" style="width:${Math.min(100,Math.round(konsUsed/konsMax*100))}%;
-          background:${konsUsed >= konsMax ? 'var(--rose)' : konsUsed/konsMax > .8 ? 'var(--amber)' : 'var(--brand)'}"></div>
-      </div>
-    </div>` : '';
-
-  const trialHtml = trial ? `
-    <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:var(--amber);font-weight:600">
-      ⏳ Trial aktif · berakhir dalam ${days} hari
-    </div>` : '';
-
-  const upgradeBtn = (plan === 'free' || trial)
-    ? `<button class="btn-upgrade" onclick="openUpgradeModal()">🚀 Upgrade Sekarang</button>`
-    : plan === 'pro'
-    ? `<button class="btn-upgrade bisnis-upgrade" onclick="openUpgradeModal()">⬆️ Upgrade ke Bisnis</button>`
-    : `<div style="font-size:12px;color:var(--emerald);text-align:center;padding:8px;font-weight:600">✅ Paket Bisnis Aktif</div>`;
-
-  wrap.innerHTML = `
-    <div class="plan-current-card ${trial ? 'trial' : plan}">
-      <div class="plan-name-row">
-        <div class="plan-name-big">${trial ? '🎉 Trial' : plan === 'pro' ? '⚡ Pro' : plan === 'bisnis' ? '🏆 Bisnis' : '🆓 Free'}</div>
-        <div class="plan-price">${pInfo.price > 0 ? 'Rp ' + pInfo.price.toLocaleString('id') + '/bln' : 'Gratis selamanya'}</div>
-      </div>
-      ${trialHtml}
-      ${usageHtml}
-      <div class="plan-features">
-        ${features.map(f => `
-          <div class="plan-feat">
-            <span class="plan-feat-ico">${pInfo[f.key] ? '✅' : '🔒'}</span>
-            <span class="plan-feat-txt ${pInfo[f.key] ? '' : 'locked'}">${f.label}</span>
-          </div>`).join('')}
-      </div>
-      ${isOwner ? upgradeBtn : '<div style="font-size:11px;color:var(--text-4);text-align:center">Hanya owner yang bisa ubah paket</div>'}
-    </div>`;
-}
-
-// ── UI: PRICING GRID in Upgrade Modal ────────────
-function renderPricingGrid() {
-  const grid = document.getElementById('pricingGrid');
-  if (!grid) return;
-  const currentPlan = getEffectivePlan();
-
-  const plans = [
-    {
-      key: 'free', name: '🆓 Free', price: 0, priceTxt: 'Gratis',
-      maxM: '1 marketing', maxK: '30 konsumen', popular: false,
-      feats: ['1 akun marketing','30 konsumen','Fitur dasar lengkap','Tidak ada realtime sync','Tidak ada laporan tim'],
-      locked: [false,false,false,true,true],
-    },
-    {
-      key: 'pro', name: '⚡ Pro', price: 99000, priceTxt: 'Rp 99.000',
-      maxM: '5 marketing', maxK: 'Konsumen tidak terbatas', popular: true,
-      feats: ['5 akun marketing','Konsumen tidak terbatas','Real-time sync otomatis','Laporan & ranking tim','Export data JSON/Excel'],
-      locked: [false,false,false,false,false],
-    },
-    {
-      key: 'bisnis', name: '🏆 Bisnis', price: 249000, priceTxt: 'Rp 249.000',
-      maxM: '20 marketing', maxK: 'Konsumen tidak terbatas', popular: false,
-      feats: ['20 akun marketing','Konsumen tidak terbatas','Semua fitur Pro','White-label & custom brand','Onboarding tim + support'],
-      locked: [false,false,false,false,false],
-    },
-  ];
-
-  grid.innerHTML = plans.map(p => {
-    const isCurrent = p.key === currentPlan && !isTrialing();
-    let btnHtml = '';
-    if (isCurrent) {
-      btnHtml = `<button class="btn-select-plan current">Paket Aktif</button>`;
-    } else if (!isOwner) {
-      btnHtml = `<button class="btn-select-plan current" style="cursor:default">Minta ke Owner</button>`;
-    } else if (p.key === 'free') {
-      btnHtml = currentPlan !== 'free'
-        ? `<button class="btn-select-plan current" style="cursor:default">Downgrade (hubungi support)</button>`
-        : `<button class="btn-select-plan current">Paket Aktif</button>`;
-    } else {
-      const cls = p.key === 'bisnis' ? 'upgrade-bisnis' : 'upgrade-pro';
-      btnHtml = `<button class="btn-select-plan ${cls}" onclick="initiateUpgrade('${p.key}')">
-        ${isTrialing() ? 'Aktifkan Sekarang' : 'Upgrade ke ' + p.name} →
-      </button>`;
-    }
-
-    return `
-      <div class="pricing-card ${p.popular ? 'popular' : ''}">
-        ${p.popular ? '<div class="popular-badge">PALING POPULER</div>' : ''}
-        <div class="pc-header">
-          <div>
-            <div class="pc-name">${p.name}</div>
-            <div style="font-size:11px;color:var(--text-3);margin-top:2px">${p.maxM} · ${p.maxK}</div>
-          </div>
-          <div style="text-align:right">
-            <div class="pc-price-big">${p.priceTxt}</div>
-            <div class="pc-price-sub">${p.price > 0 ? '/bulan' : 'selamanya'}</div>
-          </div>
-        </div>
-        <div class="pc-feats">
-          ${p.feats.map((f,i) => `
-            <div class="pc-feat ${p.locked[i] ? 'locked' : ''}">
-              <span class="pc-feat-check">${p.locked[i] ? '✕' : '✓'}</span>
-              ${f}
-            </div>`).join('')}
-        </div>
-        ${btnHtml}
-      </div>`;
-  }).join('');
-}
-
-// ── UPGRADE FLOW ─────────────────────────────────
-function openUpgradeModal() {
-  renderPricingGrid();
-  openModal('modalUpgrade');
-}
-
-async function initiateUpgrade(planKey) {
-  // Placeholder — Xendit integration akan ditambahkan di Fase 3
-  // Untuk sekarang tampilkan konfirmasi dan simulasi upgrade
-  closeModal('modalUpgrade');
-  showToast('🔄 Mengarahkan ke halaman pembayaran...', '');
-  setTimeout(() => {
-    showToast('💡 Integrasi Xendit akan ditambahkan di Fase 3', 'ℹ️');
-  }, 1500);
-  // TODO Fase 3: create Xendit invoice, redirect to payment URL
-}
-
-// ── LIMIT WALL ───────────────────────────────────
-function showLimitWall(icon, title, sub) {
-  document.getElementById('limitIcon').textContent = icon;
-  document.getElementById('limitTitle').textContent = title;
-  document.getElementById('limitSub').textContent = sub;
-  document.getElementById('limitWall').classList.add('show');
-}
-function closeWall() {
-  document.getElementById('limitWall').classList.remove('show');
-}
-
-// ── GATE FUNCTIONS ───────────────────────────────
-// Call these before doing things that require a plan
-function gateRealtime() {
-  if (canUseFeature('realtime')) return true;
-  showLimitWall('⚡', 'Real-time Sync Terkunci',
-    'Paket Free tidak mendukung sinkronisasi data otomatis. Upgrade ke Pro agar semua perubahan langsung muncul di HP seluruh tim.');
-  return false;
-}
-
-function gateKonsumen() {
-  if (canAddKonsumen()) return true;
-  const plan = getEffectivePlan();
-  const max  = PLANS[plan]?.maxKons;
-  showLimitWall('👥', `Batas ${max} Konsumen Tercapai`,
-    `Paket Free hanya mendukung ${max} konsumen. Upgrade ke Pro untuk konsumen tidak terbatas.`);
-  return false;
-}
-
-function gateLaporanTim() {
-  if (canUseFeature('laporanTim')) return true;
-  showLimitWall('📊', 'Laporan Tim Terkunci',
-    'Laporan performa tim dan ranking marketing hanya tersedia di paket Pro dan Bisnis.');
-  return false;
-}
-
-function gateExport() {
-  if (canUseFeature('exportData')) return true;
-  showLimitWall('📤', 'Export Data Terkunci',
-    'Fitur export data hanya tersedia di paket Pro dan Bisnis.');
-  return false;
-}
-
-// ── APPLY PLAN RESTRICTIONS TO UI ────────────────
-function applyPlanRestrictions() {
-  const plan = getEffectivePlan();
-  const pInfo = PLANS[plan];
-
-  // Realtime: jika tidak bisa, matikan realtime subscription
-  if (!pInfo.realtime && rtChan) {
-    sb.removeChannel(rtChan);
-    rtChan = null;
-    // Replace live badge with "Manual"
-    const badge = document.querySelector('.live-badge');
-    if (badge) {
-      badge.innerHTML = '🔄 Manual';
-      badge.style.color = 'var(--text-3)';
-      badge.style.background = 'rgba(74,74,104,.1)';
-      badge.style.borderColor = 'rgba(74,74,104,.15)';
-    }
-  }
-
-  // Laporan: hide ranking section if not available
-  const rankSec = document.getElementById('rankSec');
-  if (rankSec && !pInfo.laporanTim) {
-    rankSec.innerHTML = `
-      <div style="background:var(--bg-elevated);border:1px solid var(--glass-border);border-radius:var(--r-md);padding:16px;text-align:center">
-        <div style="font-size:22px;margin-bottom:8px">📊</div>
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px">Laporan Tim</div>
-        <div style="font-size:12px;color:var(--text-3);margin-bottom:12px">Tersedia di paket Pro & Bisnis</div>
-        <button class="btn-upgrade" style="width:auto;padding:8px 20px;font-size:13px" onclick="openUpgradeModal()">Upgrade →</button>
-      </div>`;
-  }
-
-  // Export button: add gate
-  // (already handled via gateExport() call in exportData())
 }
 
 // ── THEME ─────────────────────────────────────────
