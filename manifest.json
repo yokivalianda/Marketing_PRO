@@ -1,20 +1,21 @@
 {
-  "name": "MarketPro — CRM Marketing",
+  "name": "MarketPro — CRM Tim Marketing",
   "short_name": "MarketPro",
-  "description": "Aplikasi monitoring konsumen untuk marketing profesional properti",
+  "description": "Aplikasi monitoring konsumen real-time untuk tim marketing properti",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0f1e",
-  "theme_color": "#0f172a",
-  "orientation": "portrait",
+  "background_color": "#080d1a",
+  "theme_color": "#080d1a",
+  "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='36' fill='%233b82f6'/><text y='130' x='50%' font-size='110' text-anchor='middle' font-family='Arial'>🎯</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%233b82f6'/><text y='130' x='96' font-size='110' text-anchor='middle'>🎯</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }
   ],
   "categories": ["business", "productivity"],
-  "lang": "id"
+  "lang": "id",
+  "dir": "ltr"
 }
