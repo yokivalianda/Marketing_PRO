@@ -1271,3 +1271,99 @@ input[type="date"] {
 html.light input[type="date"] {
   color-scheme: light;
 }
+
+/* ════════════════════════════════════════
+   FILTER LANJUTAN
+════════════════════════════════════════ */
+#filterAdvBtn {
+  position: relative;
+  gap: 4px;
+}
+#filterAdvBtn.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.4);
+  color: var(--brand-light);
+}
+.fadv-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--brand); color: #fff;
+  font-size: 9px; font-weight: 800; margin-left: 2px;
+}
+
+.fadv-panel {
+  margin: 0 18px 10px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: pageIn .2s ease;
+}
+.fadv-group { display: flex; flex-direction: column; gap: 7px; }
+.fadv-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .8px;
+}
+.fadv-row { display: flex; align-items: center; gap: 8px; }
+.fadv-input {
+  flex: 1; padding: 8px 10px;
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  color: var(--text-1); font-size: 12px;
+  font-family: var(--font-body);
+  outline: none; min-width: 0;
+  transition: border-color .2s;
+}
+.fadv-input:focus { border-color: rgba(99,102,241,.5); }
+input[type="date"].fadv-input { color-scheme: dark; }
+html.light input[type="date"].fadv-input { color-scheme: light; }
+.fadv-sep { color: var(--text-4); font-size: 13px; flex-shrink: 0; }
+
+.fadv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fchip {
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s; white-space: nowrap;
+}
+.fchip:hover { background: var(--glass-10); color: var(--text-1); }
+.fchip.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.45);
+  color: var(--brand-light);
+}
+.fchip:active { transform: scale(.94); }
+
+.fadv-reset {
+  width: 100%; padding: 9px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s;
+}
+.fadv-reset:hover {
+  background: var(--rose-soft);
+  border-color: rgba(244,63,94,.25);
+  color: var(--rose);
+}
+
+#konsResultCount {
+  font-size: 11px; font-weight: 700;
+  color: var(--text-3);
+  padding: 4px 20px 0;
+  letter-spacing: .3px;
+}
+
+@media (min-width: 768px) {
+  .fadv-panel { margin-left: 20px; margin-right: 20px; }
+}

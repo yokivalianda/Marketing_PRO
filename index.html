@@ -235,6 +235,86 @@
         <button class="ftag"    data-f="batal"   onclick="setFilter('batal')">❌ Batal</button>
         <div class="filter-divider"></div>
         <button class="ftag sort-btn" id="sortBtn" onclick="toggleSort()">A→Z</button>
+        <div class="filter-divider"></div>
+        <button class="ftag" id="filterAdvBtn" onclick="toggleFilterAdv()">⚙ Filter</button>
+      </div>
+
+      <!-- Panel Filter Lanjutan -->
+      <div id="filterAdvPanel" style="display:none">
+        <div class="fadv-panel">
+
+          <div class="fadv-group">
+            <div class="fadv-label">Rentang Harga (Rp)</div>
+            <div class="fadv-row">
+              <input type="text" inputmode="numeric" class="fadv-input" id="fAdvHargaMin"
+                placeholder="Min" oninput="formatRpInput(this);renderKons()"/>
+              <span class="fadv-sep">—</span>
+              <input type="text" inputmode="numeric" class="fadv-input" id="fAdvHargaMax"
+                placeholder="Max" oninput="formatRpInput(this);renderKons()"/>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Sumber Leads</div>
+            <div class="fadv-chips" id="fAdvSumber">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvSumber','')">Semua</button>
+              <button class="fchip" data-v="referral" onclick="setFchip('fAdvSumber','referral')">Referral</button>
+              <button class="fchip" data-v="medsos" onclick="setFchip('fAdvSumber','medsos')">Media Sosial</button>
+              <button class="fchip" data-v="pameran" onclick="setFchip('fAdvSumber','pameran')">Pameran</button>
+              <button class="fchip" data-v="brosur" onclick="setFchip('fAdvSumber','brosur')">Brosur</button>
+              <button class="fchip" data-v="walk-in" onclick="setFchip('fAdvSumber','walk-in')">Walk In</button>
+              <button class="fchip" data-v="website" onclick="setFchip('fAdvSumber','website')">Website</button>
+              <button class="fchip" data-v="telepon" onclick="setFchip('fAdvSumber','telepon')">Telepon</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Jenis Pembiayaan</div>
+            <div class="fadv-chips" id="fAdvKpr">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvKpr','')">Semua</button>
+              <button class="fchip" data-v="kpr-btn" onclick="setFchip('fAdvKpr','kpr-btn')">KPR BTN</button>
+              <button class="fchip" data-v="kpr-bni" onclick="setFchip('fAdvKpr','kpr-bni')">KPR BNI</button>
+              <button class="fchip" data-v="kpr-bri" onclick="setFchip('fAdvKpr','kpr-bri')">KPR BRI</button>
+              <button class="fchip" data-v="kpr-mandiri" onclick="setFchip('fAdvKpr','kpr-mandiri')">KPR Mandiri</button>
+              <button class="fchip" data-v="kpr-bsm" onclick="setFchip('fAdvKpr','kpr-bsm')">KPR Syariah</button>
+              <button class="fchip" data-v="subsidi" onclick="setFchip('fAdvKpr','subsidi')">Subsidi FLPP</button>
+              <button class="fchip" data-v="cash-keras" onclick="setFchip('fAdvKpr','cash-keras')">Cash Keras</button>
+              <button class="fchip" data-v="cash-bertahap" onclick="setFchip('fAdvKpr','cash-bertahap')">Cash Bertahap</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Tanggal Booking</div>
+            <div class="fadv-row">
+              <input type="date" class="fadv-input" id="fAdvTglMin" onchange="renderKons()"/>
+              <span class="fadv-sep">—</span>
+              <input type="date" class="fadv-input" id="fAdvTglMax" onchange="renderKons()"/>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Kelengkapan Berkas</div>
+            <div class="fadv-chips" id="fAdvBerkas">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvBerkas','')">Semua</button>
+              <button class="fchip" data-v="lengkap" onclick="setFchip('fAdvBerkas','lengkap')">Sudah Lengkap</button>
+              <button class="fchip" data-v="belum" onclick="setFchip('fAdvBerkas','belum')">Belum Lengkap</button>
+              <button class="fchip" data-v="kosong" onclick="setFchip('fAdvBerkas','kosong')">Belum Ada Berkas</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Jadwal Follow-up</div>
+            <div class="fadv-chips" id="fAdvFollowup">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvFollowup','')">Semua</button>
+              <button class="fchip" data-v="hari-ini" onclick="setFchip('fAdvFollowup','hari-ini')">Hari Ini</button>
+              <button class="fchip" data-v="minggu-ini" onclick="setFchip('fAdvFollowup','minggu-ini')">Minggu Ini</button>
+              <button class="fchip" data-v="terlambat" onclick="setFchip('fAdvFollowup','terlambat')">Terlambat</button>
+              <button class="fchip" data-v="belum-ada" onclick="setFchip('fAdvFollowup','belum-ada')">Belum Dijadwal</button>
+            </div>
+          </div>
+
+          <button class="fadv-reset" onclick="resetFilterAdv()">✕ Reset Semua Filter</button>
+        </div>
       </div>
       <div class="admin-bar" id="adminBar">
         <span class="admin-bar-label">Filter tim:</span>
@@ -248,6 +328,7 @@
           <span style="font-size:17px">📥</span> Import dari Excel / CSV
         </button>
       </div>
+      <div id="konsResultCount" style="display:none"></div>
       <div class="kons-feed" id="konsFeed"></div>
       <button class="fab" onclick="openAddModal()">＋</button>
     </div>
