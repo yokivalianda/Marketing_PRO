@@ -303,11 +303,34 @@
       </div>
 
       <!-- Target -->
-      <div class="section" style="margin-top:8px;margin-bottom:16px">
+      <div class="section" style="margin-top:8px">
         <div class="section-head">
           <div class="section-title"><span class="sticon">📅</span>Target Periode Ini</div>
         </div>
         <div id="lapTarget"></div>
+      </div>
+
+      <!-- Export buttons -->
+      <div class="section" style="margin-top:16px;margin-bottom:16px">
+        <div class="section-head">
+          <div class="section-title"><span class="sticon">📤</span>Export Laporan</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn-secondary" onclick="exportPDF()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px">
+            <span style="font-size:18px">📄</span>
+            <div style="text-align:left">
+              <div style="font-size:13px;font-weight:700">Export PDF</div>
+              <div style="font-size:10px;color:var(--text-3);font-weight:400">Laporan siap cetak</div>
+            </div>
+          </button>
+          <button class="btn-secondary" onclick="exportCSV()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px">
+            <span style="font-size:18px">📊</span>
+            <div style="text-align:left">
+              <div style="font-size:13px;font-weight:700">Export CSV</div>
+              <div style="font-size:10px;color:var(--text-3);font-weight:400">Buka di Excel / Sheets</div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
 
