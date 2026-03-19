@@ -21,7 +21,9 @@ async function uploadFotoDokumen(konsumenId, berkasKey, file) {
 
   const ts       = Date.now();
   const filename = `${ts}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-  const path     = `${konsumenId}/${berkasKey}/${filename}`;
+  // Path: {user_id}/{konsumen_id}/{berkas_key}/{filename}
+  // Folder pertama = user_id agar cocok dengan RLS policy
+  const path     = `${me.id}/${konsumenId}/${berkasKey}/${filename}`;
 
   showToast('Mengupload...', '⏳');
 
@@ -43,14 +45,17 @@ async function uploadFotoDokumen(konsumenId, berkasKey, file) {
 
 // ── AMBIL SEMUA FOTO SATU BERKAS ─────────────────
 async function listFotoBerkas(konsumenId, berkasKey) {
+  // Cari owner_id dari data konsumen
+  const k        = allKons.find(x => x.id === konsumenId);
+  const ownerId  = k?.owner_id || me.id;
   const { data, error } = await sb.storage
     .from(STORAGE_BUCKET)
-    .list(`${konsumenId}/${berkasKey}`, { sortBy: { column: 'created_at', order: 'asc' } });
+    .list(`${ownerId}/${konsumenId}/${berkasKey}`, { sortBy: { column: 'created_at', order: 'asc' } });
 
   if (error || !data) return [];
   return data.filter(f => f.name && !f.name.startsWith('.')).map(f => ({
     name: f.name,
-    path: `${konsumenId}/${berkasKey}/${f.name}`,
+    path: `${ownerId}/${konsumenId}/${berkasKey}/${f.name}`,
     size: f.metadata?.size || 0,
   }));
 }
@@ -82,6 +87,9 @@ async function renderBerkasWithFoto(konsumenId, berkasKey, berkasLabel, isDone, 
   }).join('');
   const more = count > 3 ? `<div class="berkas-thumb berkas-thumb-more">+${count - 3}</div>` : '';
 
+  // Sanitize label & key untuk onclick string
+  const safeLbl = berkasLabel.replace(/'/g, "\'");
+
   return `
     <div class="berkas-item-wrap" data-key="${berkasKey}">
       <div class="berkas-item" onclick="${canEdit ? `toggleBerkas('${konsumenId}','${berkasKey}')` : ''}" style="${canEdit ? '' : 'cursor:default'}">
@@ -89,7 +97,11 @@ async function renderBerkasWithFoto(konsumenId, berkasKey, berkasLabel, isDone, 
         <div class="berkas-label ${isDone ? 'done' : ''}">${berkasLabel}</div>
         <div class="berkas-right">
           ${count > 0 ? `<span class="berkas-foto-count">${count} foto</span>` : ''}
-          ${canEdit ? `<button class="berkas-upload-btn" onclick="event.stopPropagation();triggerUploadFoto('${konsumenId}','${berkasKey}')" title="Upload foto">📎</button>` : ''}
+          ${canEdit ? `
+            <button class="berkas-upload-btn" onclick="event.stopPropagation();triggerUploadFoto('${konsumenId}','${berkasKey}')" title="Upload foto">📎</button>
+            <button class="berkas-edit-btn" onclick="event.stopPropagation();promptEditBerkas('${konsumenId}','${berkasKey}','${safeLbl}')" title="Ubah nama">✏️</button>
+            <button class="berkas-del-btn"  onclick="event.stopPropagation();hapusBerkasItem('${konsumenId}','${berkasKey}')" title="Hapus item">✕</button>
+          ` : ''}
         </div>
       </div>
       ${count > 0 ? `
@@ -100,6 +112,14 @@ async function renderBerkasWithFoto(konsumenId, berkasKey, berkasLabel, isDone, 
         style="display:none" multiple
         onchange="handleFotoUpload('${konsumenId}','${berkasKey}',this)"/>
     </div>`;
+}
+
+// ── PROMPT EDIT LABEL ─────────────────────────────
+function promptEditBerkas(konsumenId, key, currentLabel) {
+  const newLabel = prompt('Ubah nama berkas:', currentLabel);
+  if (newLabel && newLabel.trim() && newLabel.trim() !== currentLabel) {
+    editBerkas(konsumenId, key, newLabel.trim());
+  }
 }
 
 // ── TRIGGER FILE INPUT ────────────────────────────
@@ -201,20 +221,26 @@ async function viewerDelete() {
 
 // ── RENDER CHECKLIST BERKAS DENGAN FOTO (ASYNC) ──
 async function buildBerkasSection(k, canEdit) {
-  const bi = [
-    { key: 'ktp',      label: 'KTP / e-KTP' },
-    { key: 'kk',       label: 'Kartu Keluarga' },
-    { key: 'slip',     label: 'Slip Gaji / SK Kerja' },
-    { key: 'tabungan', label: 'Rekening Tabungan 3 Bln' },
-    { key: 'npwp',     label: 'NPWP' },
-    { key: 'surat',    label: 'Surat Keterangan Lainnya' }
-  ];
-  const b = k.berkas || {};
+  const list = normBerkas(k.berkas);
 
   // Parallel fetch semua foto
   const berkasHtmls = await Promise.all(
-    bi.map(bx => renderBerkasWithFoto(k.id, bx.key, bx.label, !!b[bx.key], canEdit))
+    list.map(bx => renderBerkasWithFoto(k.id, bx.key, bx.label, !!bx.done, canEdit))
   );
 
-  return berkasHtmls.join('');
+  // Tombol tambah item baru
+  const addBtn = canEdit ? `
+    <div class="berkas-add-row">
+      <button class="berkas-add-btn" onclick="promptTambahBerkas('${k.id}')">
+        ＋ Tambah Item Berkas
+      </button>
+    </div>` : '';
+
+  return berkasHtmls.join('') + addBtn;
+}
+
+// ── PROMPT TAMBAH BERKAS ──────────────────────────
+function promptTambahBerkas(konsumenId) {
+  const label = prompt('Nama item berkas baru:');
+  if (label && label.trim()) tambahBerkas(konsumenId, label.trim());
 }

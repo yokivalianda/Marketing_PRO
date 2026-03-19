@@ -171,7 +171,14 @@ async function saveKons() {
     } else {
       obj.owner_id   = me.id;
       obj.owner_name = myProf?.full_name || me.email;
-      obj.berkas = { ktp: false, kk: false, slip: false, tabungan: false, npwp: false, surat: false };
+      obj.berkas = [
+        { key: 'ktp',      label: 'KTP / e-KTP',             done: false },
+        { key: 'kk',       label: 'Kartu Keluarga',           done: false },
+        { key: 'slip',     label: 'Slip Gaji / SK Kerja',     done: false },
+        { key: 'tabungan', label: 'Rekening Tabungan 3 Bln',  done: false },
+        { key: 'npwp',     label: 'NPWP',                     done: false },
+        { key: 'surat',    label: 'Surat Keterangan Lainnya', done: false },
+      ];
       obj.log = [{ action: 'Konsumen ditambahkan', time: new Date().toISOString(), note: obj.catatan }];
       const { error } = await sb.from('konsumen').insert(obj);
       if (error) throw error;
@@ -201,11 +208,100 @@ async function hapusKons() {
 
 async function toggleBerkas(id, key) {
   const k = allKons.find(x => x.id === id); if (!k) return;
-  const berkas = { ...k.berkas, [key]: !k.berkas[key] };
-  const lbl = { ktp: 'KTP', kk: 'Kartu Keluarga', slip: 'Slip Gaji', tabungan: 'Rekening Tabungan', npwp: 'NPWP', surat: 'Surat Lainnya' };
-  const log  = [...(k.log || []), { action: `Berkas ${lbl[key]}: ${berkas[key] ? '✅ Sudah' : '❌ Belum'}`, time: new Date().toISOString(), note: '' }];
-  await sb.from('konsumen').update({ berkas, log }).eq('id', id);
-  showToast(berkas[key] ? `${lbl[key]} ✓` : `${lbl[key]} belum`, berkas[key] ? '✅' : '📋');
+  const berkas = normBerkas(k.berkas).map(b =>
+    b.key === key ? { ...b, done: !b.done } : b
+  );
+  const item = berkas.find(b => b.key === key);
+  const log  = [...(k.log || []), {
+    action: `Berkas ${item?.label || key}: ${item?.done ? '✅ Sudah' : '❌ Belum'}`,
+    time: new Date().toISOString(), note: ''
+  }];
+  const { error } = await sb.from('konsumen').update({ berkas, log }).eq('id', id);
+  if (!error) {
+    const i = allKons.findIndex(x => x.id === id);
+    if (i >= 0) allKons[i] = { ...allKons[i], berkas, log };
+  }
+  showToast(item?.done ? `${item?.label} ✓` : `${item?.label} belum`, item?.done ? '✅' : '📋');
+  openDetail(id);
+}
+
+// ── NORMALIZE BERKAS (support format lama & baru) ─
+function normBerkas(raw) {
+  // Format baru: array [{key, label, done}]
+  if (Array.isArray(raw)) return raw;
+  // Format lama: object {ktp: bool, kk: bool, ...}
+  if (raw && typeof raw === 'object') {
+    const labels = { ktp:'KTP / e-KTP', kk:'Kartu Keluarga', slip:'Slip Gaji / SK Kerja',
+                     tabungan:'Rekening Tabungan 3 Bln', npwp:'NPWP', surat:'Surat Keterangan Lainnya' };
+    return Object.entries(raw).map(([key, done]) => ({
+      key, label: labels[key] || key, done: !!done
+    }));
+  }
+  return [
+    { key:'ktp',      label:'KTP / e-KTP',             done:false },
+    { key:'kk',       label:'Kartu Keluarga',           done:false },
+    { key:'slip',     label:'Slip Gaji / SK Kerja',     done:false },
+    { key:'tabungan', label:'Rekening Tabungan 3 Bln',  done:false },
+    { key:'npwp',     label:'NPWP',                     done:false },
+    { key:'surat',    label:'Surat Keterangan Lainnya', done:false },
+  ];
+}
+
+// ── TAMBAH ITEM BERKAS ────────────────────────────
+async function tambahBerkas(id, label) {
+  const k = allKons.find(x => x.id === id); if (!k) return;
+  label = label.trim();
+  if (!label) return;
+  const berkas = normBerkas(k.berkas);
+  // Buat key unik dari label
+  const key = 'custom_' + Date.now();
+  berkas.push({ key, label, done: false });
+  const log = [...(k.log||[]), { action: `Berkas ditambahkan: ${label}`, time: new Date().toISOString(), note: '' }];
+  const { error } = await sb.from('konsumen').update({ berkas, log }).eq('id', id);
+  if (!error) {
+    const i = allKons.findIndex(x => x.id === id);
+    if (i >= 0) allKons[i] = { ...allKons[i], berkas, log };
+    showToast(`"${label}" ditambahkan`, '✅');
+  } else {
+    showToast('Gagal menambah berkas', '❌');
+  }
+  openDetail(id);
+}
+
+// ── EDIT LABEL BERKAS ─────────────────────────────
+async function editBerkas(id, key, newLabel) {
+  const k = allKons.find(x => x.id === id); if (!k) return;
+  newLabel = newLabel.trim();
+  if (!newLabel) return;
+  const berkas = normBerkas(k.berkas).map(b =>
+    b.key === key ? { ...b, label: newLabel } : b
+  );
+  const { error } = await sb.from('konsumen').update({ berkas }).eq('id', id);
+  if (!error) {
+    const i = allKons.findIndex(x => x.id === id);
+    if (i >= 0) allKons[i] = { ...allKons[i], berkas };
+    showToast('Nama berkas diubah', '✅');
+  } else {
+    showToast('Gagal mengubah', '❌');
+  }
+  openDetail(id);
+}
+
+// ── HAPUS ITEM BERKAS ─────────────────────────────
+async function hapusBerkasItem(id, key) {
+  const k = allKons.find(x => x.id === id); if (!k) return;
+  const item = normBerkas(k.berkas).find(b => b.key === key);
+  if (!confirm(`Hapus item berkas "${item?.label || key}"?`)) return;
+  const berkas = normBerkas(k.berkas).filter(b => b.key !== key);
+  const log = [...(k.log||[]), { action: `Berkas dihapus: ${item?.label || key}`, time: new Date().toISOString(), note: '' }];
+  const { error } = await sb.from('konsumen').update({ berkas, log }).eq('id', id);
+  if (!error) {
+    const i = allKons.findIndex(x => x.id === id);
+    if (i >= 0) allKons[i] = { ...allKons[i], berkas, log };
+    showToast(`"${item?.label}" dihapus`, '🗑️');
+  } else {
+    showToast('Gagal menghapus', '❌');
+  }
   openDetail(id);
 }
 

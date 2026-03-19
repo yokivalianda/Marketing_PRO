@@ -108,8 +108,9 @@ function renderKons() {
     return;
   }
   el.innerHTML = list.map(k => {
-    const bOk  = k.berkas ? Object.values(k.berkas).filter(Boolean).length : 0;
-    const bTot = k.berkas ? Object.values(k.berkas).length : 6;
+    const bList = normBerkas(k.berkas);
+    const bOk   = bList.filter(b => b.done).length;
+    const bTot  = bList.length;
     const hasFollowup = k.tgl_followup && new Date(k.tgl_followup) >= new Date(new Date().toDateString());
     return `<div class="kons-card st-${k.status}" onclick="openDetail('${k.id}')">
       <div class="card-top">

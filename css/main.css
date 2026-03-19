@@ -1128,3 +1128,59 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 @media (max-width: 767px) {
   .berkas-thumb { width: 52px; height: 52px; }
 }
+
+/* ── Tombol edit & hapus per berkas item ── */
+.berkas-edit-btn,
+.berkas-del-btn {
+  width: 26px; height: 26px;
+  border-radius: 7px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-10);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  flex-shrink: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.berkas-item-wrap:hover .berkas-edit-btn,
+.berkas-item-wrap:hover .berkas-del-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+.berkas-edit-btn:hover { background: var(--brand-soft); border-color: rgba(99,102,241,.3); }
+.berkas-del-btn:hover  { background: var(--rose-soft);  border-color: rgba(244,63,94,.3); }
+.berkas-del-btn:active,
+.berkas-edit-btn:active { transform: scale(.88); }
+
+/* Mobile: always visible (no hover) */
+@media (max-width: 767px) {
+  .berkas-edit-btn,
+  .berkas-del-btn { opacity: 1; pointer-events: auto; }
+}
+
+/* ── Tombol tambah item berkas ── */
+.berkas-add-row {
+  padding: 10px 0 4px;
+}
+.berkas-add-btn {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: transparent;
+  border: 1.5px dashed var(--glass-border);
+  color: var(--text-3);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .2s;
+  text-align: left;
+  display: flex; align-items: center; gap: 8px;
+}
+.berkas-add-btn:hover {
+  border-color: rgba(99,102,241,.4);
+  background: var(--brand-soft);
+  color: var(--brand-light);
+}
+.berkas-add-btn:active { transform: scale(.98); }

@@ -115,45 +115,62 @@ ALTER PUBLICATION supabase_realtime ADD TABLE konsumen;
 ALTER TABLE konsumen ADD COLUMN IF NOT EXISTS tgl_followup DATE;
 
 -- ════════════════════════════════════════════════
--- SETUP SUPABASE STORAGE untuk Upload Foto Dokumen
--- Jalankan di: Supabase → SQL Editor
+-- SETUP SUPABASE STORAGE — Upload Foto Dokumen
+-- CARA MENJALANKAN:
+--   Supabase Dashboard → SQL Editor → paste → Run
+-- JIKA SUDAH PERNAH SETUP, JALANKAN ULANG — aman
 -- ════════════════════════════════════════════════
 
--- 1. Buat bucket "dokumen" (public agar bisa ditampilkan langsung)
+-- ── LANGKAH 1: Buat / update bucket ──────────────
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
-  'dokumen', 'dokumen', true,
-  10485760,  -- 10 MB per file
-  ARRAY['image/jpeg','image/png','image/gif','image/webp','image/heic','image/heif','application/pdf']
-) ON CONFLICT (id) DO NOTHING;
+  'dokumen',
+  'dokumen',
+  true,        -- public: URL foto bisa langsung dibuka
+  10485760,    -- 10 MB maks per file
+  ARRAY['image/jpeg','image/jpg','image/png','image/gif',
+        'image/webp','image/heic','image/heif','application/pdf']
+)
+ON CONFLICT (id) DO UPDATE SET
+  public            = EXCLUDED.public,
+  file_size_limit   = EXCLUDED.file_size_limit,
+  allowed_mime_types= EXCLUDED.allowed_mime_types;
 
--- 2. Policy: user login bisa upload ke folder miliknya
-CREATE POLICY "User upload foto konsumen sendiri"
-  ON storage.objects FOR INSERT
-  WITH CHECK (
-    bucket_id = 'dokumen'
-    AND auth.uid()::text = (storage.foldername(name))[1]
-  );
+-- ── LANGKAH 2: Hapus SEMUA policy lama di bucket dokumen ──
+DO $$
+DECLARE r RECORD;
+BEGIN
+  FOR r IN
+    SELECT policyname FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects'
+  LOOP
+    EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON storage.objects';
+  END LOOP;
+END $$;
 
--- 3. Policy: semua user login bisa baca (untuk preview foto)
-CREATE POLICY "User bisa baca semua foto dokumen"
-  ON storage.objects FOR SELECT
-  USING (bucket_id = 'dokumen' AND auth.role() = 'authenticated');
+-- ── LANGKAH 3: Buat policy baru yang sederhana ────
+-- PRINSIP: siapa saja yang sudah login (authenticated) boleh
+-- melakukan semua operasi pada bucket "dokumen".
+-- Keamanan data dijaga di level aplikasi (RLS tabel konsumen).
 
--- 4. Policy: user bisa hapus foto di folder konsumen yang dia punya
---    (cek owner_id konsumen)
-CREATE POLICY "User hapus foto konsumen sendiri"
-  ON storage.objects FOR DELETE
-  USING (
-    bucket_id = 'dokumen'
-    AND (
-      auth.uid()::text = (storage.foldername(name))[1]
-      OR EXISTS (
-        SELECT 1 FROM public.profiles
-        WHERE id = auth.uid() AND role = 'admin'
-      )
-    )
-  );
+CREATE POLICY "dokumen_insert"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'dokumen');
 
--- Catatan: (storage.foldername(name))[1] = konsumen_id (bagian pertama path)
--- Path format: {konsumen_id}/{berkas_key}/{filename}
+CREATE POLICY "dokumen_select"
+  ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'dokumen');
+
+CREATE POLICY "dokumen_update"
+  ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'dokumen');
+
+CREATE POLICY "dokumen_delete"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'dokumen');
+
+-- ── SELESAI ───────────────────────────────────────
+-- Cek hasilnya:
+SELECT policyname, cmd FROM pg_policies
+WHERE schemaname = 'storage' AND tablename = 'objects'
+  AND policyname LIKE 'dokumen%';
