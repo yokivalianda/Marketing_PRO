@@ -47,7 +47,7 @@ async function init() {
   try {
     await afterLogin(session.user);
   } catch(e) {
-    console.error('afterLogin error:', e);
+    console.error('afterLogin error:', e.message, e.stack);
     hideSplash(); showAuth();
     showAuthErr('Gagal memuat data: ' + (e.message || 'Unknown error'));
   }

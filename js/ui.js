@@ -143,6 +143,9 @@ function setFchip(groupId, val) {
 }
 
 function getAdvFilters() {
+  // Kembalikan filter kosong jika panel belum ada di DOM
+  const panel = document.getElementById('filterAdvPanel');
+  if (!panel) return { sumber:'', kpr:'', berkas:'', followup:'', hargaMin:0, hargaMax:0, tglMin:'', tglMax:'' };
   const sumber   = document.querySelector('#fAdvSumber .fchip.on')?.dataset.v || '';
   const kpr      = document.querySelector('#fAdvKpr .fchip.on')?.dataset.v || '';
   const berkas   = document.querySelector('#fAdvBerkas .fchip.on')?.dataset.v || '';

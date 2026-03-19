@@ -1306,8 +1306,10 @@ html.light input[type="date"] {
 }
 
 /* Search box — tambahkan flex agar tombol muat */
-.search-box { display: flex; align-items: center; gap: 4px; }
-.search-field { flex: 1; }
+/* search-box override untuk filter button */
+.search-box { display: flex; align-items: center; gap: 6px; position: relative; }
+.search-box .search-field { flex: 1; width: auto; padding-left: 42px; }
+.search-box .search-ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; z-index: 1; }
 
 /* Panel filter lanjutan */
 .fadv-panel {
