@@ -1271,3 +1271,126 @@ input[type="date"] {
 html.light input[type="date"] {
   color-scheme: light;
 }
+
+
+/* ════════════════════════════════════════
+   FILTER LANJUTAN
+════════════════════════════════════════ */
+
+/* Tombol ⚙ di search box */
+.filter-adv-btn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--r-sm);
+  color: var(--text-3);
+  font-size: 17px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  position: relative;
+}
+.filter-adv-btn:hover { color: var(--text-1); background: var(--glass-10); }
+.filter-adv-btn.on { color: var(--brand-light); }
+.filter-adv-btn[data-count]:not([data-count=""])::after {
+  content: attr(data-count);
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 9px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+/* Search box — tambahkan flex agar tombol muat */
+.search-box { display: flex; align-items: center; gap: 4px; }
+.search-field { flex: 1; }
+
+/* Panel filter lanjutan */
+.fadv-panel {
+  margin: 0 18px 12px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: pageIn .2s ease;
+}
+.fadv-group { display: flex; flex-direction: column; gap: 7px; }
+.fadv-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .8px;
+}
+.fadv-row {
+  display: flex; align-items: center; gap: 8px;
+}
+.fadv-input {
+  flex: 1; padding: 8px 10px;
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  color: var(--text-1); font-size: 12px;
+  font-family: var(--font-body);
+  outline: none; min-width: 0;
+}
+.fadv-input:focus { border-color: rgba(99,102,241,.5); }
+.fadv-sep {
+  color: var(--text-4); font-size: 13px; flex-shrink: 0;
+}
+
+/* Filter chips */
+.fadv-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.fchip {
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .15s;
+  white-space: nowrap;
+}
+.fchip:hover { background: var(--glass-10); color: var(--text-1); }
+.fchip.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.45);
+  color: var(--brand-light);
+}
+.fchip:active { transform: scale(.94); }
+
+/* Reset button */
+.fadv-reset {
+  width: 100%;
+  padding: 9px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .15s;
+  margin-top: 2px;
+}
+.fadv-reset:hover {
+  background: var(--rose-soft);
+  border-color: rgba(244,63,94,.25);
+  color: var(--rose);
+}
+
+/* Counter hasil */
+#konsResultCount {
+  padding: 4px 20px 2px;
+}
+
+@media (min-width: 768px) {
+  .fadv-panel { margin: 0 20px 12px; }
+}
