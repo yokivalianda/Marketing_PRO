@@ -85,18 +85,6 @@ function renderDash() {
 }
 
 // ── KONSUMEN LIST ────────────────────────────────
-function fillAdminSel() {
-  const sel = document.getElementById('adminSel');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">Semua Marketing</option>';
-  allProfs.filter(p => p.role !== 'admin').forEach(p => {
-    const o = document.createElement('option');
-    o.value = p.id;
-    o.textContent = p.full_name || p.email;
-    sel.appendChild(o);
-  });
-}
-
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
@@ -124,116 +112,6 @@ function toggleSort() {
 }
 
 
-// ── FILTER LANJUTAN ───────────────────────────────
-function toggleFilterAdv() {
-  const panel = document.getElementById('filterAdvPanel');
-  const btn   = document.getElementById('filterAdvBtn');
-  const isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  btn.classList.toggle('on', !isOpen);
-  updateFilterAdvBadge();
-}
-
-function setFchip(groupId, val) {
-  document.querySelectorAll(`#${groupId} .fchip`).forEach(c =>
-    c.classList.toggle('on', c.dataset.v === val)
-  );
-  renderKons();
-  updateFilterAdvBadge();
-}
-
-function getAdvFilters() {
-  // Kembalikan filter kosong jika panel belum ada di DOM
-  const panel = document.getElementById('filterAdvPanel');
-  if (!panel) return { sumber:'', kpr:'', berkas:'', followup:'', hargaMin:0, hargaMax:0, tglMin:'', tglMax:'' };
-  const sumber   = document.querySelector('#fAdvSumber .fchip.on')?.dataset.v || '';
-  const kpr      = document.querySelector('#fAdvKpr .fchip.on')?.dataset.v || '';
-  const berkas   = document.querySelector('#fAdvBerkas .fchip.on')?.dataset.v || '';
-  const followup = document.querySelector('#fAdvFollowup .fchip.on')?.dataset.v || '';
-  const hargaMin = getRpValue('fAdvHargaMin') || 0;
-  const hargaMax = getRpValue('fAdvHargaMax') || 0;
-  const tglMin   = document.getElementById('fAdvTglMin')?.value || '';
-  const tglMax   = document.getElementById('fAdvTglMax')?.value || '';
-  return { sumber, kpr, berkas, followup, hargaMin, hargaMax, tglMin, tglMax };
-}
-
-function countActiveAdvFilters() {
-  const f = getAdvFilters();
-  return [
-    f.sumber, f.kpr, f.berkas, f.followup,
-    f.hargaMin > 0, f.hargaMax > 0, f.tglMin, f.tglMax
-  ].filter(Boolean).length;
-}
-
-function updateFilterAdvBadge() {
-  const btn = document.getElementById('filterAdvBtn');
-  if (!btn) return;
-  const n = countActiveAdvFilters();
-  btn.classList.toggle('on', n > 0 || document.getElementById('filterAdvPanel')?.style.display !== 'none');
-  btn.setAttribute('data-count', n > 0 ? n : '');
-}
-
-function resetFilterAdv() {
-  // Reset semua chip ke "Semua"
-  ['fAdvSumber','fAdvKpr','fAdvBerkas','fAdvFollowup'].forEach(id => {
-    document.querySelectorAll(`#${id} .fchip`).forEach(c =>
-      c.classList.toggle('on', c.dataset.v === '')
-    );
-  });
-  // Reset inputs
-  ['fAdvHargaMin','fAdvHargaMax'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.value = ''; el.dataset.raw = ''; }
-  });
-  ['fAdvTglMin','fAdvTglMax'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.value = '';
-  });
-  renderKons();
-  updateFilterAdvBadge();
-}
-
-function applyAdvFilters(list) {
-  const f   = getAdvFilters();
-  const now = new Date();
-  const todayStr = now.toDateString();
-
-  if (f.sumber)   list = list.filter(k => k.sumber === f.sumber);
-  if (f.kpr)      list = list.filter(k => k.kpr === f.kpr);
-  if (f.hargaMin) list = list.filter(k => (k.harga || 0) >= f.hargaMin);
-  if (f.hargaMax) list = list.filter(k => (k.harga || 0) <= f.hargaMax);
-  if (f.tglMin)   list = list.filter(k => k.tgl_booking && k.tgl_booking >= f.tglMin);
-  if (f.tglMax)   list = list.filter(k => k.tgl_booking && k.tgl_booking <= f.tglMax);
-
-  if (f.berkas) {
-    list = list.filter(k => {
-      const bList = normBerkas(k.berkas);
-      if (f.berkas === 'kosong')   return bList.length === 0;
-      if (f.berkas === 'lengkap')  return bList.length > 0 && bList.every(b => b.done);
-      if (f.berkas === 'belum')    return bList.length > 0 && bList.some(b => !b.done);
-      return true;
-    });
-  }
-
-  if (f.followup) {
-    const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay());
-    const endOfWeek = new Date(startOfWeek);
-    endOfWeek.setDate(startOfWeek.getDate() + 6);
-
-    list = list.filter(k => {
-      const fd = k.tgl_followup ? new Date(k.tgl_followup + 'T00:00:00') : null;
-      if (f.followup === 'belum-ada') return !k.tgl_followup;
-      if (!fd) return false;
-      if (f.followup === 'hari-ini')   return fd.toDateString() === todayStr;
-      if (f.followup === 'minggu-ini') return fd >= startOfWeek && fd <= endOfWeek;
-      if (f.followup === 'terlambat')  return fd < new Date(todayStr);
-      return true;
-    });
-  }
-
-  return list;
-}
-
 function renderKons() {
   const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
   const ow = document.getElementById('adminSel')?.value || '';
@@ -246,23 +124,12 @@ function renderKons() {
     (k.unit || '').toLowerCase().includes(q) ||
     (k.kavling || '').toLowerCase().includes(q)
   );
-  // Filter lanjutan
-  list = applyAdvFilters(list);
-
   if (curSort === 'az') list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
   if (curSort === 'za') list.sort((a, b) => b.nama.localeCompare(a.nama, 'id'));
 
   const el = document.getElementById('konsFeed');
-  // Update counter hasil
-  const counter = document.getElementById('konsResultCount');
-  if (counter) {
-    const total = allKons.length;
-    counter.textContent = list.length < total ? `${list.length} dari ${total} konsumen` : `${total} konsumen`;
-    counter.style.display = 'block';
-  }
-
   if (!list.length) {
-    el.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ditemukan</div><div class="empty-sub">Coba ubah filter atau kata kunci pencarian</div></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ditemukan</div><div class="empty-sub">Ubah filter atau kata kunci</div></div>`;
     return;
   }
 

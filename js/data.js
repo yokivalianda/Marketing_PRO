@@ -6,50 +6,29 @@ async function init() {
     hideSplash(); showSetupGuide(); return;
   }
 
-  // Cek koneksi Supabase dulu — catch hanya untuk error init
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  } catch(e) {
-    hideSplash(); showAuth();
-    showAuthErr('Gagal inisialisasi Supabase: ' + e.message);
-    return;
-  }
-
-  // Recovery password
-  const hash = window.location.hash;
-  if (hash.includes('type=recovery')) {
-    hideSplash(); showAuth();
-    sb.auth.onAuthStateChange((event) => {
-      if (event === 'PASSWORD_RECOVERY') {
-        document.getElementById('auth').classList.add('show');
-        showNewPassPanel();
-        history.replaceState(null, '', window.location.pathname);
-      }
-    });
-    return;
-  }
-
-  // Cek session — pisah dari afterLogin agar error tidak tercampur
-  let session = null;
-  try {
     setLoadTxt('Memeriksa sesi...');
-    const { data } = await sb.auth.getSession();
-    session = data?.session;
+
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery')) {
+      hideSplash(); showAuth();
+      sb.auth.onAuthStateChange((event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          document.getElementById('auth').classList.add('show');
+          showNewPassPanel();
+          history.replaceState(null, '', window.location.pathname);
+        }
+      });
+      return;
+    }
+
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) { await afterLogin(session.user); }
+    else { hideSplash(); showAuth(); }
   } catch(e) {
     hideSplash(); showAuth();
-    showAuthErr('Gagal terhubung ke Supabase. Periksa koneksi internet.');
-    return;
-  }
-
-  if (!session) { hideSplash(); showAuth(); return; }
-
-  // afterLogin — error di sini TIDAK boleh tampilkan "Gagal terhubung"
-  try {
-    await afterLogin(session.user);
-  } catch(e) {
-    console.error('afterLogin error:', e.message, e.stack);
-    hideSplash(); showAuth();
-    showAuthErr('Gagal memuat data: ' + (e.message || 'Unknown error'));
+    showAuthErr('Gagal terhubung. Periksa konfigurasi Supabase.');
   }
 }
 
