@@ -4,644 +4,823 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
 <meta name="theme-color" content="#050508"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
 <title>MarketPro — Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/main.css"/>
 <style>
-:root{--brand:#6366f1;--brand2:#818cf8;--violet:#a855f7;--emerald:#10b981;--amber:#f59e0b;--rose:#f43f5e;--bg:#050508;--s1:#0c0c12;--s2:#111118;--s3:#18181f;--s4:#1e1e28;--t1:#f0f0f8;--t2:#9898b8;--t3:#4a4a68;--t4:#2e2e42;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);--r-sm:10px;--r-md:14px;--r-lg:20px;--r-full:999px;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace}
-html.light{--bg:#f5f5fa;--s1:#eeeef6;--s2:#ffffff;--s3:#f9f9fd;--s4:#ededf5;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.14);--t1:#0f0f1a;--t2:#4a4a6a;--t3:#9090b0;--t4:#b8b8cc;--brand:#4f46e5;--brand2:#6366f1;--emerald:#059669;--amber:#d97706;--rose:#e11d48;--violet:#7c3aed}
-html.theme-anim,html.theme-anim *,html.theme-anim *::before,html.theme-anim *::after{transition:background-color .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease !important}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden}
-body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased}
-input,select,textarea,button{font-family:var(--font)}
-
 /* ── DEMO BANNER ── */
-.dbanner{position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(90deg,#4338ca,#7c3aed);padding:9px max(env(safe-area-inset-right),16px) 9px max(env(safe-area-inset-left),16px);display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 2px 16px rgba(99,102,241,.4)}
-.dbanner-txt{font-size:12px;font-weight:700;color:#fff;display:flex;align-items:center;gap:8px;min-width:0}
-.dbadge{background:rgba(255,255,255,.2);border-radius:var(--r-full);padding:2px 9px;font-size:10px;letter-spacing:.5px;flex-shrink:0}
-.dbanner-btn{padding:5px 14px;border-radius:var(--r-full);background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:var(--font);transition:background .2s}
-.dbanner-btn:hover{background:rgba(255,255,255,.28)}
+.demo-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: linear-gradient(90deg, #4338ca, #7c3aed);
+  padding: 9px max(env(safe-area-inset-right),16px) 9px max(env(safe-area-inset-left),16px);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  box-shadow: 0 2px 16px rgba(99,102,241,.4);
+}
+.demo-badge { background: rgba(255,255,255,.2); border-radius: var(--r-full); padding: 2px 9px; font-size: 10px; font-weight: 700; color: #fff; letter-spacing: .5px; flex-shrink: 0; }
+.demo-msg { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.85); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-btn { padding: 5px 14px; border-radius: var(--r-full); background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.3); color: #fff; font-size: 11px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; font-family: var(--font-body); transition: background .2s; }
+.demo-btn:hover { background: rgba(255,255,255,.28); }
 
-/* ── LANDING ── */
-#landing{position:fixed;inset:0;top:38px;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
-html.light #landing{background:var(--bg)}
-.hero{min-height:calc(100vh - 38px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 30%,rgba(99,102,241,.18),transparent 55%),radial-gradient(ellipse at 80% 70%,rgba(168,85,247,.12),transparent 50%),radial-gradient(ellipse at 50% 100%,rgba(14,165,233,.08),transparent 50%)}
-.hero::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:40px 40px;mask-image:radial-gradient(ellipse at center,black 20%,transparent 80%)}
-.hbadge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);border-radius:var(--r-full);padding:6px 16px;font-size:12px;font-weight:700;color:var(--brand2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:28px;position:relative;z-index:1}
-.ldot{width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:lpulse 2s infinite;display:inline-block}
-@keyframes lpulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 5px rgba(16,185,129,0)}}
-.hmark{width:72px;height:72px;border-radius:22px;background:linear-gradient(135deg,var(--brand),var(--violet));display:flex;align-items:center;justify-content:center;font-size:36px;box-shadow:0 16px 48px rgba(99,102,241,.4);margin:0 auto 20px;position:relative;z-index:1}
-.hwm{font-size:clamp(40px,9vw,64px);font-weight:900;letter-spacing:-3px;margin-bottom:18px;position:relative;z-index:1}
-.hwm em{font-style:normal;color:var(--brand2)}
-.htag{font-size:clamp(14px,2.5vw,17px);color:var(--t2);max-width:480px;line-height:1.7;margin-bottom:36px;position:relative;z-index:1}
-.hcta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1}
-.bcta{padding:14px 28px;border-radius:var(--r-md);font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;border:none}
-.bp{background:linear-gradient(135deg,var(--brand),#4338ca);color:#fff;box-shadow:0 8px 32px rgba(99,102,241,.4)}
-.bp:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(99,102,241,.5)}
-.bs{background:rgba(255,255,255,.06);border:1.5px solid var(--border2);color:var(--t2)}
-.bs:hover{background:rgba(255,255,255,.1);color:var(--t1)}
-.hnote{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12px;color:var(--t3);position:relative;z-index:1}
-.hndot{width:8px;height:8px;border-radius:50%;background:var(--emerald);flex-shrink:0}
+/* Offset konten supaya tidak tertutup banner */
+#landing, #shell { padding-top: 40px; }
+#shell { padding-top: 0; margin-top: 40px; height: calc(100dvh - 40px) !important; }
 
-/* shots */
-.shots{background:var(--s1);padding:64px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.stitle{text-align:center;font-size:clamp(20px,4vw,30px);font-weight:800;letter-spacing:-1.2px;margin-bottom:8px;padding:0 24px}
-.ssub{text-align:center;font-size:14px;color:var(--t2);margin-bottom:40px;padding:0 24px}
-.srow{display:flex;gap:16px;padding:0 24px 10px;overflow-x:auto;justify-content:center;scrollbar-width:thin;scrollbar-color:var(--s4) transparent}
-.srow::-webkit-scrollbar{height:4px}
-.srow::-webkit-scrollbar-thumb{background:var(--s4);border-radius:2px}
-.swrap{flex-shrink:0;text-align:center}
-.sframe{width:180px;border-radius:26px;overflow:hidden;border:1.5px solid var(--border2);box-shadow:0 18px 44px rgba(0,0,0,.55);transition:transform .3s;display:block}
-.sframe:hover{transform:translateY(-6px) scale(1.02)}
-.sframe img{width:100%;display:block}
-.slabel{font-size:11px;color:var(--t3);font-weight:600;margin-top:10px;letter-spacing:.3px}
+/* ════════════════════════════
+   LANDING PAGE
+════════════════════════════ */
+#landing { overflow-y: auto; overflow-x: hidden; background: var(--bg-base); }
+html.light #landing { background: var(--bg-base); }
 
-/* features */
-.feats{padding:64px 24px;max-width:1040px;margin:0 auto}
-.ftitle{font-size:clamp(20px,4vw,30px);font-weight:800;letter-spacing:-1.2px;text-align:center;margin-bottom:8px}
-.fsub{font-size:14px;color:var(--t2);text-align:center;margin-bottom:40px}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
-.fcard{background:var(--s2);border:1px solid var(--border);border-radius:18px;padding:20px;transition:border-color .2s,transform .2s}
-.fcard:hover{border-color:rgba(99,102,241,.25);transform:translateY(-2px)}
-.fico{font-size:24px;margin-bottom:10px}
-.fh{font-size:15px;font-weight:700;letter-spacing:-.3px;margin-bottom:4px}
-.fp{font-size:13px;color:var(--t2);line-height:1.6}
+/* Hero */
+.lp-hero {
+  min-height: calc(100vh - 40px);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.lp-hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 20% 30%, rgba(99,102,241,.18), transparent 55%),
+    radial-gradient(ellipse at 80% 70%, rgba(168,85,247,.12), transparent 50%),
+    radial-gradient(ellipse at 50% 100%, rgba(14,165,233,.08), transparent 50%);
+}
+.lp-hero::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(99,102,241,.1); border: 1px solid rgba(99,102,241,.25);
+  border-radius: var(--r-full); padding: 6px 16px;
+  font-size: 12px; font-weight: 700; color: var(--brand-light);
+  letter-spacing: .5px; text-transform: uppercase;
+  margin-bottom: 28px; position: relative; z-index: 1;
+}
+.hero-ldot { width: 6px; height: 6px; border-radius: 50%; background: var(--emerald); animation: livePulse 2s infinite; display: inline-block; }
+.hero-mark {
+  width: 76px; height: 76px; border-radius: 22px;
+  background: linear-gradient(135deg, var(--brand), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; box-shadow: 0 16px 48px rgba(99,102,241,.4);
+  margin: 0 auto 20px; position: relative; z-index: 1;
+}
+.hero-title {
+  font-size: clamp(42px, 9vw, 68px); font-weight: 900; letter-spacing: -3px;
+  margin-bottom: 18px; position: relative; z-index: 1;
+  background: linear-gradient(135deg, var(--text-1), var(--text-2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-title em { font-style: normal; -webkit-text-fill-color: var(--brand-light); }
+.hero-sub {
+  font-size: clamp(14px, 2.5vw, 17px); color: var(--text-2);
+  max-width: 480px; line-height: 1.7; margin-bottom: 36px; position: relative; z-index: 1;
+}
+.hero-cta { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+.btn-cta {
+  padding: 14px 28px; border-radius: var(--r-md); font-size: 15px; font-weight: 700;
+  cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  transition: all .2s; border: none; font-family: var(--font-body);
+}
+.btn-cta-primary {
+  background: linear-gradient(135deg, var(--brand), #4338ca); color: #fff;
+  box-shadow: 0 8px 32px rgba(99,102,241,.4);
+}
+.btn-cta-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(99,102,241,.5); }
+.btn-cta-secondary {
+  background: rgba(255,255,255,.06); border: 1.5px solid var(--glass-border-hi); color: var(--text-2);
+}
+.btn-cta-secondary:hover { background: rgba(255,255,255,.1); color: var(--text-1); }
+html.light .btn-cta-secondary { background: rgba(0,0,0,.04); border-color: var(--glass-border-hi); }
+.hero-note { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 12px; color: var(--text-3); position: relative; z-index: 1; }
 
-/* cta bottom */
-.ctasec{padding:64px 24px;text-align:center;background:var(--s1);border-top:1px solid var(--border)}
-.ctitle{font-size:clamp(20px,4vw,30px);font-weight:800;letter-spacing:-1.2px;margin-bottom:8px}
-.csub{font-size:14px;color:var(--t2);margin-bottom:28px}
+/* Features */
+.lp-section { padding: 72px 24px; max-width: 1040px; margin: 0 auto; }
+.lp-section-alt { background: var(--bg-raised); border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+.lp-section-alt > .lp-inner { max-width: 1040px; margin: 0 auto; padding: 72px 24px; }
+.lp-section-title { font-size: clamp(22px, 4vw, 32px); font-weight: 800; letter-spacing: -1.2px; text-align: center; margin-bottom: 8px; }
+.lp-section-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 44px; }
 
-footer{padding:36px 24px;text-align:center;border-top:1px solid var(--border)}
-.flogo{display:inline-flex;align-items:center;gap:9px;margin-bottom:10px}
-.fmk{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--violet));display:flex;align-items:center;justify-content:center;font-size:15px}
-.fwm{font-size:17px;font-weight:800;letter-spacing:-1px}
-.fwm em{font-style:normal;color:var(--brand2)}
-.flinks{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:12px}
-.flinks a{font-size:12px;color:var(--t3);text-decoration:none;transition:color .2s}
-.flinks a:hover{color:var(--t1)}
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+.feat-card {
+  background: var(--bg-overlay); border: 1px solid var(--glass-border);
+  border-radius: 18px; padding: 22px;
+  transition: border-color .2s, transform .2s;
+}
+.feat-card:hover { border-color: rgba(99,102,241,.3); transform: translateY(-2px); }
+.feat-ico { font-size: 26px; margin-bottom: 12px; }
+.feat-title { font-size: 15px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 5px; }
+.feat-desc { font-size: 13px; color: var(--text-2); line-height: 1.65; }
 
-/* ── APP ── */
-#app{position:fixed;inset:0;top:38px;display:none;flex-direction:column}
-#app.show{display:flex}
-.hdr{flex-shrink:0;padding:10px max(env(safe-area-inset-right),18px) 10px max(env(safe-area-inset-left),18px);display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(5,5,8,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:40}
-html.light .hdr{background:rgba(245,245,250,.92)}
-.hbrand{display:flex;align-items:center;gap:9px;flex-shrink:0}
-.hmk{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--violet));display:flex;align-items:center;justify-content:center;font-size:16px}
-.hwm2{font-size:17px;font-weight:800;letter-spacing:-1px}
-.hwm2 em{font-style:normal;color:var(--brand2)}
-.hright{display:flex;align-items:center;gap:7px;flex-shrink:1;min-width:0}
-.pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-full);padding:5px 10px 5px 5px;min-width:0;max-width:min(170px,42vw)}
-html.light .pill{background:rgba(0,0,0,.04)}
-.pav{width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pnm{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
-.prole{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;padding:2px 7px;border-radius:var(--r-full);background:rgba(244,63,94,.15);color:var(--rose);flex-shrink:0}
-.hbtn2{width:40px;height:40px;border-radius:var(--r-sm);background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--t2);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;position:relative}
-html.light .hbtn2{background:rgba(0,0,0,.04)}
-.hbtn2:active{transform:scale(.88)}
-.npip{position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--rose);border:1.5px solid var(--bg);display:block}
+/* Stats row */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin-bottom: 44px; }
+.stat-item { text-align: center; }
+.stat-num { font-size: 36px; font-weight: 900; letter-spacing: -2px; color: var(--brand-light); font-family: var(--font-mono); }
+.stat-lbl { font-size: 12px; color: var(--text-3); font-weight: 600; margin-top: 4px; }
 
-.scrl{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
-.scrl::-webkit-scrollbar{width:3px}
-.scrl::-webkit-scrollbar-thumb{background:var(--s4);border-radius:2px}
+/* Pipeline visual */
+.pipe-visual { display: flex; align-items: center; gap: 0; justify-content: center; flex-wrap: wrap; gap: 4px; margin: 32px 0; }
+.pipe-step {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 16px 20px; border-radius: var(--r-lg);
+  border: 1px solid var(--glass-border); background: var(--bg-overlay);
+  min-width: 100px; flex: 1; max-width: 160px;
+}
+.pipe-step-ico { font-size: 22px; }
+.pipe-step-lbl { font-size: 11px; font-weight: 700; letter-spacing: .2px; }
+.pipe-arrow { color: var(--text-4); font-size: 18px; flex-shrink: 0; }
+.ps-booking { border-top: 3px solid var(--brand); }
+.ps-dp { border-top: 3px solid var(--amber); }
+.ps-berkas { border-top: 3px solid var(--violet); }
+.ps-selesai { border-top: 3px solid var(--emerald); }
+.ps-batal { border-top: 3px solid var(--rose); }
 
-.tbar{flex-shrink:0;background:rgba(5,5,8,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--border);display:flex;padding-bottom:max(env(safe-area-inset-bottom),4px)}
-html.light .tbar{background:rgba(245,245,250,.96)}
-.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0 8px;border:none;background:none;color:var(--t4);font-size:10px;font-weight:600;cursor:pointer;transition:color .2s;font-family:var(--font);letter-spacing:.3px;min-width:44px}
-.tabi{font-size:22px;transition:transform .25s cubic-bezier(.34,1.56,.64,1);display:block}
-.tab.on{color:var(--brand2)}
-.tab.on .tabi{transform:translateY(-2px) scale(1.1)}
+/* CTA bottom */
+.lp-cta { text-align: center; }
 
-.pg{display:none;padding-bottom:20px}
-.pg.on{display:block;animation:pgIn .3s ease}
-@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+/* Footer */
+.lp-footer { padding: 40px 24px; text-align: center; border-top: 1px solid var(--glass-border); }
+.footer-logo { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.footer-mark { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--violet)); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.footer-wordmark { font-size: 18px; font-weight: 800; letter-spacing: -1px; }
+.footer-wordmark em { font-style: normal; color: var(--brand-light); }
+.footer-links { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 12px; }
+.footer-links a { font-size: 12px; color: var(--text-3); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: var(--text-1); }
 
-/* dashboard */
-.dhero{padding:26px max(env(safe-area-inset-right),20px) 22px max(env(safe-area-inset-left),20px);background:var(--s1);position:relative;overflow:hidden}
-.dhero::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 10% 50%,rgba(99,102,241,.16),transparent 60%),radial-gradient(ellipse at 90% 20%,rgba(168,85,247,.1),transparent 50%)}
-.dhero::after{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:32px 32px;mask-image:linear-gradient(to bottom,transparent,black 30%,black 70%,transparent)}
-html.light .dhero{background:linear-gradient(160deg,#dde0ff,var(--bg) 70%)}
-.hc{position:relative;z-index:1}
-.hcg{font-size:12px;color:var(--t3);font-weight:500;margin-bottom:3px;display:flex;align-items:center;gap:6px}
-.lbadge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;color:var(--emerald);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.2);border-radius:var(--r-full);padding:2px 8px}
-.hcname{font-size:24px;font-weight:800;letter-spacing:-1.2px;line-height:1.1;margin-bottom:20px;background:linear-gradient(135deg,var(--t1),var(--t2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-html.light .hcname{background:linear-gradient(135deg,#0f0f1a,#4a4a6a);-webkit-background-clip:text;background-clip:text}
-.hcname .ac{-webkit-text-fill-color:var(--brand2)}
-.strow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.stile{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px 13px;backdrop-filter:blur(12px);position:relative;overflow:hidden}
-html.light .stile{background:rgba(255,255,255,.7)}
-.stlbl{font-size:11px;color:var(--t3);font-weight:600;margin-bottom:6px;letter-spacing:.3px}
-.stval{font-size:30px;font-weight:800;font-family:var(--mono);letter-spacing:-2px;line-height:1}
-.stsub{font-size:10px;color:var(--t4);margin-top:4px;font-weight:500}
-.st-brand .stval{color:var(--brand2)} .st-green .stval{color:var(--emerald)} .st-amber .stval{color:var(--amber)} .st-violet .stval{color:var(--violet)}
+/* New feature badges */
+.new-badge { display: inline-block; background: var(--emerald-soft); color: var(--emerald); border: 1px solid rgba(16,185,129,.25); border-radius: var(--r-full); font-size: 9px; font-weight: 800; padding: 1px 7px; letter-spacing: .5px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
 
-.sec2{padding:18px max(env(safe-area-inset-right),20px) 0 max(env(safe-area-inset-left),20px)}
-.sechd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.secttl{font-size:14px;font-weight:700;letter-spacing:-.3px;display:flex;align-items:center;gap:7px}
-.seclnk{font-size:12px;color:var(--brand2);font-weight:600;cursor:pointer}
+/* Demo app: sort button in filter */
+.filter-divider { width: 1px; height: 20px; background: var(--glass-border); flex-shrink: 0; align-self: center; margin: 0 2px; }
+.sort-btn { font-family: var(--font-mono); letter-spacing: 0; padding: 6px 12px; }
+.sort-btn.on { background: var(--amber-soft); border-color: rgba(245,158,11,.4); color: var(--amber); }
 
-/* pipeline */
-.pscrl{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
-.pscrl::-webkit-scrollbar{display:none}
-.pcrd{flex-shrink:0;width:104px;background:var(--s2);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.pcrd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:2px 2px 0 0}
-.pcrd:active{transform:scale(.95)}
-.pcnum{font-size:22px;font-weight:800;font-family:var(--mono);line-height:1;letter-spacing:-2px;margin-bottom:4px}
-.pclbl{font-size:9.5px;color:var(--t3);font-weight:600;letter-spacing:.3px}
-.pc0 .pcrd::before{background:var(--brand)} .pc0 .pcnum{color:var(--brand2)}
-.pc1 .pcrd::before{background:var(--amber)} .pc1 .pcnum{color:var(--amber)}
-.pc2 .pcrd::before{background:var(--violet)} .pc2 .pcnum{color:var(--violet)}
-.pc3 .pcrd::before{background:var(--emerald)} .pc3 .pcnum{color:var(--emerald)}
-.pc4 .pcrd::before{background:var(--rose)} .pc4 .pcnum{color:var(--rose)}
+/* Berkas checklist in demo */
+.berkas-item { display: flex; align-items: center; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--glass-border); cursor: pointer; transition: opacity .1s; }
+.berkas-item:last-child { border-bottom: none; }
+.berkas-item:active { opacity: .7; }
+.berkas-check { width: 22px; height: 22px; border-radius: 7px; border: 2px solid var(--bg-float); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; transition: all .2s; }
+.berkas-check.done { background: var(--emerald); border-color: var(--emerald); }
+.berkas-label { font-size: 13px; flex: 1; font-weight: 500; }
+.berkas-label.done { color: var(--text-3); text-decoration: line-through; }
 
-/* feed */
-.fitem{display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;border-bottom:1px solid var(--border)}
-.fitem:last-child{border-bottom:none}
-.fitem:active{opacity:.7}
-.fav2{width:40px;height:40px;border-radius:var(--r-md);font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.fnm2{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px}
-.fmeta2{font-size:11px;color:var(--t3);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.fdot2{width:3px;height:3px;border-radius:50%;background:var(--t4);flex-shrink:0}
-.ftm2{font-size:10px;color:var(--t4);font-family:var(--mono);flex-shrink:0}
-
-/* konsumen */
-.sz2{padding:12px max(env(safe-area-inset-right),18px) 8px max(env(safe-area-inset-left),18px);position:sticky;top:0;z-index:30;background:rgba(5,5,8,.87);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
-html.light .sz2{background:rgba(245,245,250,.93)}
-.sfld2{width:100%;padding:11px 12px 11px 40px;background:var(--s3);border:1.5px solid var(--border);border-radius:var(--r-md);color:var(--t1);font-size:14px;font-weight:500;outline:none;transition:border-color .2s}
-.sfld2:focus{border-color:var(--brand)}
-.sfld2::placeholder{color:var(--t4)}
-.sico2{position:absolute;left:30px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--t3);pointer-events:none}
-.sfwrap{position:relative}
-.chips2{display:flex;gap:7px;padding:9px max(env(safe-area-inset-right),18px) 12px max(env(safe-area-inset-left),18px);overflow-x:auto;scrollbar-width:none}
-.chips2::-webkit-scrollbar{display:none}
-.chip2{flex-shrink:0;padding:5px 12px;border-radius:var(--r-full);border:1.5px solid var(--border);background:transparent;color:var(--t3);font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:var(--font)}
-.chip2.on{background:var(--brand);border-color:var(--brand);color:#fff}
-.kfeed2{padding:0 max(env(safe-area-inset-right),18px) 110px max(env(safe-area-inset-left),18px);display:flex;flex-direction:column;gap:10px}
-.kcrd{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px;cursor:pointer;position:relative;overflow:hidden;transition:all .2s}
-.kcrd::before{content:'';position:absolute;left:0;top:16px;bottom:16px;width:3px;border-radius:0 3px 3px 0}
-.kcrd:active{transform:scale(.98)}
-.kcrd.sb::before{background:var(--brand)} .kcrd.sd::before{background:var(--amber)} .kcrd.sk::before{background:var(--violet)} .kcrd.ss::before{background:var(--emerald)} .kcrd.sx::before{background:var(--rose)}
-.kcrd.sb{background:linear-gradient(135deg,rgba(99,102,241,.04),var(--s2) 60%)}
-.kcrd.ss{background:linear-gradient(135deg,rgba(16,185,129,.04),var(--s2) 60%)}
-.ktop{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px}
-.knm{font-size:15px;font-weight:700;letter-spacing:-.3px}
-.kun{font-size:11px;color:var(--t3);margin-top:1px}
-.kown{font-size:10px;color:var(--t4);margin-top:1px}
-.sbdg{flex-shrink:0;font-size:10px;font-weight:700;padding:3px 9px;border-radius:var(--r-full);letter-spacing:.4px}
-.sbdg.bk{background:rgba(99,102,241,.15);color:var(--brand2)} .sbdg.dp{background:rgba(245,158,11,.15);color:var(--amber)} .sbdg.bks{background:rgba(168,85,247,.15);color:var(--violet)} .sbdg.sl{background:rgba(16,185,129,.15);color:var(--emerald)} .sbdg.bt{background:rgba(244,63,94,.15);color:var(--rose)}
-.kfoot{display:flex;gap:14px;background:rgba(255,255,255,.04);border-radius:8px;padding:8px 11px}
-html.light .kfoot{background:rgba(0,0,0,.04)}
-.kst{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--t3);font-weight:500}
-.fab2{position:fixed;bottom:calc(max(env(safe-area-inset-bottom),4px)+64px+16px);right:max(env(safe-area-inset-right),20px);z-index:50;width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--brand),#4338ca);border:none;color:#fff;font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(99,102,241,.5);transition:all .25s cubic-bezier(.34,1.56,.64,1);font-family:var(--font)}
-.fab2:active{transform:scale(.88) rotate(45deg)}
-
-/* laporan */
-.lkpi2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:20px max(env(safe-area-inset-right),18px) 0 max(env(safe-area-inset-left),18px)}
-.kpi2{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px}
-.kico{font-size:20px;margin-bottom:7px} .klbl{font-size:11px;color:var(--t3);font-weight:600;margin-bottom:3px} .kval{font-size:21px;font-weight:800;font-family:var(--mono);letter-spacing:-1.5px}
-.kb .kval{color:var(--brand2)} .kg .kval{color:var(--emerald)} .ka .kval{color:var(--amber)} .kv .kval{color:var(--violet)}
-.plist2{display:flex;flex-direction:column;gap:12px;padding:0 max(env(safe-area-inset-right),18px) 0 max(env(safe-area-inset-left),18px)}
-.pbar{} .pbarh{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px} .pbn{font-size:12px;font-weight:600} .pbm{font-size:11px;color:var(--t3);font-family:var(--mono)}
-.ptrk{height:6px;background:var(--s4);border-radius:var(--r-full);overflow:hidden}
-.pfl{height:100%;border-radius:var(--r-full);transition:width .8s cubic-bezier(.22,1,.36,1)}
-.tcrd{margin:0 max(env(safe-area-inset-right),18px) 0 max(env(safe-area-inset-left),18px);background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(168,85,247,.06));border:1px solid rgba(99,102,241,.2);border-radius:var(--r-lg);padding:17px}
-.tch{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.tcl{font-size:13px;font-weight:700} .tcs{font-size:11px;color:var(--t3);margin-top:2px}
-.tcn{font-size:22px;font-weight:800;font-family:var(--mono);color:var(--brand2);letter-spacing:-1px}
-.ttrk{height:8px;background:var(--s4);border-radius:var(--r-full);overflow:hidden}
-.tfl{height:100%;background:linear-gradient(90deg,var(--brand),var(--violet));border-radius:var(--r-full)}
-.tpct{font-size:11px;color:var(--t3);margin-top:5px}
-
-/* pengaturan */
-.sethr{padding:22px max(env(safe-area-inset-right),18px) 18px max(env(safe-area-inset-left),18px);background:var(--s1);display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
-.sethr::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 50%,rgba(99,102,241,.1),transparent 60%)}
-.sav{width:58px;height:58px;border-radius:16px;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sem{font-size:12px;color:var(--t3);margin-top:2px}
-.sgrp{padding:0 max(env(safe-area-inset-right),18px) 4px max(env(safe-area-inset-left),18px)}
-.sgrpl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t4);padding:14px 0 10px}
-.sform{background:var(--s2);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
-.srow2{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;gap:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.srow2:last-child{border-bottom:none}
-.srow2:active{background:rgba(255,255,255,.04)}
-.srnm{font-size:14px;font-weight:600;letter-spacing:-.2px}
-.srds{font-size:11px;color:var(--t3);margin-top:2px}
-/* toggle */
-.ttw{display:flex;align-items:center;justify-content:space-between;padding:13px 16px}
-.ttinf{flex:1} .ttnm{font-size:14px;font-weight:600;letter-spacing:-.2px} .ttds{font-size:11px;color:var(--t3);margin-top:2px}
-.tpil{position:relative;width:52px;height:28px;flex-shrink:0;cursor:pointer}
-.tpil input{position:absolute;opacity:0;width:0;height:0}
-.ttrk2{position:absolute;inset:0;background:var(--s4);border:1.5px solid var(--border);border-radius:var(--r-full);transition:background .3s,border-color .3s}
-.tpil input:checked+.ttrk2{background:var(--brand);border-color:var(--brand)}
-.tthmb{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--t3);display:flex;align-items:center;justify-content:center;font-size:11px;transition:transform .3s cubic-bezier(.34,1.56,.64,1),background .3s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
-.tpil input:checked+.ttrk2 .tthmb{transform:translateX(24px);background:#fff}
-
-/* modal */
-.mov{position:fixed;inset:0;top:38px;z-index:200;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:none;align-items:flex-end}
-.mov.open{display:flex}
-.msh{width:100%;max-height:88dvh;background:var(--s2);border-radius:22px 22px 0 0;border-top:1px solid var(--border2);overflow-y:auto;animation:shUp .3s cubic-bezier(.22,1,.36,1);scrollbar-width:none;padding-bottom:max(env(safe-area-inset-bottom),12px)}
-.msh::-webkit-scrollbar{display:none}
-@keyframes shUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.mpil{width:32px;height:4px;background:var(--s4);border-radius:2px;margin:10px auto 0}
-.mhd{padding:13px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
-.mttl{font-size:16px;font-weight:700;letter-spacing:-.4px}
-.mcl{width:30px;height:30px;border-radius:8px;background:var(--s3);border:1px solid var(--border);color:var(--t3);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.mbd{padding:18px}
-/* detail */
-.dhr{padding:22px 18px 18px;background:var(--s1);display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
-.dhr::before{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 80% 50%,rgba(99,102,241,.1),transparent 60%)}
-.dav{width:58px;height:58px;border-radius:16px;font-size:22px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dnm{font-size:19px;font-weight:800;letter-spacing:-.7px}
-.dun{font-size:12px;color:var(--t3);margin-top:2px}
-.qar{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:14px 18px}
-.qa{padding:11px 8px;background:var(--s3);border:1px solid var(--border);border-radius:var(--r-md);color:var(--t1);font-size:12px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .2s;font-family:var(--font)}
-.qa:active{transform:scale(.94)}
-.qaico{font-size:19px}
-.qa.qc,.qa.qw{border-color:rgba(5,150,105,.3);background:rgba(5,150,105,.08);color:var(--emerald)}
-.qa.qe{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.08);color:var(--brand2)}
-.qa.ql{border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.08);color:var(--amber)}
-.dsec{padding:4px 18px 12px}
-.dsecl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t4);margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border)}
-.drow{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;gap:12px}
-.dk{font-size:12px;color:var(--t3);font-weight:500;flex-shrink:0} .dv{font-size:12px;font-weight:700;text-align:right;flex:1}
-.bkls{display:flex;flex-direction:column}
-.bkl{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
-.bkl:last-child{border-bottom:none}
-.bkl:active{opacity:.7}
-.bchk{width:22px;height:22px;border-radius:6px;border:2px solid var(--s4);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;transition:all .2s}
-.bchk.done{background:var(--emerald);border-color:var(--emerald)}
-.bktxt{font-size:13px;flex:1;font-weight:500}
-.bktxt.done{color:var(--t3);text-decoration:line-through}
-.tl{display:flex;flex-direction:column}
-.tli{display:flex;gap:11px;padding-bottom:14px;position:relative}
-.tli:not(:last-child)::before{content:'';position:absolute;left:12px;top:24px;bottom:0;width:1.5px;background:var(--border)}
-.tldot{width:24px;height:24px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;z-index:1;background:var(--s3);border:1.5px solid var(--border)}
-.tlac{font-size:13px;font-weight:600;letter-spacing:-.2px}
-.tltm{font-size:10px;color:var(--t4);font-family:var(--mono);margin-top:2px}
-.tlnt{font-size:12px;color:var(--t2);background:var(--s3);border:1px solid var(--border);border-radius:8px;padding:7px 9px;margin-top:5px;line-height:1.5}
-
-/* toast */
-.toast{position:fixed;top:calc(38px + 10px);left:50%;transform:translateX(-50%) translateY(-4px);background:var(--s3);border:1px solid var(--border2);border-radius:var(--r-full);padding:9px 17px;font-size:13px;font-weight:600;z-index:9000;display:flex;align-items:center;gap:7px;box-shadow:0 4px 24px rgba(0,0,0,.5);white-space:nowrap;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.22,1,.36,1)}
-.toast.on{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
-
-/* empty */
-.empty{text-align:center;padding:48px 28px;display:flex;flex-direction:column;align-items:center;gap:8px}
-.eico{font-size:44px;opacity:.4} .enm{font-size:15px;font-weight:700;color:var(--t2)} .esb{font-size:12px;color:var(--t4)}
-
-/* avatars */
-.av0{background:linear-gradient(135deg,#6366f1,#4338ca)} .av1{background:linear-gradient(135deg,#10b981,#047857)} .av2{background:linear-gradient(135deg,#f59e0b,#b45309)} .av3{background:linear-gradient(135deg,#a855f7,#6d28d9)} .av4{background:linear-gradient(135deg,#f43f5e,#b91c1c)} .av5{background:linear-gradient(135deg,#0ea5e9,#0284c7)} .av6{background:linear-gradient(135deg,#f97316,#c2410c)} .av7{background:linear-gradient(135deg,#ec4899,#be185d)}
-select option{background:#111118;color:var(--t1)}
-html.light select option{background:#fff;color:#0f0f1a}
+/* Kalender demo */
+.cal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 12px; }
+.cal-nav-btn { width: 36px; height: 36px; border-radius: var(--r-sm); background: var(--glass-10); border: 1px solid var(--glass-border); color: var(--text-2); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; }
+.cal-month-label { font-size: 16px; font-weight: 800; letter-spacing: -.5px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding: 0 12px 8px; }
+.cal-day-name { text-align: center; font-size: 10px; font-weight: 700; color: var(--text-4); padding: 6px 0; letter-spacing: .5px; }
+.cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-2); transition: all .15s; }
+.cal-day:hover { background: var(--glass-10); }
+.cal-day.today { background: var(--brand-soft); color: var(--brand-light); font-weight: 800; }
+.cal-day.has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; background: var(--amber); }
+.cal-day { position: relative; }
+.cal-day.other-month { color: var(--text-4); opacity: .4; }
+.cal-events { padding: 8px 20px 20px; }
+.cal-events-title { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+.cal-event-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--bg-overlay); border: 1px solid var(--glass-border); border-radius: var(--r-md); margin-bottom: 8px; }
+.cal-event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cal-event-name { font-size: 13px; font-weight: 600; }
+.cal-event-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
 </style>
 </head>
 <body>
 
 <!-- ══ DEMO BANNER ══ -->
-<div class="dbanner">
-  <div class="dbanner-txt"><span class="dbadge">DEMO</span><span id="bnrMsg">Data contoh — tidak tersimpan permanen</span></div>
-  <button class="dbanner-btn" id="bnrBtn" onclick="toggleView()">▶ Coba Demo</button>
+<div class="demo-banner">
+  <span class="demo-badge">DEMO</span>
+  <span class="demo-msg" id="bannerMsg">Data contoh — tidak tersimpan permanen</span>
+  <button class="demo-btn" id="bannerBtn" onclick="toggleView()">▶ Coba Demo</button>
 </div>
 
 <!-- ══ TOAST ══ -->
 <div class="toast" id="toast"></div>
 
-<!-- ══════════ LANDING ══════════ -->
+<!-- ══════════════════════════════
+     LANDING PAGE
+══════════════════════════════ -->
 <div id="landing">
-  <section class="hero">
-    <div class="hbadge"><span class="ldot"></span>v3.0 · Real-time · PWA · Multi-user</div>
-    <div class="hmark">🎯</div>
-    <div class="hwm">Market<em>Pro</em></div>
-    <p class="htag">Aplikasi CRM marketing properti yang bisa diinstall di HP, real-time, dan mendukung seluruh tim marketing sekaligus.</p>
-    <div class="hcta">
-      <button class="bcta bp" onclick="enterDemo()">▶ Coba Demo Sekarang</button>
-      <a href="https://github.com/YOUR_USERNAME/marketpro" class="bcta bs" target="_blank">⭐ GitHub</a>
-    </div>
-    <div class="hnote"><span class="hndot"></span>Langsung di browser · Tidak perlu daftar · Tidak perlu Supabase</div>
-  </section>
 
-  <section class="shots">
-    <div class="stitle">Tampilan Aplikasi</div>
-    <div class="ssub">Tersedia tema gelap dan terang · Dioptimalkan untuk HP</div>
-    <div class="srow">
-      <div class="swrap"><div class="sframe"><img src="screenshots/screen-01-dashboard-dark.svg" alt="Dashboard"/></div><div class="slabel">Dashboard · Gelap</div></div>
-      <div class="swrap"><div class="sframe"><img src="screenshots/screen-02-konsumen-dark.svg" alt="Konsumen"/></div><div class="slabel">Daftar Konsumen</div></div>
-      <div class="swrap"><div class="sframe"><img src="screenshots/screen-03-konsumen-light.svg" alt="Light"/></div><div class="slabel">Tema Terang ☀️</div></div>
-      <div class="swrap"><div class="sframe"><img src="screenshots/screen-04-detail-dark.svg" alt="Detail"/></div><div class="slabel">Detail & Berkas</div></div>
+  <!-- Hero -->
+  <section class="lp-hero">
+    <div class="hero-badge"><span class="hero-ldot"></span>v4.0 · Real-time · PWA · Multi-user</div>
+    <div class="hero-mark">🎯</div>
+    <h1 class="hero-title">Market<em>Pro</em></h1>
+    <p class="hero-sub">CRM marketing properti yang bisa diinstall di HP, real-time, dan mendukung seluruh tim marketing sekaligus — dari booking hingga akad.</p>
+    <div class="hero-cta">
+      <button class="btn-cta btn-cta-primary" onclick="enterDemo()">▶ Coba Demo Sekarang</button>
+      <a href="index.html" class="btn-cta btn-cta-secondary">⚙️ Buka Aplikasi</a>
+    </div>
+    <div class="hero-note">
+      <span class="live-dot" style="width:8px;height:8px"></span>
+      Langsung di browser · Tidak perlu daftar · Tidak perlu Supabase
     </div>
   </section>
 
-  <section class="feats">
-    <div class="ftitle">Semua yang Dibutuhkan Tim Marketing</div>
-    <div class="fsub">Satu aplikasi untuk seluruh proses dari booking hingga akad</div>
-    <div class="fgrid">
-      <div class="fcard"><div class="fico">⚡</div><div class="fh">Real-time Sync</div><div class="fp">Data tersinkronisasi ke semua HP tim secara instan via WebSocket.</div></div>
-      <div class="fcard"><div class="fico">👥</div><div class="fh">Multi-user & Role</div><div class="fp">Login per marketing. Admin lihat semua data tim, Marketing lihat data sendiri.</div></div>
-      <div class="fcard"><div class="fico">📲</div><div class="fh">Install di HP</div><div class="fp">Progressive Web App — install di Android & iPhone tanpa App Store.</div></div>
-      <div class="fcard"><div class="fico">📁</div><div class="fh">Checklist Berkas KPR</div><div class="fp">6 item berkas per konsumen dengan centang satu-per-satu dan progress indicator.</div></div>
-      <div class="fcard"><div class="fico">🌙</div><div class="fh">Tema Gelap & Terang</div><div class="fp">Toggle tema kapan saja dari header. Tersimpan otomatis, mengikuti preferensi HP.</div></div>
-      <div class="fcard"><div class="fico">🏆</div><div class="fh">Ranking Tim</div><div class="fp">Laporan performa dan ranking seluruh anggota tim untuk Admin.</div></div>
-    </div>
-  </section>
-
-  <section class="ctasec">
-    <div class="ctitle">Siap Dicoba?</div>
-    <div class="csub">Demo langsung di browser dengan data contoh — semua fitur bisa dijelajahi</div>
-    <div class="hcta">
-      <button class="bcta bp" onclick="enterDemo()">▶ Masuk ke Demo</button>
-      <a href="./app.html" class="bcta bs">⚙️ Pasang Sendiri</a>
-    </div>
-  </section>
-
-  <footer>
-    <div class="flogo"><div class="fmk">🎯</div><div class="fwm">Market<em>Pro</em></div></div>
-    <div style="font-size:13px;color:var(--t3)">CRM Marketing Properti · Real-time · Multi-user · PWA</div>
-    <div class="flinks"><a href="./app.html">Buka Aplikasi</a><a href="https://github.com/YOUR_USERNAME/marketpro" target="_blank">GitHub</a><a href="https://supabase.com" target="_blank">Supabase</a></div>
-    <div style="margin-top:20px;font-size:11px;color:var(--t4)">MIT License · Dibuat untuk tim marketing properti Indonesia</div>
-  </footer>
-</div>
-
-<!-- ══════════ APP (DEMO MODE) ══════════ -->
-<div id="app">
-  <header class="hdr">
-    <div class="hbrand"><div class="hmk">🎯</div><div class="hwm2">Market<em>Pro</em></div></div>
-    <div class="hright">
-      <div class="pill"><div class="pav av0">A</div><span class="pnm">Admin Demo</span><span class="prole">Admin</span></div>
-      <button class="hbtn2" id="themeBtnH" onclick="quickTheme()">🌙</button>
-      <button class="hbtn2" onclick="openNotifM()">🔔<span class="npip"></span></button>
-    </div>
-  </header>
-
-  <div class="scrl" id="scrl">
-    <!-- DASHBOARD -->
-    <div class="pg on" id="pg-dashboard">
-      <div class="dhero">
-        <div class="hc">
-          <div class="hcg">Halo 👋 <span class="lbadge"><span class="ldot" style="width:6px;height:6px;border-radius:50%;background:var(--emerald);display:inline-block;animation:lpulse 2s infinite;margin-right:2px"></span>Demo</span></div>
-          <div class="hcname">Admin Demo<br><span class="ac">Selamat bekerja!</span></div>
-          <div class="strow">
-            <div class="stile st-brand"><div class="stlbl">TOTAL KONSUMEN</div><div class="stval" id="stT">—</div><div class="stsub">Semua tim</div></div>
-            <div class="stile st-green"><div class="stlbl">AKAD SELESAI</div><div class="stval" id="stS">—</div><div class="stsub">Transaksi tuntas</div></div>
-            <div class="stile st-amber"><div class="stlbl">PROSES DP</div><div class="stval" id="stD">—</div><div class="stsub">Menunggu pelunasan</div></div>
-            <div class="stile st-violet"><div class="stlbl">BOOKING</div><div class="stval" id="stB">—</div><div class="stsub">Antrian booking</div></div>
-          </div>
-        </div>
+  <!-- Pipeline visual -->
+  <div class="lp-section-alt">
+    <div class="lp-inner">
+      <div class="lp-section-title">Pipeline Konsumen</div>
+      <div class="lp-section-sub">Kelola setiap tahap perjalanan konsumen dari booking hingga akad selesai</div>
+      <div class="pipe-visual">
+        <div class="pipe-step ps-booking"><div class="pipe-step-ico">📋</div><div class="pipe-step-lbl">Booking</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step ps-dp"><div class="pipe-step-ico">💰</div><div class="pipe-step-lbl">Proses DP</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step ps-berkas"><div class="pipe-step-ico">📁</div><div class="pipe-step-lbl">Kumpul Berkas</div></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-step ps-selesai"><div class="pipe-step-ico">✅</div><div class="pipe-step-lbl">Selesai</div></div>
+        <div class="pipe-arrow">/</div>
+        <div class="pipe-step ps-batal"><div class="pipe-step-ico">❌</div><div class="pipe-step-lbl">Batal</div></div>
       </div>
-      <div class="sec2"><div class="sechd"><div class="secttl">📊 Pipeline</div></div><div class="pscrl" id="pipeScroll"></div></div>
-      <div class="sec2" style="margin-bottom:16px"><div class="sechd"><div class="secttl">🕐 Terbaru</div><div class="seclnk" onclick="switchPg('konsumen')">Lihat semua →</div></div><div id="feedList"></div></div>
-    </div>
-
-    <!-- KONSUMEN -->
-    <div class="pg" id="pg-konsumen">
-      <div class="sz2"><div class="sfwrap"><span class="sico2">🔍</span><input type="search" class="sfld2" placeholder="Cari nama, HP, unit..." id="sfld" oninput="renderKons()"/></div></div>
-      <div class="chips2" id="chips">
-        <button class="chip2 on" data-f="semua" onclick="setF('semua')">Semua</button>
-        <button class="chip2" data-f="booking" onclick="setF('booking')">📋 Booking</button>
-        <button class="chip2" data-f="dp" onclick="setF('dp')">💰 Proses DP</button>
-        <button class="chip2" data-f="berkas" onclick="setF('berkas')">📁 Berkas</button>
-        <button class="chip2" data-f="selesai" onclick="setF('selesai')">✅ Selesai</button>
-        <button class="chip2" data-f="batal" onclick="setF('batal')">❌ Batal</button>
-      </div>
-      <div class="kfeed2" id="kfeed"></div>
-      <button class="fab2" onclick="toast2('Demo: tambah konsumen tidak tersimpan permanen 😊','ℹ️')">＋</button>
-    </div>
-
-    <!-- LAPORAN -->
-    <div class="pg" id="pg-laporan">
-      <div class="lkpi2" id="lkpi"></div>
-      <div class="sec2" style="margin-top:16px"><div class="sechd"><div class="secttl">🎯 Progress Pipeline</div></div><div class="plist2" id="plist"></div></div>
-      <div class="sec2" style="margin-top:16px;margin-bottom:16px"><div class="sechd"><div class="secttl">📅 Target Bulan Ini</div></div><div id="ltarget"></div></div>
-    </div>
-
-    <!-- PENGATURAN -->
-    <div class="pg" id="pg-pengaturan">
-      <div class="sethr"><div class="sav av0">A</div><div><div style="font-size:18px;font-weight:800;letter-spacing:-.6px">Admin Demo</div><div class="sem">demo@marketpro.app</div></div></div>
-      <div class="sgrp">
-        <div class="sgrpl">Tampilan</div>
-        <div class="sform">
-          <div class="ttw">
-            <div class="ttinf"><div class="ttnm" id="ttnm">🌙 Tema Gelap</div><div class="ttds" id="ttds">Saat ini menggunakan tema gelap</div></div>
-            <label class="tpil"><input type="checkbox" id="themeChk" onchange="setTheme(this.checked)"/><div class="ttrk2"><div class="tthmb" id="tthumb">🌙</div></div></label>
-          </div>
-        </div>
-      </div>
-      <div class="sgrp">
-        <div class="sgrpl">Tentang Demo</div>
-        <div class="sform">
-          <div class="srow2" style="cursor:default"><div><div class="srnm">📊 MarketPro v3.0</div><div class="srds">Mode Demo · Data tidak tersimpan permanen</div></div></div>
-          <div class="srow2" onclick="window.open('https://github.com/YOUR_USERNAME/marketpro','_blank')"><div><div class="srnm">⭐ Pasang Versi Asli</div><div class="srds">Hubungkan ke Supabase untuk fitur penuh</div></div><div style="color:var(--t4)">›</div></div>
-          <div class="srow2" onclick="backToLanding()"><div><div class="srnm">🏠 Kembali ke Landing Page</div><div class="srds">Lihat fitur, screenshot, dan panduan setup</div></div><div style="color:var(--t4)">›</div></div>
-        </div>
-      </div>
-      <div style="text-align:center;padding:24px;color:var(--t4);font-size:11px">MarketPro v3.0 · Demo Mode</div>
     </div>
   </div>
 
-  <nav class="tbar">
-    <button class="tab on" id="tab-dashboard" onclick="switchPg('dashboard')"><span class="tabi">🏠</span>Dashboard</button>
-    <button class="tab" id="tab-konsumen" onclick="switchPg('konsumen')"><span class="tabi">👥</span>Konsumen</button>
-    <button class="tab" id="tab-laporan" onclick="switchPg('laporan')"><span class="tabi">📊</span>Laporan</button>
-    <button class="tab" id="tab-pengaturan" onclick="switchPg('pengaturan')"><span class="tabi">⚙️</span>Pengaturan</button>
+  <!-- Features -->
+  <div class="lp-section">
+    <div class="lp-section-title">Semua yang Dibutuhkan Tim Marketing</div>
+    <div class="lp-section-sub">Satu aplikasi untuk seluruh proses — dari pertama kali konsumen datang hingga akad selesai</div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-ico">⚡</div>
+        <div class="feat-title">Real-time Sync</div>
+        <div class="feat-desc">Data tersinkronisasi ke semua HP tim secara instan via WebSocket. Satu konsumen diupdate, semua marketing langsung lihat.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">👥</div>
+        <div class="feat-title">Multi-user & Role</div>
+        <div class="feat-desc">Login per marketing. Admin lihat seluruh data tim, Marketing hanya lihat data konsumen miliknya sendiri.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">📲</div>
+        <div class="feat-title">Install di HP (PWA)</div>
+        <div class="feat-desc">Progressive Web App — install di Android & iPhone tanpa App Store. Tampil seperti aplikasi native.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">📁</div>
+        <div class="feat-title">Checklist Berkas Dinamis <span class="new-badge">Baru</span></div>
+        <div class="feat-desc">Item checklist bisa ditambah, diedit, dan dihapus sesuai kebutuhan. Upload foto dokumen langsung ke cloud storage.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">📅</div>
+        <div class="feat-title">Kalender Follow-up <span class="new-badge">Baru</span></div>
+        <div class="feat-desc">Jadwalkan follow-up konsumen di kalender. Pengingat otomatis H-1 dan hari-H saat waktu follow-up tiba.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">📊</div>
+        <div class="feat-title">Grafik & Laporan <span class="new-badge">Baru</span></div>
+        <div class="feat-desc">Chart distribusi pipeline, tren penjualan 6 bulan, dan sumber leads. Filter per periode. Export ke PDF & CSV.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">📥</div>
+        <div class="feat-title">Import Excel / CSV <span class="new-badge">Baru</span></div>
+        <div class="feat-desc">Upload data konsumen dari file Excel atau CSV sekaligus. Sistem otomatis mendeteksi nama kolom yang berbeda-beda.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🔔</div>
+        <div class="feat-title">Pengingat Otomatis</div>
+        <div class="feat-desc">Alert follow-up, berkas kurang, dan DP belum selesai. Notifikasi muncul langsung di header aplikasi.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🏆</div>
+        <div class="feat-title">Ranking Tim</div>
+        <div class="feat-desc">Laporan performa dan ranking seluruh anggota tim marketing untuk Admin. Lihat siapa yang paling produktif.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🌙</div>
+        <div class="feat-title">Tema Gelap & Terang</div>
+        <div class="feat-desc">Toggle tema kapan saja dari header atau pengaturan. Tersimpan otomatis, mengikuti preferensi sistem HP.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">🔐</div>
+        <div class="feat-title">Keamanan Row-Level</div>
+        <div class="feat-desc">Row Level Security di PostgreSQL memastikan data marketing tidak bisa diakses marketing lain — di level database.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-ico">💻</div>
+        <div class="feat-title">Tampilan Desktop <span class="new-badge">Baru</span></div>
+        <div class="feat-desc">Sidebar navigasi di desktop dengan layout 2 panel. Konten terpusat maksimal 800px, tidak melebar di layar lebar.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="lp-section-alt">
+    <div class="lp-inner lp-cta">
+      <div class="lp-section-title">Siap Dicoba?</div>
+      <div class="lp-section-sub">Demo langsung di browser dengan data contoh — semua fitur bisa dijelajahi tanpa daftar</div>
+      <div class="hero-cta" style="justify-content:center">
+        <button class="btn-cta btn-cta-primary" onclick="enterDemo()">▶ Masuk ke Demo</button>
+        <a href="index.html" class="btn-cta btn-cta-secondary">⚙️ Buka Aplikasi Asli</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="lp-footer">
+    <div class="footer-logo">
+      <div class="footer-mark">🎯</div>
+      <div class="footer-wordmark">Market<em>Pro</em></div>
+    </div>
+    <div style="font-size:13px;color:var(--text-3)">CRM Marketing Properti · Real-time · Multi-user · PWA</div>
+    <div class="footer-links">
+      <a href="index.html">Buka Aplikasi</a>
+      <a href="https://supabase.com" target="_blank">Supabase</a>
+      <a href="https://vercel.com" target="_blank">Vercel</a>
+    </div>
+    <div style="margin-top:20px;font-size:11px;color:var(--text-4)">MarketPro v4.0 · MIT License · Dibuat untuk tim marketing properti Indonesia</div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════
+     APP (DEMO MODE)
+══════════════════════════════ -->
+<div id="shell">
+  <header class="header">
+    <div class="header-brand">
+      <div class="header-mark">🎯</div>
+      <div class="header-name">Market<em>Pro</em></div>
+    </div>
+    <div class="header-right">
+      <div class="pill-user">
+        <div class="pill-avatar av0">A</div>
+        <span class="pill-uname">Admin Demo</span>
+        <span class="pill-role admin">Admin</span>
+      </div>
+      <button class="hbtn" id="themeBtnHdr" onclick="quickTheme()">🌙</button>
+      <button class="hbtn" onclick="openNotifDemo()" id="notifBtn">
+        🔔<span class="notif-pip show" id="notifPip"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- DASHBOARD -->
+    <div class="page on" id="pg-dashboard">
+      <div class="dash-hero">
+        <div class="hero-content">
+          <div class="hero-greeting">Halo 👋 <span class="live-badge"><span class="live-dot"></span>Demo</span></div>
+          <div class="hero-name">Admin Demo<br><span class="accent">Selamat bekerja!</span></div>
+          <div class="stat-row">
+            <div class="stat-tile t-brand"><div class="tile-label">Total Konsumen</div><div class="tile-value" id="stTotal">—</div><div class="tile-sub">Semua tim</div></div>
+            <div class="stat-tile t-emerald"><div class="tile-label">Akad Selesai</div><div class="tile-value" id="stSelesai">—</div><div class="tile-sub">Transaksi tuntas</div></div>
+            <div class="stat-tile t-amber"><div class="tile-label">Proses DP</div><div class="tile-value" id="stDP">—</div><div class="tile-sub">Menunggu</div></div>
+            <div class="stat-tile t-violet"><div class="tile-label">Booking</div><div class="tile-value" id="stBooking">—</div><div class="tile-sub">Antrian</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="section"><div class="section-head"><div class="section-title"><span class="sticon">📊</span>Pipeline</div></div><div class="pipe-scroll" id="pipeScroll"></div></div>
+      <div class="section" style="margin-bottom:16px">
+        <div class="section-head"><div class="section-title"><span class="sticon">🕐</span>Terbaru</div><div class="section-link" onclick="switchPg('konsumen')">Lihat semua →</div></div>
+        <div class="feed-list" id="feedList"></div>
+      </div>
+    </div>
+
+    <!-- KONSUMEN -->
+    <div class="page" id="pg-konsumen">
+      <div class="search-zone">
+        <div class="search-box">
+          <span class="search-ico">🔍</span>
+          <input type="search" class="search-field" placeholder="Cari nama, HP, unit..." id="searchFld" oninput="renderKons()"/>
+        </div>
+      </div>
+      <div class="filter-row">
+        <button class="ftag on" data-f="semua" onclick="setFilter('semua')">Semua</button>
+        <button class="ftag" data-f="booking" onclick="setFilter('booking')">📋 Booking</button>
+        <button class="ftag" data-f="dp" onclick="setFilter('dp')">💰 Proses DP</button>
+        <button class="ftag" data-f="berkas" onclick="setFilter('berkas')">📁 Berkas</button>
+        <button class="ftag" data-f="selesai" onclick="setFilter('selesai')">✅ Selesai</button>
+        <button class="ftag" data-f="batal" onclick="setFilter('batal')">❌ Batal</button>
+        <div class="filter-divider"></div>
+        <button class="ftag sort-btn" id="sortBtn" onclick="toggleSort()">A→Z</button>
+      </div>
+      <div class="kons-feed" id="konsFeed"></div>
+      <button class="fab" onclick="toast('Demo: tambah konsumen tidak tersimpan permanen 😊', 'ℹ️')">＋</button>
+    </div>
+
+    <!-- KALENDER -->
+    <div class="page" id="pg-kalender">
+      <div class="cal-header">
+        <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+        <div class="cal-month-label" id="calMonthLabel"></div>
+        <div style="display:flex;gap:6px">
+          <button class="cal-nav-btn" onclick="calToday()" style="font-size:11px;width:auto;padding:0 10px">Hari Ini</button>
+          <button class="cal-nav-btn" onclick="calNext()">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="cal-events" id="calEvents"></div>
+    </div>
+
+    <!-- LAPORAN -->
+    <div class="page" id="pg-laporan">
+      <div class="lap-kpi" id="lapKpi"></div>
+      <div class="section" style="margin-top:16px"><div class="section-head"><div class="section-title"><span class="sticon">🎯</span>Pipeline Progress</div></div><div class="prog-list" id="lapProg"></div></div>
+      <div class="section" style="margin-top:8px;margin-bottom:16px"><div class="section-head"><div class="section-title"><span class="sticon">📅</span>Target Bulan Ini</div></div><div id="lapTarget"></div></div>
+    </div>
+
+    <!-- PENGATURAN -->
+    <div class="page" id="pg-pengaturan">
+      <div class="set-profile-hero">
+        <div class="set-big-av av0">A</div>
+        <div>
+          <div style="font-size:18px;font-weight:800;letter-spacing:-.6px">Admin Demo</div>
+          <div class="set-email">admin@marketpro-demo.id</div>
+        </div>
+      </div>
+      <div class="set-group">
+        <div class="set-group-label">Tampilan</div>
+        <div class="set-form">
+          <div class="theme-toggle-wrap">
+            <div class="theme-toggle-info"><div class="theme-toggle-name" id="themeLabel">🌙 Tema Gelap</div><div class="theme-toggle-desc" id="themeDesc">Saat ini menggunakan tema gelap</div></div>
+            <label class="toggle-pill"><input type="checkbox" id="themeToggle" onchange="setTheme(this.checked)"/><div class="toggle-track"><div class="toggle-thumb" id="toggleThumb">🌙</div></div></label>
+          </div>
+        </div>
+      </div>
+      <div class="set-group">
+        <div class="set-group-label">Tentang Demo</div>
+        <div class="set-form">
+          <div class="set-row" style="cursor:default">
+            <div class="set-row-info"><div class="set-row-name">📊 MarketPro v4.0</div><div class="set-row-desc">Mode Demo · Data tidak tersimpan permanen</div></div>
+          </div>
+          <div class="set-row" onclick="window.open('index.html','_self')">
+            <div class="set-row-info"><div class="set-row-name">⚙️ Pasang Versi Asli</div><div class="set-row-desc">Hubungkan ke Supabase untuk fitur penuh</div></div>
+            <div class="set-arrow">›</div>
+          </div>
+          <div class="set-row" onclick="backToLanding()">
+            <div class="set-row-info"><div class="set-row-name">🏠 Kembali ke Landing Page</div><div class="set-row-desc">Lihat fitur, screenshot, dan panduan setup</div></div>
+            <div class="set-arrow">›</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;padding:24px 20px;color:var(--text-4);font-size:11px">MarketPro v4.0 · Demo Mode · Data tidak tersimpan</div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <nav class="tabbar">
+    <div class="sidebar-logo"><span class="sidebar-logo-mark">🎯</span><span class="sidebar-logo-text">Market<em>Pro</em></span></div>
+    <div class="sidebar-user" id="sidebarUser" style="display:none">
+      <div class="sidebar-user-av av0">A</div>
+      <div class="sidebar-user-info"><div class="sidebar-user-name">Admin Demo</div><div class="sidebar-user-role">👑 Admin</div></div>
+    </div>
+    <button class="tab on" id="tab-dashboard" data-label="Dashboard" onclick="switchPg('dashboard')"><span class="tab-ico">🏠</span>Dashboard</button>
+    <button class="tab" id="tab-konsumen" data-label="Konsumen" onclick="switchPg('konsumen')"><span class="tab-ico">👥</span>Konsumen</button>
+    <button class="tab" id="tab-kalender" data-label="Kalender" onclick="switchPg('kalender')"><span class="tab-ico">📅</span>Kalender</button>
+    <button class="tab" id="tab-laporan" data-label="Laporan" onclick="switchPg('laporan')"><span class="tab-ico">📊</span>Laporan</button>
+    <button class="tab" id="tab-pengaturan" data-label="Pengaturan" onclick="switchPg('pengaturan')"><span class="tab-ico">⚙️</span>Pengaturan</button>
+    <div class="sidebar-bottom" id="sidebarBottom" style="display:none">
+      <button class="sidebar-action" onclick="quickTheme()"><span id="sidebarThemeIco">🌙</span><span>Ganti Tema</span></button>
+      <button class="sidebar-action" onclick="openNotifDemo()"><span>🔔</span><span>Pengingat</span></button>
+      <button class="sidebar-action danger" onclick="backToLanding()"><span>🏠</span><span>Landing Page</span></button>
+    </div>
   </nav>
 </div>
 
 <!-- MODALS -->
-<div class="mov" id="mDet"><div class="msh" id="mDetInner"></div></div>
-<div class="mov" id="mNotif"><div class="msh"><div class="mpil"></div><div class="mhd"><div class="mttl">🔔 Pengingat</div><button class="mcl" onclick="closeM('mNotif')">✕</button></div><div class="mbd" id="notifBody"></div></div></div>
+<div class="modal-bg" id="modalDetail"><div class="modal-sheet" id="detailSheet"></div></div>
+<div class="modal-bg" id="modalNotif">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head"><div class="sheet-title">🔔 Pengingat</div><button class="sheet-close" onclick="closeModal('modalNotif')">✕</button></div>
+    <div class="sheet-body" id="notifBody"></div>
+  </div>
+</div>
 
 <script>
-// ══ DATA ══
-const DATA = [
-  {id:'k1',nama:'Budi Santoso',hp:'081234567890',unit:'T36/72',kavling:'A-05',harga:350000000,dp:5000000,status:'booking',tgl_booking:'2025-03-10',kpr:'kpr-btn',sumber:'referral',catatan:'Konsumen aktif, follow up tiap Senin',berkas:{ktp:true,kk:false,slip:false,tabungan:false,npwp:false,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-03-10T09:00:00Z',note:'Pertama kali kunjungi lokasi'}],owner_name:'Rani Putri'},
-  {id:'k2',nama:'Siti Rahma',hp:'082198765432',unit:'T45/90',kavling:'B-12',harga:450000000,dp:15000000,status:'dp',tgl_booking:'2025-02-20',kpr:'kpr-bni',sumber:'medsos',catatan:'Sedang proses BI checking',berkas:{ktp:true,kk:true,slip:true,tabungan:false,npwp:false,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-02-20T10:00:00Z',note:''},{action:'Status: Booking → Proses DP',time:'2025-02-28T14:00:00Z',note:''}],owner_name:'Doni Setiawan'},
-  {id:'k3',nama:'Andi Firmansyah',hp:'085678901234',unit:'T36/60',kavling:'C-08',harga:280000000,dp:20000000,status:'berkas',tgl_booking:'2025-01-15',kpr:'subsidi',sumber:'pameran',catatan:'Berkas hampir lengkap',berkas:{ktp:true,kk:true,slip:true,tabungan:true,npwp:true,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-01-15T11:00:00Z',note:''},{action:'Status: Booking → Proses DP',time:'2025-01-25T09:00:00Z',note:''},{action:'Status: Proses DP → Kumpul Berkas',time:'2025-02-05T15:00:00Z',note:''}],owner_name:'Rani Putri'},
-  {id:'k4',nama:'Dewi Lestari',hp:'087712345678',unit:'T54/120',kavling:'D-03',harga:650000000,dp:65000000,status:'selesai',tgl_booking:'2024-12-05',kpr:'cash-keras',sumber:'referral',catatan:'Akad sudah selesai ✅',berkas:{ktp:true,kk:true,slip:true,tabungan:true,npwp:true,surat:true},log:[{action:'Konsumen ditambahkan',time:'2024-12-05T08:00:00Z',note:''},{action:'Status: Booking → Selesai',time:'2025-01-10T10:00:00Z',note:'Akad berjalan lancar'}],owner_name:'Doni Setiawan'},
-  {id:'k5',nama:'Rizky Pratama',hp:'081387654321',unit:'T36/72',kavling:'A-11',harga:360000000,dp:5000000,status:'booking',tgl_booking:'2025-03-14',kpr:'kpr-mandiri',sumber:'walk-in',catatan:'Pertama kali kunjungi lokasi',berkas:{ktp:false,kk:false,slip:false,tabungan:false,npwp:false,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-03-14T14:00:00Z',note:'Walk in dari spanduk'}],owner_name:'Rani Putri'},
-  {id:'k6',nama:'Maya Indah',hp:'082345678901',unit:'T45/90',kavling:'B-07',harga:480000000,dp:25000000,status:'selesai',tgl_booking:'2024-11-20',kpr:'kpr-bri',sumber:'website',catatan:'',berkas:{ktp:true,kk:true,slip:true,tabungan:true,npwp:true,surat:true},log:[{action:'Konsumen ditambahkan',time:'2024-11-20T09:00:00Z',note:''},{action:'Status: Booking → Selesai',time:'2024-12-28T11:00:00Z',note:''}],owner_name:'Doni Setiawan'},
-  {id:'k7',nama:'Hendra Kurniawan',hp:'089876543210',unit:'T36/60',kavling:'C-15',harga:275000000,dp:0,status:'batal',tgl_booking:'2025-02-01',kpr:'subsidi',sumber:'brosur',catatan:'Tidak jadi karena pindah kota',berkas:{ktp:true,kk:false,slip:false,tabungan:false,npwp:false,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-02-01T10:00:00Z',note:''},{action:'Status: Booking → Batal',time:'2025-02-15T16:00:00Z',note:'Pindah kota'}],owner_name:'Rani Putri'},
-  {id:'k8',nama:'Putri Ayu Wulandari',hp:'081567890123',unit:'T54/120',kavling:'E-02',harga:720000000,dp:72000000,status:'berkas',tgl_booking:'2025-02-10',kpr:'cash-bertahap',sumber:'referral',catatan:'Klien VIP, hubungi dengan sopan',berkas:{ktp:true,kk:true,slip:true,tabungan:false,npwp:false,surat:false},log:[{action:'Konsumen ditambahkan',time:'2025-02-10T13:00:00Z',note:'Referral dari konsumen lama'},{action:'Status: Booking → Proses DP',time:'2025-02-18T10:00:00Z',note:''},{action:'Status: Proses DP → Kumpul Berkas',time:'2025-03-01T09:00:00Z',note:''}],owner_name:'Doni Setiawan'},
+// ══════════════════════════════════════
+// DATA DEMO
+// ══════════════════════════════════════
+const DEMO_DATA = [
+  {id:'k1',nama:'Budi Santoso',hp:'081234567890',unit:'T36/72',kavling:'A-05',harga:350000000,dp:5000000,status:'booking',tgl_booking:'2025-03-10',tgl_followup:'2025-03-25',kpr:'kpr-btn',sumber:'referral',catatan:'Konsumen aktif, follow up tiap Senin',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:false}],log:[{action:'Konsumen ditambahkan',time:'2025-03-10T09:00:00Z',note:'Pertama kali kunjungi lokasi'}],owner_name:'Rani Putri'},
+  {id:'k2',nama:'Siti Rahma',hp:'082198765432',unit:'T45/90',kavling:'B-12',harga:450000000,dp:15000000,status:'dp',tgl_booking:'2025-02-20',tgl_followup:'2025-03-22',kpr:'kpr-bni',sumber:'medsos',catatan:'Sedang proses BI checking',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:true},{key:'slip',label:'Slip Gaji / SK Kerja',done:true}],log:[{action:'Konsumen ditambahkan',time:'2025-02-20T10:00:00Z',note:''},{action:'Status: Booking → Proses DP',time:'2025-02-28T14:00:00Z',note:''}],owner_name:'Doni Setiawan'},
+  {id:'k3',nama:'Andi Firmansyah',hp:'085678901234',unit:'T36/60',kavling:'C-08',harga:280000000,dp:20000000,status:'berkas',tgl_booking:'2025-01-15',tgl_followup:null,kpr:'subsidi',sumber:'pameran',catatan:'Berkas hampir lengkap',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:true},{key:'slip',label:'Slip Gaji',done:true},{key:'tabungan',label:'Rekening Tabungan',done:true},{key:'npwp',label:'NPWP',done:true},{key:'surat',label:'Surat Lainnya',done:false}],log:[{action:'Konsumen ditambahkan',time:'2025-01-15T11:00:00Z',note:''},{action:'Status: Booking → Proses DP',time:'2025-01-25T09:00:00Z',note:''},{action:'Status: Proses DP → Kumpul Berkas',time:'2025-02-05T15:00:00Z',note:''}],owner_name:'Rani Putri'},
+  {id:'k4',nama:'Dewi Lestari',hp:'087712345678',unit:'T54/120',kavling:'D-03',harga:650000000,dp:65000000,status:'selesai',tgl_booking:'2024-12-05',tgl_followup:null,kpr:'cash-keras',sumber:'referral',catatan:'Akad sudah selesai ✅',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:true}],log:[{action:'Konsumen ditambahkan',time:'2024-12-05T08:00:00Z',note:''},{action:'Status: Booking → Selesai',time:'2025-01-10T10:00:00Z',note:'Akad berjalan lancar'}],owner_name:'Doni Setiawan'},
+  {id:'k5',nama:'Rizky Pratama',hp:'081387654321',unit:'T36/72',kavling:'A-11',harga:360000000,dp:5000000,status:'booking',tgl_booking:'2025-03-14',tgl_followup:'2025-03-28',kpr:'kpr-mandiri',sumber:'walk-in',catatan:'Pertama kali kunjungi lokasi',berkas:[],log:[{action:'Konsumen ditambahkan',time:'2025-03-14T14:00:00Z',note:'Walk in dari spanduk'}],owner_name:'Rani Putri'},
+  {id:'k6',nama:'Maya Indah',hp:'082345678901',unit:'T45/90',kavling:'B-07',harga:480000000,dp:25000000,status:'selesai',tgl_booking:'2024-11-20',tgl_followup:null,kpr:'kpr-bri',sumber:'website',catatan:'',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:true}],log:[{action:'Konsumen ditambahkan',time:'2024-11-20T09:00:00Z',note:''},{action:'Status: Booking → Selesai',time:'2024-12-28T11:00:00Z',note:''}],owner_name:'Doni Setiawan'},
+  {id:'k7',nama:'Hendra Kurniawan',hp:'089876543210',unit:'T36/60',kavling:'C-15',harga:275000000,dp:0,status:'batal',tgl_booking:'2025-02-01',tgl_followup:null,kpr:'subsidi',sumber:'brosur',catatan:'Tidak jadi karena pindah kota',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true}],log:[{action:'Konsumen ditambahkan',time:'2025-02-01T10:00:00Z',note:''},{action:'Status: Booking → Batal',time:'2025-02-15T16:00:00Z',note:'Pindah kota'}],owner_name:'Rani Putri'},
+  {id:'k8',nama:'Putri Ayu Wulandari',hp:'081567890123',unit:'T54/120',kavling:'E-02',harga:720000000,dp:72000000,status:'berkas',tgl_booking:'2025-02-10',tgl_followup:'2025-03-20',kpr:'cash-bertahap',sumber:'referral',catatan:'Klien VIP, hubungi dengan sopan',berkas:[{key:'ktp',label:'KTP / e-KTP',done:true},{key:'kk',label:'Kartu Keluarga',done:true},{key:'slip',label:'Slip Gaji',done:true}],log:[{action:'Konsumen ditambahkan',time:'2025-02-10T13:00:00Z',note:'Referral dari konsumen lama'},{action:'Status: Booking → Kumpul Berkas',time:'2025-03-01T09:00:00Z',note:''}],owner_name:'Doni Setiawan'},
 ];
 
-let demoKons = JSON.parse(JSON.stringify(DATA));
-let curPg='dashboard', curF='semua', mode='landing';
+let demoKons = JSON.parse(JSON.stringify(DEMO_DATA));
+let curPg = 'dashboard', curFilter = 'semua', curSort = '', mode = 'landing';
+let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
 
-// ── VIEW TOGGLE ──
-function enterDemo(){
-  mode='app';
-  document.getElementById('landing').style.display='none';
-  document.getElementById('app').classList.add('show');
-  document.getElementById('bnrMsg').textContent='Mode Demo · Data tidak tersimpan';
-  document.getElementById('bnrBtn').textContent='← Landing Page';
-  renderDash(); renderKons(); initTheme();
+// ── VIEW TOGGLE ─────────────────────────────────
+function enterDemo() {
+  mode = 'app';
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('shell').classList.add('show');
+  document.getElementById('bannerMsg').textContent = 'Mode Demo · Data tidak tersimpan';
+  document.getElementById('bannerBtn').textContent = '← Landing Page';
+  // sidebar desktop
+  const isDesktop = window.innerWidth >= 768;
+  document.getElementById('sidebarUser').style.display   = isDesktop ? 'flex' : 'none';
+  document.getElementById('sidebarBottom').style.display = isDesktop ? 'flex' : 'none';
+  initTheme(); renderDash(); renderKons();
 }
-function backToLanding(){ mode='landing'; document.getElementById('landing').style.display='block'; document.getElementById('app').classList.remove('show'); document.getElementById('bnrMsg').textContent='Data contoh — tidak tersimpan permanen'; document.getElementById('bnrBtn').textContent='▶ Coba Demo'; }
-function toggleView(){ mode==='app'?backToLanding():enterDemo(); }
+function backToLanding() {
+  mode = 'landing';
+  document.getElementById('landing').style.display = 'block';
+  document.getElementById('shell').classList.remove('show');
+  document.getElementById('bannerMsg').textContent = 'Data contoh — tidak tersimpan permanen';
+  document.getElementById('bannerBtn').textContent = '▶ Coba Demo';
+}
+function toggleView() { mode === 'app' ? backToLanding() : enterDemo(); }
 
-// ── NAV ──
-function switchPg(p){
-  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
-  document.getElementById('pg-'+p).classList.add('on');
-  document.getElementById('tab-'+p).classList.add('on');
-  curPg=p; document.getElementById('scrl').scrollTop=0;
-  if(p==='dashboard')renderDash();
-  if(p==='laporan')renderLap();
+// ── NAVIGATION ────────────────────────────────
+function switchPg(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  document.getElementById('pg-' + p).classList.add('on');
+  document.getElementById('tab-' + p).classList.add('on');
+  curPg = p;
+  document.getElementById('scrollArea').scrollTop = 0;
+  if (p === 'dashboard') renderDash();
+  if (p === 'laporan')   renderLap();
+  if (p === 'kalender')  renderCal();
 }
 
-// ── DASHBOARD ──
-function renderDash(){
-  const k=demoKons;
-  document.getElementById('stT').textContent=k.length;
-  document.getElementById('stS').textContent=k.filter(x=>x.status==='selesai').length;
-  document.getElementById('stD').textContent=k.filter(x=>x.status==='dp').length;
-  document.getElementById('stB').textContent=k.filter(x=>x.status==='booking').length;
-  const pipes=[{f:'booking',l:'Booking',c:0},{f:'dp',l:'Proses DP',c:1},{f:'berkas',l:'Berkas',c:2},{f:'selesai',l:'Selesai',c:3},{f:'batal',l:'Batal',c:4}];
-  document.getElementById('pipeScroll').innerHTML=pipes.map(p=>`<div class="pc${p.c}" onclick="setF('${p.f}');switchPg('konsumen')"><div class="pcrd"><div class="pcnum">${k.filter(x=>x.status===p.f).length}</div><div class="pclbl">${p.l}</div></div></div>`).join('');
-  document.getElementById('feedList').innerHTML=k.slice(0,5).map((k,i)=>`
-    <div class="fitem" onclick="openDet('${k.id}')">
-      <div class="fav2 av${i%8}">${k.nama.charAt(0)}</div>
-      <div style="flex:1;min-width:0"><div class="fnm2">${k.nama}</div><div class="fmeta2"><span>${k.unit||'—'}</span><span class="fdot2"></span><span class="sbdg ${sBdgCls(k.status)}" style="font-size:9px;padding:2px 7px">${sL(k.status)}</span><span class="fdot2"></span><span>${k.owner_name}</span></div></div>
-      <div class="ftm2">${relT(k.log[0]?.time||new Date().toISOString())}</div>
+// ── DASHBOARD ─────────────────────────────────
+function renderDash() {
+  const k = demoKons;
+  document.getElementById('stTotal').textContent   = k.length;
+  document.getElementById('stSelesai').textContent = k.filter(x => x.status === 'selesai').length;
+  document.getElementById('stDP').textContent      = k.filter(x => x.status === 'dp').length;
+  document.getElementById('stBooking').textContent = k.filter(x => x.status === 'booking').length;
+  const pipes = [{f:'booking',l:'Booking',c:0},{f:'dp',l:'Proses DP',c:1},{f:'berkas',l:'Berkas',c:2},{f:'selesai',l:'Selesai',c:3},{f:'batal',l:'Batal',c:4}];
+  const pcMap = ['booking','dp','berkas','selesai','batal'];
+  document.getElementById('pipeScroll').innerHTML = pipes.map(p => `
+    <div class="pc-${p.f}" onclick="setFilter('${p.f}');switchPg('konsumen')">
+      <div class="pipe-card"><div class="pipe-num">${k.filter(x => x.status === p.f).length}</div><div class="pipe-label">${p.l}</div></div>
+    </div>`).join('');
+  document.getElementById('feedList').innerHTML = k.slice(0, 5).map((k, i) => `
+    <div class="feed-item" onclick="openDet('${k.id}')">
+      <div class="feed-av av${i % 8}">${k.nama.charAt(0)}</div>
+      <div class="feed-info">
+        <div class="feed-name">${k.nama}</div>
+        <div class="feed-meta"><span>${k.unit || '—'}</span><span class="feed-dot"></span><span class="s-badge s-${k.status}" style="font-size:9px;padding:2px 7px">${sLabel(k.status)}</span><span class="feed-dot"></span><span>${k.owner_name}</span></div>
+      </div>
+      <div class="feed-time">${relTime(k.log[0]?.time || new Date().toISOString())}</div>
     </div>`).join('');
 }
 
-// ── KONSUMEN ──
-function setF(f){curF=f;document.querySelectorAll('.chip2').forEach(c=>c.classList.toggle('on',c.dataset.f===f));renderKons();}
-function renderKons(){
-  const q=(document.getElementById('sfld')?.value||'').toLowerCase();
-  let list=[...demoKons];
-  if(curF!=='semua')list=list.filter(k=>k.status===curF);
-  if(q)list=list.filter(k=>k.nama.toLowerCase().includes(q)||(k.hp||'').includes(q)||(k.unit||'').toLowerCase().includes(q));
-  const el=document.getElementById('kfeed');
-  if(!list.length){el.innerHTML=`<div class="empty"><div class="eico">🔍</div><div class="enm">Tidak ditemukan</div><div class="esb">Ubah filter atau kata kunci</div></div>`;return;}
-  el.innerHTML=list.map(k=>{
-    const bOk=k.berkas?Object.values(k.berkas).filter(Boolean).length:0;
-    const sc={booking:'sb',dp:'sd',berkas:'sk',selesai:'ss',batal:'sx'}[k.status]||'';
-    return `<div class="kcrd ${sc}" onclick="openDet('${k.id}')">
-      <div class="ktop"><div><div class="knm">${k.nama}</div><div class="kun">${k.unit||'—'} · Kav. ${k.kavling||'—'}</div><div class="kown">👤 ${k.owner_name}</div></div><span class="sbdg ${sBdgCls(k.status)}">${sL(k.status)}</span></div>
-      <div class="kfoot"><div class="kst">📞 ${k.hp}</div><div class="kst">💰 ${fRp(k.harga)}</div><div class="kst">📁 ${bOk}/6</div></div>
+// ── KONSUMEN ──────────────────────────────────
+function setFilter(f) {
+  curFilter = f;
+  document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
+  renderKons();
+}
+function toggleSort() {
+  curSort = curSort === '' ? 'az' : curSort === 'az' ? 'za' : '';
+  const btn = document.getElementById('sortBtn');
+  btn.textContent = curSort === 'za' ? 'Z→A' : 'A→Z';
+  btn.classList.toggle('on', curSort !== '');
+  renderKons();
+}
+function renderKons() {
+  const q = (document.getElementById('searchFld')?.value || '').toLowerCase();
+  let list = [...demoKons];
+  if (curFilter !== 'semua') list = list.filter(k => k.status === curFilter);
+  if (q) list = list.filter(k => k.nama.toLowerCase().includes(q) || (k.hp || '').includes(q) || (k.unit || '').toLowerCase().includes(q));
+  if (curSort === 'az') list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
+  if (curSort === 'za') list.sort((a, b) => b.nama.localeCompare(a.nama, 'id'));
+  const el = document.getElementById('konsFeed');
+  if (!list.length) { el.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ditemukan</div><div class="empty-sub">Ubah filter atau kata kunci</div></div>`; return; }
+  el.innerHTML = list.map(k => {
+    const bOk  = (k.berkas||[]).filter(b => b.done).length;
+    const bTot = (k.berkas||[]).length;
+    const hasFollowup = k.tgl_followup && new Date(k.tgl_followup + 'T00:00:00') >= new Date(new Date().toDateString());
+    return `<div class="kons-card st-${k.status}" onclick="openDet('${k.id}')">
+      <div class="card-top">
+        <div>
+          <div class="card-name">${k.nama}</div>
+          <div class="card-unit">${k.unit || '—'} · Kav. ${k.kavling || '—'}</div>
+          <div class="card-owner">👤 ${k.owner_name}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <span class="s-badge s-${k.status}">${sLabel(k.status)}</span>
+          ${hasFollowup ? `<span style="font-size:9px;color:var(--amber);font-weight:700">📅 ${fDateShort(k.tgl_followup)}</span>` : ''}
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-stat">📞 ${k.hp}</div>
+        <div class="card-stat">💰 ${fRp(k.harga)}</div>
+        <div class="card-stat">📁 ${bOk}/${bTot || '—'}</div>
+      </div>
     </div>`;
   }).join('');
 }
 
-// ── DETAIL ──
-function openDet(id){
-  const k=demoKons.find(x=>x.id===id);if(!k)return;
-  const bi=[{key:'ktp',label:'KTP / e-KTP'},{key:'kk',label:'Kartu Keluarga'},{key:'slip',label:'Slip Gaji / SK Kerja'},{key:'tabungan',label:'Rekening Tabungan 3 Bln'},{key:'npwp',label:'NPWP'},{key:'surat',label:'Surat Keterangan Lainnya'}];
-  const b=k.berkas||{};
-  const ci=Math.abs(hsh(id))%8;
-  const logHtml=(k.log||[]).slice().reverse().map(l=>`<div class="tli"><div class="tldot">📌</div><div><div class="tlac">${l.action}</div><div class="tltm">${fDate(l.time)}</div>${l.note?`<div class="tlnt">${l.note}</div>`:''}</div></div>`).join('')||`<div style="color:var(--t4);font-size:12px;padding:8px 0">Belum ada log</div>`;
-  document.getElementById('mDetInner').innerHTML=`
-    <div class="mpil"></div>
-    <div class="mhd"><div class="mttl">Detail Konsumen</div><button class="mcl" onclick="closeM('mDet')">✕</button></div>
-    <div class="dhr"><div class="dav av${ci}">${k.nama.charAt(0)}</div><div><div class="dnm">${k.nama}</div><div class="dun">${k.unit||'—'} · Kav. ${k.kavling||'—'}</div><span class="sbdg ${sBdgCls(k.status)}" style="display:inline-block;margin-top:5px">${sL(k.status)}</span></div></div>
-    <div class="qar">
-      <button class="qa qc" onclick="toast2('📞 Demo: Telepon ${k.hp}','📞')"><span class="qaico">📞</span>Telepon</button>
-      <button class="qa qw" onclick="toast2('💬 Demo: Buka WhatsApp','💬')"><span class="qaico">💬</span>WhatsApp</button>
-      <button class="qa qe" onclick="toast2('✏️ Demo: Edit tidak tersimpan permanen','')"><span class="qaico">✏️</span>Edit</button>
-      <button class="qa ql" onclick="demoLog('${id}')"><span class="qaico">📝</span>Catat</button>
+// ── DETAIL ────────────────────────────────────
+function openDet(id) {
+  const k = demoKons.find(x => x.id === id); if (!k) return;
+  const ci = Math.abs(hsh(id)) % 8;
+  const logHtml = (k.log || []).slice().reverse().map(l => `
+    <div class="tl-item"><div class="tl-dot">📌</div>
+    <div class="tl-body"><div class="tl-action">${l.action}</div><div class="tl-time">${fDate(l.time)}</div>${l.note ? `<div class="tl-note">${l.note}</div>` : ''}</div></div>`).join('') || `<div style="color:var(--text-4);font-size:12px;padding:8px 0">Belum ada log</div>`;
+  const berkasHtml = (k.berkas || []).map(bx => `
+    <div class="berkas-item" onclick="toggleBerkas('${id}','${bx.key}')">
+      <div class="berkas-check ${bx.done ? 'done' : ''}">${bx.done ? '✓' : ''}</div>
+      <div class="berkas-label ${bx.done ? 'done' : ''}">${bx.label}</div>
+    </div>`).join('') || `<div style="color:var(--text-4);font-size:12px;padding:12px 0">Belum ada item berkas. Tambah di versi asli.</div>`;
+
+  document.getElementById('detailSheet').innerHTML = `
+    <div class="sheet-pill"></div>
+    <div class="sheet-head"><div class="sheet-title">Detail Konsumen</div><button class="sheet-close" onclick="closeModal('modalDetail')">✕</button></div>
+    <div class="det-hero">
+      <div class="det-avatar av${ci}">${k.nama.charAt(0)}</div>
+      <div>
+        <div class="det-name">${k.nama}</div>
+        <div class="det-unit">${k.unit || '—'} · Kav. ${k.kavling || '—'}</div>
+        <span class="s-badge s-${k.status}" style="display:inline-block;margin-top:6px">${sLabel(k.status)}</span>
+        ${k.tgl_followup ? `<div style="font-size:11px;color:var(--amber);margin-top:4px;font-weight:600">📅 Follow-up: ${fDateShort(k.tgl_followup)}</div>` : ''}
+      </div>
     </div>
-    <div class="dsec"><div class="dsecl">Informasi</div>
-      <div class="drow"><span class="dk">No. HP</span><span class="dv" style="color:var(--brand2)">${k.hp}</span></div>
-      <div class="drow"><span class="dk">Harga Unit</span><span class="dv" style="color:var(--brand2)">${fRpFull(k.harga)}</span></div>
-      <div class="drow"><span class="dk">Jumlah DP</span><span class="dv">${fRpFull(k.dp)}</span></div>
-      <div class="drow"><span class="dk">Tgl. Booking</span><span class="dv">${k.tgl_booking||'—'}</span></div>
-      <div class="drow"><span class="dk">Pembiayaan</span><span class="dv">${kprL(k.kpr)}</span></div>
-      <div class="drow"><span class="dk">Sumber</span><span class="dv">${sumberL(k.sumber)}</span></div>
-      <div class="drow"><span class="dk">Marketing</span><span class="dv">${k.owner_name}</span></div>
-      ${k.catatan?`<div class="drow" style="flex-direction:column;gap:5px"><span class="dk">Catatan</span><div class="tlnt">${k.catatan}</div></div>`:''}
+    <div class="qa-row">
+      <button class="qa-btn qa-call" onclick="toast('📞 Demo: Telepon ${k.hp}','📞')"><span class="qa-ico">📞</span>Telepon</button>
+      <button class="qa-btn qa-wa"   onclick="toast('💬 Demo: Buka WhatsApp','💬')"><span class="qa-ico">💬</span>WhatsApp</button>
+      <button class="qa-btn qa-edit" onclick="toast('✏️ Demo: Edit tidak tersimpan permanen','')"><span class="qa-ico">✏️</span>Edit</button>
+      <button class="qa-btn qa-log"  onclick="demoAddLog('${id}')"><span class="qa-ico">📝</span>Catat</button>
     </div>
-    <div class="dsec"><div class="dsecl">Checklist Berkas</div>
-      <div class="bkls">${bi.map(bx=>`<div class="bkl" onclick="toggleB('${id}','${bx.key}')"><div class="bchk ${b[bx.key]?'done':''}">${b[bx.key]?'✓':''}</div><div class="bktxt ${b[bx.key]?'done':''}">${bx.label}</div></div>`).join('')}</div>
+    <div class="det-section">
+      <div class="det-sec-label">Informasi</div>
+      <div class="det-row"><span class="det-key">No. HP</span><span class="det-val" style="color:var(--brand-light)">${k.hp}</span></div>
+      <div class="det-row"><span class="det-key">Harga Unit</span><span class="det-val" style="color:var(--brand-light)">${fRpFull(k.harga)}</span></div>
+      <div class="det-row"><span class="det-key">Jumlah DP</span><span class="det-val">${fRpFull(k.dp)}</span></div>
+      <div class="det-row"><span class="det-key">Tgl. Booking</span><span class="det-val">${k.tgl_booking || '—'}</span></div>
+      <div class="det-row"><span class="det-key">Follow-up</span><span class="det-val" style="color:var(--amber)">${k.tgl_followup ? fDateShort(k.tgl_followup) : '—'}</span></div>
+      <div class="det-row"><span class="det-key">Pembiayaan</span><span class="det-val">${kprLabel(k.kpr)}</span></div>
+      <div class="det-row"><span class="det-key">Sumber</span><span class="det-val">${sumberLabel(k.sumber)}</span></div>
+      <div class="det-row"><span class="det-key">Marketing</span><span class="det-val">${k.owner_name}</span></div>
+      ${k.catatan ? `<div class="det-row" style="flex-direction:column;gap:6px"><span class="det-key">Catatan</span><div class="tl-note">${k.catatan}</div></div>` : ''}
     </div>
-    <div class="dsec"><div class="dsecl">Log Aktivitas</div><div class="tl" style="padding-top:8px">${logHtml}</div></div>`;
-  openM('mDet');
+    <div class="det-section">
+      <div class="det-sec-label">Checklist Berkas & Dokumen</div>
+      <div class="berkas-grid">${berkasHtml}</div>
+    </div>
+    <div class="det-section" style="padding-bottom:24px">
+      <div class="det-sec-label">Log Aktivitas</div>
+      <div class="tl" style="padding-top:8px">${logHtml}</div>
+    </div>`;
+  openModal('modalDetail');
 }
-function toggleB(id,key){
-  const k=demoKons.find(x=>x.id===id);if(!k)return;
-  k.berkas[key]=!k.berkas[key];
-  const lbl={ktp:'KTP',kk:'Kartu Keluarga',slip:'Slip Gaji',tabungan:'Rekening Tabungan',npwp:'NPWP',surat:'Surat Lainnya'};
-  k.log.push({action:`Berkas ${lbl[key]}: ${k.berkas[key]?'✅ Sudah':'❌ Belum'}`,time:new Date().toISOString(),note:''});
-  toast2(k.berkas[key]?`${lbl[key]} ✓`:`${lbl[key]} belum`,k.berkas[key]?'✅':'📋');
-  openDet(id);
-}
-function demoLog(id){
-  const note=prompt('Tambah catatan (demo):');if(!note)return;
-  const k=demoKons.find(x=>x.id===id);if(!k)return;
-  k.log.push({action:'Catatan ditambahkan',time:new Date().toISOString(),note});
-  toast2('Catatan ditambahkan (sesi ini)','📝');
+
+function toggleBerkas(id, key) {
+  const k = demoKons.find(x => x.id === id); if (!k) return;
+  const item = (k.berkas || []).find(b => b.key === key); if (!item) return;
+  item.done = !item.done;
+  k.log.push({ action: `Berkas ${item.label}: ${item.done ? '✅ Sudah' : '❌ Belum'}`, time: new Date().toISOString(), note: '' });
+  toast(item.done ? `${item.label} ✓` : `${item.label} belum`, item.done ? '✅' : '📋');
   openDet(id);
 }
 
-// ── LAPORAN ──
-function renderLap(){
-  const k=demoKons;
-  const selesai=k.filter(x=>x.status==='selesai').length;
-  const nilai=k.filter(x=>x.status==='selesai').reduce((s,x)=>s+(x.harga||0),0);
-  const dp=k.reduce((s,x)=>s+(x.dp||0),0);
-  document.getElementById('lkpi').innerHTML=`
-    <div class="kpi2 kb"><div class="kico">👥</div><div class="klbl">Total Konsumen</div><div class="kval">${k.length}</div></div>
-    <div class="kpi2 kg"><div class="kico">✅</div><div class="klbl">Akad Selesai</div><div class="kval">${selesai}</div></div>
-    <div class="kpi2 ka"><div class="kico">💵</div><div class="klbl">Nilai Jual</div><div class="kval" style="font-size:16px">${fRp(nilai)}</div></div>
-    <div class="kpi2 kv"><div class="kico">🏦</div><div class="klbl">DP Masuk</div><div class="kval" style="font-size:16px">${fRp(dp)}</div></div>`;
-  const pipes=[{f:'booking',l:'Booking',c:'#6366f1'},{f:'dp',l:'Proses DP',c:'#f59e0b'},{f:'berkas',l:'Kumpul Berkas',c:'#a855f7'},{f:'selesai',l:'Selesai',c:'#10b981'},{f:'batal',l:'Batal',c:'#f43f5e'}];
-  document.getElementById('plist').innerHTML=pipes.map(p=>{const cnt=k.filter(x=>x.status===p.f).length;const pct=k.length?Math.round(cnt/k.length*100):0;return`<div class="pbar"><div class="pbarh"><span class="pbn">${p.l}</span><span class="pbm">${cnt} · ${pct}%</span></div><div class="ptrk"><div class="pfl" style="width:${pct}%;background:${p.c}"></div></div></div>`;}).join('');
-  const pct=Math.min(Math.round(selesai/8*100),100);
-  document.getElementById('ltarget').innerHTML=`<div class="tcrd"><div class="tch"><div><div class="tcl">Akad Selesai</div><div class="tcs">Target bulan ini</div></div><div class="tcn">${selesai}<span style="font-size:14px;color:var(--t3);font-family:var(--font);font-weight:500"> / 8</span></div></div><div class="ttrk"><div class="tfl" style="width:${pct}%"></div></div><div class="tpct">${pct}% tercapai</div></div>`;
+function demoAddLog(id) {
+  const note = prompt('Tambah catatan (demo):'); if (!note) return;
+  const k = demoKons.find(x => x.id === id); if (!k) return;
+  k.log.push({ action: 'Catatan ditambahkan', time: new Date().toISOString(), note });
+  toast('Catatan ditambahkan (sesi ini)', '📝');
+  openDet(id);
 }
 
-// ── NOTIF ──
-function openNotifM(){
-  const today=new Date();const r=[];
-  demoKons.forEach(k=>{
-    if(k.status==='booking'&&k.tgl_booking){const d=Math.floor((today-new Date(k.tgl_booking))/86400000);if(d>=7)r.push({ico:'⏰',txt:`${k.nama} — Booking ${d} hari lalu!`,col:'var(--amber)'});}
-    if(k.status==='berkas'){const m=k.berkas?Object.values(k.berkas).filter(v=>!v).length:6;if(m>0)r.push({ico:'📁',txt:`${k.nama} — ${m} berkas belum`,col:'var(--violet)'});}
-    if(k.status==='dp')r.push({ico:'💰',txt:`${k.nama} — Proses DP belum selesai`,col:'var(--brand2)'});
+// ── KALENDER ──────────────────────────────────
+function renderCal() {
+  const today = new Date();
+  document.getElementById('calMonthLabel').textContent =
+    new Date(calYear, calMonth, 1).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev  = new Date(calYear, calMonth, 0).getDate();
+  const evMap = {};
+  demoKons.forEach(k => {
+    if (k.tgl_followup) {
+      const key = k.tgl_followup.slice(0, 10);
+      if (!evMap[key]) evMap[key] = [];
+      evMap[key].push(k);
+    }
   });
-  document.getElementById('notifBody').innerHTML=r.length?r.map(x=>`<div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)"><span style="font-size:18px;flex-shrink:0">${x.ico}</span><span style="font-size:13px;color:${x.col};font-weight:600;line-height:1.5">${x.txt}</span></div>`).join(''):
-    `<div class="empty"><div class="eico">🎉</div><div class="enm">Semua beres!</div></div>`;
-  openM('mNotif');
+  const days = ['Min','Sen','Sel','Rab','Kam','Jum','Sab'];
+  let html = days.map(d => `<div class="cal-day-name">${d}</div>`).join('');
+  for (let i = firstDay - 1; i >= 0; i--) html += `<div class="cal-day other-month">${daysInPrev - i}</div>`;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
+    let cls = 'cal-day' + (isToday ? ' today' : '') + (evMap[ds] ? ' has-event' : '');
+    html += `<div class="${cls}">${d}</div>`;
+  }
+  const total = firstDay + daysInMonth;
+  const rem = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let d = 1; d <= rem; d++) html += `<div class="cal-day other-month">${d}</div>`;
+  document.getElementById('calGrid').innerHTML = html;
+
+  // Upcoming events
+  const todayD = new Date(today.toDateString());
+  const limit  = new Date(todayD); limit.setDate(todayD.getDate() + 14);
+  const upcoming = demoKons.filter(k => k.tgl_followup && new Date(k.tgl_followup + 'T00:00:00') >= todayD && new Date(k.tgl_followup + 'T00:00:00') <= limit).sort((a, b) => a.tgl_followup.localeCompare(b.tgl_followup));
+  const statusColors = { booking: 'var(--brand)', dp: 'var(--amber)', berkas: 'var(--violet)', selesai: 'var(--emerald)', batal: 'var(--rose)' };
+  document.getElementById('calEvents').innerHTML = `
+    <div class="cal-events-title">Follow-up 14 Hari ke Depan</div>
+    ${upcoming.length ? upcoming.map(k => `
+      <div class="cal-event-item" onclick="openDet('${k.id}')">
+        <div class="cal-event-dot" style="background:${statusColors[k.status] || 'var(--brand)'}"></div>
+        <div><div class="cal-event-name">${k.nama}</div><div class="cal-event-meta">${sLabel(k.status)} · ${k.unit || '—'} · ${k.owner_name}</div></div>
+        <div style="font-size:11px;font-family:var(--font-mono);color:var(--text-4);flex-shrink:0">${fDateShort(k.tgl_followup)}</div>
+      </div>`).join('') : `<div style="text-align:center;padding:24px;color:var(--text-4);font-size:13px">Tidak ada jadwal follow-up</div>`}`;
+}
+function calPrev() { if (calMonth === 0) { calMonth = 11; calYear--; } else calMonth--; renderCal(); }
+function calNext() { if (calMonth === 11) { calMonth = 0; calYear++; } else calMonth++; renderCal(); }
+function calToday() { calYear = new Date().getFullYear(); calMonth = new Date().getMonth(); renderCal(); }
+
+// ── LAPORAN ───────────────────────────────────
+function renderLap() {
+  const k = demoKons;
+  const selesai = k.filter(x => x.status === 'selesai').length;
+  const nilai   = k.filter(x => x.status === 'selesai').reduce((s, x) => s + (x.harga || 0), 0);
+  const dp      = k.reduce((s, x) => s + (x.dp || 0), 0);
+  document.getElementById('lapKpi').innerHTML = `
+    <div class="kpi-card kc-blue"><div class="kpi-icon">👥</div><div class="kpi-label">Total Konsumen</div><div class="kpi-value">${k.length}</div></div>
+    <div class="kpi-card kc-green"><div class="kpi-icon">✅</div><div class="kpi-label">Akad Selesai</div><div class="kpi-value">${selesai}</div></div>
+    <div class="kpi-card kc-amber"><div class="kpi-icon">💵</div><div class="kpi-label">Nilai Jual</div><div class="kpi-value" style="font-size:17px">${fRp(nilai)}</div></div>
+    <div class="kpi-card kc-violet"><div class="kpi-icon">🏦</div><div class="kpi-label">DP Masuk</div><div class="kpi-value" style="font-size:17px">${fRp(dp)}</div></div>`;
+  const pipes = [{k:'booking',l:'Booking',c:'#6366f1'},{k:'dp',l:'Proses DP',c:'#f59e0b'},{k:'berkas',l:'Kumpul Berkas',c:'#a855f7'},{k:'selesai',l:'Selesai',c:'#10b981'},{k:'batal',l:'Batal',c:'#f43f5e'}];
+  document.getElementById('lapProg').innerHTML = pipes.map(p => {
+    const cnt = k.filter(x => x.status === p.k).length;
+    const pct = k.length ? Math.round(cnt / k.length * 100) : 0;
+    return `<div class="prog-item"><div class="prog-head"><span class="prog-name">${p.l}</span><span class="prog-meta">${cnt} · ${pct}%</span></div><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${p.c}"></div></div></div>`;
+  }).join('');
+  const pct = Math.min(Math.round(selesai / 8 * 100), 100);
+  document.getElementById('lapTarget').innerHTML = `
+    <div class="target-card">
+      <div class="target-head"><div><div class="target-label">Akad Selesai</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">Target bulan ini</div></div>
+      <div class="target-num">${selesai}<span style="font-size:14px;color:var(--text-3);font-family:var(--font-body);font-weight:500"> / 8</span></div></div>
+      <div class="target-track"><div class="target-fill" style="width:${pct}%"></div></div>
+      <div class="target-pct">${pct}% tercapai</div>
+    </div>`;
 }
 
-// ── THEME ──
-function applyTheme(light,anim){
-  if(anim){document.documentElement.classList.add('theme-anim');setTimeout(()=>document.documentElement.classList.remove('theme-anim'),400);}
-  document.documentElement.classList.toggle('light',light);
-  const chk=document.getElementById('themeChk');
-  const thumb=document.getElementById('tthumb');
-  const nm=document.getElementById('ttnm');
-  const ds=document.getElementById('ttds');
-  const hbtn=document.getElementById('themeBtnH');
-  if(chk)chk.checked=light;
-  if(thumb)thumb.textContent=light?'☀️':'🌙';
-  if(nm)nm.textContent=light?'☀️ Tema Terang':'🌙 Tema Gelap';
-  if(ds)ds.textContent=light?'Saat ini menggunakan tema terang':'Saat ini menggunakan tema gelap';
-  if(hbtn)hbtn.textContent=light?'☀️':'🌙';
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',light?'#f5f5fa':'#050508');
+// ── NOTIF ─────────────────────────────────────
+function openNotifDemo() {
+  const today = new Date(); const r = [];
+  demoKons.forEach(k => {
+    if (k.tgl_followup) { const fd = new Date(k.tgl_followup + 'T00:00:00'); const diff = Math.floor((fd - today) / 86400000); if (diff === 0) r.push({ico:'📅',txt:`${k.nama} — Follow-up HARI INI!`,col:'var(--rose)'}); else if (diff === 1) r.push({ico:'📅',txt:`${k.nama} — Follow-up besok`,col:'var(--amber)'}); }
+    if (k.status === 'booking' && k.tgl_booking) { const d = Math.floor((today - new Date(k.tgl_booking)) / 86400000); if (d >= 7) r.push({ico:'⏰',txt:`${k.nama} — Booking ${d} hari lalu, follow up!`,col:'var(--amber)'}); }
+    if (k.status === 'berkas') { const m = (k.berkas||[]).filter(b => !b.done).length; if (m > 0) r.push({ico:'📁',txt:`${k.nama} — ${m} berkas belum`,col:'var(--violet)'}); }
+    if (k.status === 'dp') r.push({ico:'💰',txt:`${k.nama} — Proses DP belum selesai`,col:'var(--brand-light)'});
+  });
+  document.getElementById('notifBody').innerHTML = r.length
+    ? r.map(x => `<div style="display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--glass-border);align-items:flex-start"><span style="font-size:20px;flex-shrink:0">${x.ico}</span><span style="font-size:13px;color:${x.col};font-weight:600;line-height:1.5">${x.txt}</span></div>`).join('')
+    : `<div class="empty-state"><div class="empty-ico">🎉</div><div class="empty-title">Semua beres!</div></div>`;
+  openModal('modalNotif');
 }
-function setTheme(l){localStorage.setItem('mp_theme',l?'light':'dark');applyTheme(l,true);toast2(l?'Tema terang aktif ☀️':'Tema gelap aktif 🌙','');}
-function quickTheme(){const nl=!document.documentElement.classList.contains('light');localStorage.setItem('mp_theme',nl?'light':'dark');applyTheme(nl,true);toast2(nl?'Tema terang aktif ☀️':'Tema gelap aktif 🌙','');}
-function initTheme(){const s=localStorage.getItem('mp_theme');applyTheme(s?s==='light':window.matchMedia('(prefers-color-scheme: light)').matches,false);}
 
-// ── MODAL ──
-function openM(id){document.getElementById(id).classList.add('open')}
-function closeM(id){document.getElementById(id).classList.remove('open')}
-document.querySelectorAll('.mov').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
+// ── THEME ─────────────────────────────────────
+function applyTheme(isLight, animate) {
+  const html = document.documentElement;
+  if (animate) { html.classList.add('theme-anim'); setTimeout(() => html.classList.remove('theme-anim'), 400); }
+  html.classList.toggle('light', isLight);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isLight ? '#f5f5fa' : '#050508');
+  ['themeToggle'].forEach(id => { const el = document.getElementById(id); if (el) el.checked = isLight; });
+  ['toggleThumb'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = isLight ? '☀️' : '🌙'; });
+  const lbl = document.getElementById('themeLabel'); if (lbl) lbl.textContent = isLight ? '☀️ Tema Terang' : '🌙 Tema Gelap';
+  const dsc = document.getElementById('themeDesc');  if (dsc) dsc.textContent  = isLight ? 'Saat ini menggunakan tema terang' : 'Saat ini menggunakan tema gelap';
+  const hdr = document.getElementById('themeBtnHdr'); if (hdr) hdr.textContent = isLight ? '☀️' : '🌙';
+  const sdi = document.getElementById('sidebarThemeIco'); if (sdi) sdi.textContent = isLight ? '☀️' : '🌙';
+}
+function setTheme(l) { localStorage.setItem('mp_theme', l ? 'light' : 'dark'); applyTheme(l, true); toast(l ? 'Tema terang aktif ☀️' : 'Tema gelap aktif 🌙', ''); }
+function quickTheme() { const nl = !document.documentElement.classList.contains('light'); localStorage.setItem('mp_theme', nl ? 'light' : 'dark'); applyTheme(nl, true); toast(nl ? 'Tema terang aktif ☀️' : 'Tema gelap aktif 🌙', ''); }
+function initTheme() { const s = localStorage.getItem('mp_theme'); applyTheme(s ? s === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches, false); }
 
-// ── TOAST ──
+// ── MODAL ─────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-bg').forEach(el => el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); }));
+
+// ── TOAST ─────────────────────────────────────
 let _tt;
-function toast2(msg,ico=''){const t=document.getElementById('toast');t.textContent=ico?ico+' '+msg:msg;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2600);}
+function toast(msg, ico = '') {
+  const t = document.getElementById('toast');
+  t.textContent = ico ? ico + ' ' + msg : msg;
+  t.classList.add('show'); clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2600);
+}
 
-// ── HELPERS ──
-function sL(s){return{booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',selesai:'Selesai',batal:'Batal'}[s]||s}
-function sBdgCls(s){return{booking:'bk',dp:'dp',berkas:'bks',selesai:'sl',batal:'bt'}[s]||''}
-function kprL(s){return{'kpr-btn':'KPR BTN','kpr-bni':'KPR BNI','kpr-bri':'KPR BRI','kpr-mandiri':'KPR Mandiri','kpr-bsm':'KPR Syariah','cash-keras':'Cash Keras','cash-bertahap':'Cash Bertahap','subsidi':'KPR Subsidi FLPP'}[s]||s||'—'}
-function sumberL(s){return{referral:'Referral',medsos:'Media Sosial',pameran:'Pameran',brosur:'Brosur','walk-in':'Walk In',website:'Website',telepon:'Telepon'}[s]||s||'—'}
-function fRp(n){if(!n)return'Rp 0';if(n>=1e9)return'Rp '+(n/1e9).toFixed(1)+'M';if(n>=1e6)return'Rp '+(n/1e6).toFixed(0)+'jt';return'Rp '+n.toLocaleString('id')}
-function fRpFull(n){return n?'Rp '+n.toLocaleString('id'):'Rp 0'}
-function fDate(iso){if(!iso)return'—';const d=new Date(iso);return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
-function relT(iso){const diff=Date.now()-new Date(iso);const m=Math.floor(diff/60000);if(m<1)return'baru saja';if(m<60)return m+'m lalu';const h=Math.floor(m/60);if(h<24)return h+'j lalu';return Math.floor(h/24)+'h lalu'}
-function hsh(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h)}
+// ── HELPERS ───────────────────────────────────
+function sLabel(s) { return {booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',selesai:'Selesai',batal:'Batal'}[s] || s; }
+function kprLabel(s) { return {'kpr-btn':'KPR BTN','kpr-bni':'KPR BNI','kpr-bri':'KPR BRI','kpr-mandiri':'KPR Mandiri','kpr-bsm':'KPR Syariah','cash-keras':'Cash Keras','cash-bertahap':'Cash Bertahap','subsidi':'KPR Subsidi FLPP'}[s] || s || '—'; }
+function sumberLabel(s) { return {referral:'Referral',medsos:'Media Sosial',pameran:'Pameran',brosur:'Brosur',website:'Website','walk-in':'Walk In',telepon:'Telepon'}[s] || s || '—'; }
+function fRp(n) { if (!n) return 'Rp 0'; return 'Rp ' + Number(n).toLocaleString('id-ID'); }
+function fRpFull(n) { return n ? 'Rp ' + Number(n).toLocaleString('id-ID') : 'Rp 0'; }
+function fDate(iso) { if (!iso) return '—'; const d = new Date(iso); return d.toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fDateShort(iso) { if (!iso) return '—'; const d = new Date(iso + 'T00:00:00'); return d.toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'}); }
+function relTime(iso) { const diff = Date.now() - new Date(iso); const m = Math.floor(diff/60000); if (m < 1) return 'baru saja'; if (m < 60) return m + 'm lalu'; const h = Math.floor(m/60); if (h < 24) return h + 'j lalu'; return Math.floor(h/24) + 'h lalu'; }
+function hsh(s) { let h = 0; for (let i = 0; i < (s||'').length; i++) { h = ((h<<5)-h)+s.charCodeAt(i); h|=0; } return h; }
 
+// Init
 initTheme();
 </script>
 </body>
