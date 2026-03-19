@@ -23,3 +23,5 @@ let calSelected  = null;
 let chartPipeline = null;
 let chartTren     = null;
 let chartSumber   = null;
+
+let curSort = '';   // '' = default (terbaru), 'az' = A→Z, 'za' = Z→A

@@ -7,7 +7,6 @@ function switchPage(p) {
   curPage = p;
   document.getElementById('scrollArea').scrollTop = 0;
   if (p === 'dashboard') renderDash();
-  if (p === 'konsumen')  renderNamaFilter();
   if (p === 'laporan')   { renderLapKpi(); renderCharts(); }
   if (p === 'kalender')  renderKalender();
 }
@@ -89,62 +88,37 @@ function renderDash() {
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
-  setNamaFilter('');   // reset nama filter saat ganti status
-  renderNamaFilter();
   renderKons();
 }
 
-// ── FILTER NAMA ───────────────────────────────────
-function renderNamaFilter() {
-  const sel   = document.getElementById('namaFilterSel');
-  const bar   = document.getElementById('namaFilterBar');
-  if (!sel || !bar) return;
+function toggleSort() {
+  // Siklus: default → A→Z → Z→A → default
+  if (curSort === '')   curSort = 'az';
+  else if (curSort === 'az') curSort = 'za';
+  else curSort = '';
 
-  const ow    = document.getElementById('adminSel')?.value || '';
-  const saved = sel.value; // pertahankan pilihan jika masih ada
-
-  // Pool konsumen sesuai filter status & tim aktif
-  let pool = [...allKons];
-  if (curFilter !== 'semua') pool = pool.filter(k => k.status === curFilter);
-  if (ow) pool = pool.filter(k => k.owner_id === ow);
-
-  // Sort A-Z
-  pool.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
-
-  sel.innerHTML = '<option value="">Semua Konsumen</option>' +
-    pool.map(k => `<option value="${k.id}" ${k.id === saved ? 'selected' : ''}>${k.nama}${k.unit ? ' · ' + k.unit : ''}${k.kavling ? ' / ' + k.kavling : ''}</option>`).join('');
-
-  // Show/hide bar: selalu tampil jika ada data
-  bar.style.display = pool.length > 0 ? 'flex' : 'none';
-}
-
-function setNamaFilter(konsumenId) {
-  const sel   = document.getElementById('namaFilterSel');
-  const clear = document.getElementById('namaFilterClear');
-  if (sel)   sel.value = konsumenId;
-  if (clear) clear.style.display = konsumenId ? 'flex' : 'none';
-
-  // Highlight bar saat filter aktif
-  const bar = document.getElementById('namaFilterBar');
-  if (bar) bar.classList.toggle('active', !!konsumenId);
-
+  const btn = document.getElementById('sortBtn');
+  if (curSort === 'az') {
+    btn.textContent = 'A→Z';
+    btn.classList.add('on');
+  } else if (curSort === 'za') {
+    btn.textContent = 'Z→A';
+    btn.classList.add('on');
+  } else {
+    btn.textContent = 'A→Z';
+    btn.classList.remove('on');
+  }
   renderKons();
 }
 
-function fillAdminSel() {
-  const sel = document.getElementById('adminSel');
-  sel.innerHTML = '<option value="">Semua Marketing</option>';
-  allProfs.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.full_name || p.email; sel.appendChild(o); });
-}
+
 function renderKons() {
-  const q       = (document.getElementById('searchFld')?.value || '').toLowerCase();
-  const ow      = document.getElementById('adminSel')?.value || '';
-  const namaId  = document.getElementById('namaFilterSel')?.value || '';
+  const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
+  const ow = document.getElementById('adminSel')?.value || '';
   let list = [...allKons];
   if (curFilter !== 'semua') list = list.filter(k => k.status === curFilter);
-  if (ow)     list = list.filter(k => k.owner_id === ow);
-  if (namaId) list = list.filter(k => k.id === namaId);
-  if (q)      list = list.filter(k =>
+  if (ow) list = list.filter(k => k.owner_id === ow);
+  if (q)  list = list.filter(k =>
     k.nama.toLowerCase().includes(q) ||
     (k.hp || '').includes(q) ||
     (k.unit || '').toLowerCase().includes(q) ||

@@ -1185,23 +1185,6 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 }
 .berkas-add-btn:active { transform: scale(.98); }
 
-/* ════════════════════════════════════════
-   FILTER NAMA KONSUMEN
-════════════════════════════════════════ */
-.nama-filter-bar {
-  display: none;   /* shown by JS when data exists */
-  align-items: center;
-  gap: 9px;
-  padding: 0 max(env(safe-area-inset-right), 18px) 10px max(env(safe-area-inset-left), 18px);
-}
-.nama-filter-wrap {
-  flex: 1;
-  position: relative;
-}
-.nama-filter-bar .admin-select {
-  width: 100%;
-  padding-right: 32px;
-}
 /* Active state: highlight border saat filter nama aktif */
 .nama-filter-bar.active .admin-select {
   border-color: rgba(99,102,241,.5);
@@ -1225,4 +1208,26 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 
 @media (min-width: 768px) {
   .nama-filter-bar { padding-left: 20px; padding-right: 20px; }
+}
+
+/* ════════════════════════════════════════
+   SORT BUTTON & FILTER DIVIDER
+════════════════════════════════════════ */
+.filter-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--glass-border);
+  flex-shrink: 0;
+  align-self: center;
+  margin: 0 2px;
+}
+.sort-btn {
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+  padding: 6px 12px;
+}
+.sort-btn.on {
+  background: var(--amber-soft);
+  border-color: rgba(245,158,11,.4);
+  color: var(--amber);
 }
