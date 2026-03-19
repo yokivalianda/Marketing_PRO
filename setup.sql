@@ -107,3 +107,9 @@ ALTER PUBLICATION supabase_realtime ADD TABLE konsumen;
 -- 3. Edit baris Anda → ubah kolom 'role' menjadi 'admin'
 -- 4. Refresh aplikasi → Anda sekarang menjadi Admin
 -- ═══════════════════════════════════════════════════════════
+
+-- ════════════════════════════════════
+-- MIGRATION: Add tgl_followup column
+-- (run this if upgrading from v3)
+-- ════════════════════════════════════
+ALTER TABLE konsumen ADD COLUMN IF NOT EXISTS tgl_followup DATE;
