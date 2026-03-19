@@ -12,12 +12,11 @@ function sumberLabel(s) {
 // ── FORMAT ───────────────────────────────────────
 function fRp(n) {
   if (!n) return 'Rp 0';
-  if (n >= 1e9) return 'Rp ' + (n / 1e9).toFixed(1) + 'M';
-  if (n >= 1e6) return 'Rp ' + (n / 1e6).toFixed(0) + 'jt';
-  return 'Rp ' + n.toLocaleString('id');
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
 }
 function fRpFull(n) {
-  return n ? 'Rp ' + n.toLocaleString('id') : 'Rp 0';
+  if (!n) return 'Rp 0';
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
 }
 function fDate(iso) {
   if (!iso) return '—';
