@@ -124,7 +124,7 @@ function renderLapKpi() {
 
   // Pipeline progress bars
   const pipes = [
-    { k: 'cek-lokasi', l: 'Cek Lokasi',    c: '#0ea5e9' },
+    { k: 'cek-lokasi', l: 'Prospek Konsumen',    c: '#0ea5e9' },
     { k: 'booking',    l: 'Booking',        c: '#6366f1' },
     { k: 'dp',         l: 'Proses DP',      c: '#f59e0b' },
     { k: 'berkas',     l: 'Kumpul Berkas',  c: '#a855f7' },
@@ -194,7 +194,7 @@ function renderCharts() {
     chartPipeline = new Chart(c1, {
       type: 'doughnut',
       data: {
-        labels: ['Cek Lokasi','Booking','Proses DP','Kumpul Berkas','Selesai','Batal'],
+        labels: ['Prospek Konsumen','Booking','Proses DP','Kumpul Berkas','Selesai','Batal'],
         datasets: [{ data: counts, backgroundColor: [cl.sky, cl.brand, cl.amber, cl.violet, cl.emerald, cl.rose], borderWidth: 0, hoverOffset: 6 }]
       },
       options: {

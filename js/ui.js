@@ -23,7 +23,7 @@ function renderDash() {
   document.getElementById('stTotalSub').textContent = myProf?.role === 'admin' ? 'Semua tim' : 'Konsumen saya';
 
   const pipes = [
-    { k: 'cek-lokasi', l: 'Cek Lokasi', c: 'cek-lokasi' },
+    { k: 'cek-lokasi', l: 'Prospek Konsumen', c: 'cek-lokasi' },
     { k: 'booking', l: 'Booking', c: 'booking' },
     { k: 'dp', l: 'Proses DP', c: 'dp' },
     { k: 'berkas', l: 'Berkas', c: 'berkas' },

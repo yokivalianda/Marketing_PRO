@@ -1,6 +1,6 @@
 // ── LABELS ──────────────────────────────────────
 function sLabel(s) {
-  return {'cek-lokasi':'Cek Lokasi',booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',selesai:'Selesai',batal:'Batal'}[s] || s;
+  return {'cek-lokasi':'Prospek Konsumen',booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',selesai:'Selesai',batal:'Batal'}[s] || s;
 }
 function kprLabel(s) {
   return {'kpr-btn':'KPR BTN','kpr-bni':'KPR BNI','kpr-bri':'KPR BRI','kpr-mandiri':'KPR Mandiri','kpr-bsm':'KPR Syariah','cash-keras':'Cash Keras','cash-bertahap':'Cash Bertahap','subsidi':'KPR Subsidi FLPP'}[s] || s || '—';
