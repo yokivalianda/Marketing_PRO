@@ -107,3 +107,70 @@ ALTER PUBLICATION supabase_realtime ADD TABLE konsumen;
 -- 3. Edit baris Anda → ubah kolom 'role' menjadi 'admin'
 -- 4. Refresh aplikasi → Anda sekarang menjadi Admin
 -- ═══════════════════════════════════════════════════════════
+
+-- ════════════════════════════════════
+-- MIGRATION: Add tgl_followup column
+-- (run this if upgrading from v3)
+-- ════════════════════════════════════
+ALTER TABLE konsumen ADD COLUMN IF NOT EXISTS tgl_followup DATE;
+
+-- ════════════════════════════════════════════════
+-- SETUP SUPABASE STORAGE — Upload Foto Dokumen
+-- CARA MENJALANKAN:
+--   Supabase Dashboard → SQL Editor → paste → Run
+-- JIKA SUDAH PERNAH SETUP, JALANKAN ULANG — aman
+-- ════════════════════════════════════════════════
+
+-- ── LANGKAH 1: Buat / update bucket ──────────────
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'dokumen',
+  'dokumen',
+  true,        -- public: URL foto bisa langsung dibuka
+  10485760,    -- 10 MB maks per file
+  ARRAY['image/jpeg','image/jpg','image/png','image/gif',
+        'image/webp','image/heic','image/heif','application/pdf']
+)
+ON CONFLICT (id) DO UPDATE SET
+  public            = EXCLUDED.public,
+  file_size_limit   = EXCLUDED.file_size_limit,
+  allowed_mime_types= EXCLUDED.allowed_mime_types;
+
+-- ── LANGKAH 2: Hapus SEMUA policy lama di bucket dokumen ──
+DO $$
+DECLARE r RECORD;
+BEGIN
+  FOR r IN
+    SELECT policyname FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects'
+  LOOP
+    EXECUTE 'DROP POLICY IF EXISTS "' || r.policyname || '" ON storage.objects';
+  END LOOP;
+END $$;
+
+-- ── LANGKAH 3: Buat policy baru yang sederhana ────
+-- PRINSIP: siapa saja yang sudah login (authenticated) boleh
+-- melakukan semua operasi pada bucket "dokumen".
+-- Keamanan data dijaga di level aplikasi (RLS tabel konsumen).
+
+CREATE POLICY "dokumen_insert"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (bucket_id = 'dokumen');
+
+CREATE POLICY "dokumen_select"
+  ON storage.objects FOR SELECT TO authenticated
+  USING (bucket_id = 'dokumen');
+
+CREATE POLICY "dokumen_update"
+  ON storage.objects FOR UPDATE TO authenticated
+  USING (bucket_id = 'dokumen');
+
+CREATE POLICY "dokumen_delete"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (bucket_id = 'dokumen');
+
+-- ── SELESAI ───────────────────────────────────────
+-- Cek hasilnya:
+SELECT policyname, cmd FROM pg_policies
+WHERE schemaname = 'storage' AND tablename = 'objects'
+  AND policyname LIKE 'dokumen%';
