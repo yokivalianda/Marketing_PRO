@@ -1184,3 +1184,68 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
   color: var(--brand-light);
 }
 .berkas-add-btn:active { transform: scale(.98); }
+
+/* ════════════════════════════════════════
+   FILTER ABJAD (ALPHA BAR)
+════════════════════════════════════════ */
+.alpha-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 10px 18px 6px;
+}
+.atag {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 8px;
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+  letter-spacing: .3px;
+}
+.atag:hover:not(.disabled) {
+  background: var(--glass-10);
+  color: var(--text-1);
+  border-color: var(--glass-border-hi);
+}
+.atag.on {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.atag.disabled {
+  opacity: .2;
+  cursor: default;
+  pointer-events: none;
+}
+/* "Semua" button sedikit lebih lebar */
+.atag:first-child {
+  padding: 0 10px;
+  font-size: 10px;
+}
+
+/* ── Group header per huruf ── */
+.alpha-group-header {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-4);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 14px 4px 6px;
+  border-bottom: 1px solid var(--glass-border);
+  margin-bottom: 2px;
+  position: sticky;
+  top: 0;
+  background: var(--bg-base);
+  z-index: 5;
+}
+html.light .alpha-group-header {
+  background: var(--bg-base);
+}

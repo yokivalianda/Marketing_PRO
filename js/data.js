@@ -51,7 +51,7 @@ async function afterLogin(user) {
   shell.style.display = 'flex'; shell.classList.add('show');
   updateHeaderUI();
   setupAdminUI();
-  renderDash(); renderKons();
+  renderDash(); renderAlphaBar(); renderKons();
   initTheme();
 }
 

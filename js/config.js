@@ -18,6 +18,7 @@ let curPeriod    = 'bulan';   // laporan period filter
 let calYear      = new Date().getFullYear();
 let calMonth     = new Date().getMonth();
 let calSelected  = null;
+let curAlpha     = '';   // filter abjad konsumen: '' = semua
 
 // Chart instances (Chart.js)
 let chartPipeline = null;

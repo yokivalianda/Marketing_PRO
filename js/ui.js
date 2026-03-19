@@ -7,6 +7,7 @@ function switchPage(p) {
   curPage = p;
   document.getElementById('scrollArea').scrollTop = 0;
   if (p === 'dashboard') renderDash();
+  if (p === 'konsumen')  renderAlphaBar();
   if (p === 'laporan')   { renderLapKpi(); renderCharts(); }
   if (p === 'kalender')  renderKalender();
 }
@@ -88,6 +89,45 @@ function renderDash() {
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
+  renderAlphaBar();
+  renderKons();
+}
+
+// ── ALPHA BAR ────────────────────────────────────
+function renderAlphaBar() {
+  const bar = document.getElementById('alphaBar');
+  if (!bar) return;
+
+  // Kumpulkan huruf awal yang ada di data saat ini
+  const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
+  const ow = document.getElementById('adminSel')?.value || '';
+  let pool = [...allKons];
+  if (curFilter !== 'semua') pool = pool.filter(k => k.status === curFilter);
+  if (ow) pool = pool.filter(k => k.owner_id === ow);
+  if (q)  pool = pool.filter(k =>
+    k.nama.toLowerCase().includes(q) ||
+    (k.hp || '').includes(q) ||
+    (k.unit || '').toLowerCase().includes(q) ||
+    (k.kavling || '').toLowerCase().includes(q)
+  );
+
+  const available = new Set(pool.map(k => k.nama.charAt(0).toUpperCase()).filter(c => /[A-Z]/.test(c)));
+
+  if (available.size === 0) { bar.innerHTML = ''; return; }
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  bar.innerHTML = `
+    <button class="atag ${curAlpha === '' ? 'on' : ''}" onclick="setAlpha('')">Semua</button>
+    ${letters.map(l => `
+      <button class="atag ${curAlpha === l ? 'on' : ''} ${available.has(l) ? '' : 'disabled'}"
+        onclick="${available.has(l) ? `setAlpha('${l}')` : ''}">
+        ${l}
+      </button>`).join('')}`;
+}
+
+function setAlpha(letter) {
+  curAlpha = letter;
+  renderAlphaBar();
   renderKons();
 }
 function fillAdminSel() {
@@ -101,36 +141,68 @@ function renderKons() {
   let list = [...allKons];
   if (curFilter !== 'semua') list = list.filter(k => k.status === curFilter);
   if (ow) list = list.filter(k => k.owner_id === ow);
-  if (q)  list = list.filter(k => k.nama.toLowerCase().includes(q) || (k.hp || '').includes(q) || (k.unit || '').toLowerCase().includes(q) || (k.kavling || '').toLowerCase().includes(q));
+  if (q)  list = list.filter(k =>
+    k.nama.toLowerCase().includes(q) ||
+    (k.hp || '').includes(q) ||
+    (k.unit || '').toLowerCase().includes(q) ||
+    (k.kavling || '').toLowerCase().includes(q)
+  );
+  // Filter abjad
+  if (curAlpha) list = list.filter(k => k.nama.charAt(0).toUpperCase() === curAlpha);
+
+  // Urutkan A-Z saat alpha aktif, else urutan default (created_at desc)
+  if (curAlpha || q) list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
+
   const el = document.getElementById('konsFeed');
   if (!list.length) {
     el.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ditemukan</div><div class="empty-sub">Ubah filter atau kata kunci</div></div>`;
     return;
   }
-  el.innerHTML = list.map(k => {
-    const bList = normBerkas(k.berkas);
-    const bOk   = bList.filter(b => b.done).length;
-    const bTot  = bList.length;
-    const hasFollowup = k.tgl_followup && new Date(k.tgl_followup) >= new Date(new Date().toDateString());
-    return `<div class="kons-card st-${k.status}" onclick="openDetail('${k.id}')">
-      <div class="card-top">
-        <div>
-          <div class="card-name">${k.nama}</div>
-          <div class="card-unit">${k.unit || '—'} · Kav. ${k.kavling || '—'}</div>
-          ${myProf?.role === 'admin' ? `<div class="card-owner">👤 ${ownerName(k.owner_id)}</div>` : ''}
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-          <span class="s-badge s-${k.status}">${sLabel(k.status)}</span>
-          ${hasFollowup ? `<span style="font-size:9px;color:var(--amber);font-weight:700">📅 ${fDateShort(k.tgl_followup)}</span>` : ''}
-        </div>
+
+  // Group by huruf awal jika alpha filter aktif ATAU tidak ada search query
+  const useGroup = !q;
+  if (useGroup) {
+    // Build grouped output
+    const groups = {};
+    list.forEach(k => {
+      const letter = k.nama.charAt(0).toUpperCase();
+      const groupKey = /[A-Z]/.test(letter) ? letter : '#';
+      if (!groups[groupKey]) groups[groupKey] = [];
+      groups[groupKey].push(k);
+    });
+    const sorted = Object.keys(groups).sort((a, b) => a === '#' ? 1 : b === '#' ? -1 : a.localeCompare(b));
+    el.innerHTML = sorted.map(letter => `
+      <div class="alpha-group-header">${letter}</div>
+      ${groups[letter].map(k => cardHtml(k)).join('')}
+    `).join('');
+  } else {
+    el.innerHTML = list.map(k => cardHtml(k)).join('');
+  }
+}
+
+function cardHtml(k) {
+  const bList = normBerkas(k.berkas);
+  const bOk   = bList.filter(b => b.done).length;
+  const bTot  = bList.length;
+  const hasFollowup = k.tgl_followup && new Date(k.tgl_followup) >= new Date(new Date().toDateString());
+  return `<div class="kons-card st-${k.status}" onclick="openDetail('${k.id}')">
+    <div class="card-top">
+      <div>
+        <div class="card-name">${k.nama}</div>
+        <div class="card-unit">${k.unit || '—'} · Kav. ${k.kavling || '—'}</div>
+        ${myProf?.role === 'admin' ? `<div class="card-owner">👤 ${ownerName(k.owner_id)}</div>` : ''}
       </div>
-      <div class="card-footer">
-        <div class="card-stat">📞 ${k.hp}</div>
-        <div class="card-stat">💰 ${fRp(k.harga)}</div>
-        <div class="card-stat">📁 ${bOk}/${bTot}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <span class="s-badge s-${k.status}">${sLabel(k.status)}</span>
+        ${hasFollowup ? `<span style="font-size:9px;color:var(--amber);font-weight:700">📅 ${fDateShort(k.tgl_followup)}</span>` : ''}
       </div>
-    </div>`;
-  }).join('');
+    </div>
+    <div class="card-footer">
+      <div class="card-stat">📞 ${k.hp}</div>
+      <div class="card-stat">💰 ${fRp(k.harga)}</div>
+      <div class="card-stat">📁 ${bOk}/${bTot}</div>
+    </div>
+  </div>`;
 }
 
 // ── DETAIL MODAL ──────────────────────────────────
