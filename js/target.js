@@ -8,15 +8,24 @@ const BULAN_NAMA = ['Januari','Februari','Maret','April','Mei','Juni',
 // ── LOAD TARGET ──────────────────────────────────
 async function loadTarget() {
   if (!sb || !me) return;
+  // Wrapped ketat — tidak boleh throw ke caller
+  allTarget = [];
   try {
-    let q = sb.from('target_bulanan').select('*').order('tahun', { ascending: false }).order('bulan', { ascending: false });
+    let q = sb.from('target_bulanan')
+      .select('*')
+      .order('tahun', { ascending: false })
+      .order('bulan', { ascending: false });
     if (myProf?.role !== 'admin') q = q.eq('user_id', me.id);
-    const { data, error } = await q;
-    if (error) { console.warn('loadTarget:', error.message); allTarget = []; }
-    else allTarget = data || [];
+    const res = await q;
+    if (res.error) {
+      // Tabel belum ada atau RLS error — silent, tidak crash app
+      console.warn('loadTarget (akan normal setelah SQL dijalankan):', res.error.message);
+    } else {
+      allTarget = res.data || [];
+    }
   } catch(e) {
+    // Jangan re-throw — cukup log
     console.warn('loadTarget exception:', e.message);
-    allTarget = [];
   }
 }
 
@@ -48,6 +57,7 @@ async function saveTargetBulan(userId, tahun, bulan, target, catatan = '') {
 function renderTargetSection() {
   const el = document.getElementById('lapTarget');
   if (!el) return;
+  try {
 
   const now      = new Date();
   const tahun    = now.getFullYear();
@@ -58,6 +68,10 @@ function renderTargetSection() {
     renderTargetAdmin(el, tahun, bulan);
   } else {
     renderTargetMarketing(el, tahun, bulan);
+  }
+  } catch(e) {
+    console.warn('renderTargetSection error:', e.message);
+    el.innerHTML = '<div style="color:var(--text-4);font-size:12px;padding:8px">Target belum tersedia. Jalankan SQL setup terlebih dahulu.</div>';
   }
 }
 
