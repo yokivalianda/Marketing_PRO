@@ -1440,3 +1440,14 @@ html.light .kons-card.st-cek-lokasi { background: linear-gradient(135deg, rgba(1
 
 /* Kalender event dot */
 .cal-event-cek-lokasi { background: #0ea5e9; }
+
+/* ════════════════════════════════════════
+   STATUS SP3K / ACC
+════════════════════════════════════════ */
+.t-rose .tile-value { color: #ec4899; }
+.s-acc { background: rgba(236,72,153,.12); color: #ec4899; }
+.kons-card.st-acc::before { background: #ec4899; }
+.kons-card.st-acc { background: linear-gradient(135deg, rgba(236,72,153,.04) 0%, var(--bg-overlay) 60%); }
+html.light .kons-card.st-acc { background: linear-gradient(135deg, rgba(236,72,153,.05) 0%, var(--bg-overlay) 60%); }
+.pc-acc .pipe-card::before { background: #ec4899; }
+.pc-acc .pipe-num { color: #ec4899; }

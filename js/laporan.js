@@ -128,6 +128,7 @@ function renderLapKpi() {
     { k: 'booking',    l: 'Booking',        c: '#6366f1' },
     { k: 'dp',         l: 'Proses DP',      c: '#f59e0b' },
     { k: 'berkas',     l: 'Kumpul Berkas',  c: '#a855f7' },
+    { k: 'acc',        l: 'SP3K/ACC',       c: '#ec4899' },
     { k: 'selesai',    l: 'Selesai',        c: '#10b981' },
     { k: 'batal',      l: 'Batal',          c: '#f43f5e' },
   ];
@@ -190,12 +191,12 @@ function renderCharts() {
   // ── Chart 1: Pipeline donut ────────────────────
   const c1 = document.getElementById('chartPipeline');
   if (c1) {
-    const counts = ['cek-lokasi','booking','dp','berkas','selesai','batal'].map(s => k.filter(x => x.status === s).length);
+    const counts = ['cek-lokasi','booking','dp','berkas','acc','selesai','batal'].map(s => k.filter(x => x.status === s).length);
     chartPipeline = new Chart(c1, {
       type: 'doughnut',
       data: {
         labels: ['Prospek Konsumen','Booking','Proses DP','Kumpul Berkas','Selesai','Batal'],
-        datasets: [{ data: counts, backgroundColor: [cl.sky, cl.brand, cl.amber, cl.violet, cl.emerald, cl.rose], borderWidth: 0, hoverOffset: 6 }]
+        datasets: [{ data: counts, backgroundColor: [cl.sky, cl.brand, cl.amber, cl.violet, '#ec4899', cl.emerald, cl.rose], borderWidth: 0, hoverOffset: 6 }]
       },
       options: {
         cutout: '65%',

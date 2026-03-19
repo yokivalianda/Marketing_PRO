@@ -20,6 +20,8 @@ function renderDash() {
   document.getElementById('stBooking').textContent    = k.filter(x => x.status === 'booking').length;
   const elCL = document.getElementById('stCekLokasi');
   if (elCL) elCL.textContent = k.filter(x => x.status === 'cek-lokasi').length;
+  const elAcc = document.getElementById('stAcc');
+  if (elAcc) elAcc.textContent = k.filter(x => x.status === 'acc').length;
   document.getElementById('stTotalSub').textContent = myProf?.role === 'admin' ? 'Semua tim' : 'Konsumen saya';
 
   const pipes = [
@@ -27,6 +29,7 @@ function renderDash() {
     { k: 'booking', l: 'Booking', c: 'booking' },
     { k: 'dp', l: 'Proses DP', c: 'dp' },
     { k: 'berkas', l: 'Berkas', c: 'berkas' },
+    { k: 'acc',     l: 'SP3K/ACC', c: 'acc' },
     { k: 'selesai', l: 'Selesai', c: 'selesai' },
     { k: 'batal', l: 'Batal', c: 'batal' },
   ];
