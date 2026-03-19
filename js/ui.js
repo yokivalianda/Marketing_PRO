@@ -124,7 +124,8 @@ function renderKons() {
     (k.unit || '').toLowerCase().includes(q) ||
     (k.kavling || '').toLowerCase().includes(q)
   );
-
+  if (curSort === 'az') list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
+  if (curSort === 'za') list.sort((a, b) => b.nama.localeCompare(a.nama, 'id'));
 
   const el = document.getElementById('konsFeed');
   if (!list.length) {
