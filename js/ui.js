@@ -239,7 +239,8 @@ function openAddModal() {
   document.getElementById('mAddTitle').textContent = 'Tambah Konsumen';
   document.getElementById('editId').value = '';
   document.getElementById('btnHapus').style.display = 'none';
-  ['fNama','fHP','fUnit','fKavling','fHarga','fDP','fTglBooking','fTglFollowup','fCatatan'].forEach(id => document.getElementById(id).value = '');
+  ['fNama','fHP','fUnit','fKavling','fTglBooking','fTglFollowup','fCatatan'].forEach(id => document.getElementById(id).value = '');
+  setRpValue('fHarga', 0); setRpValue('fDP', 0);
   document.getElementById('fStatus').value = 'booking';
   document.getElementById('fKPR').value = '';
   document.getElementById('fSumber').value = '';
@@ -254,8 +255,8 @@ function openEditModal(id) {
   document.getElementById('fHP').value        = k.hp;
   document.getElementById('fUnit').value      = k.unit || '';
   document.getElementById('fKavling').value   = k.kavling || '';
-  document.getElementById('fHarga').value     = k.harga || '';
-  document.getElementById('fDP').value        = k.dp || '';
+  setRpValue('fHarga', k.harga || 0);
+  setRpValue('fDP',    k.dp    || 0);
   document.getElementById('fStatus').value    = k.status;
   document.getElementById('fTglBooking').value = k.tgl_booking || '';
   document.getElementById('fTglFollowup').value = k.tgl_followup || '';

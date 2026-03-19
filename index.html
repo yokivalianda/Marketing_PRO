@@ -542,7 +542,7 @@
         </div>
         <div class="field">
           <label class="field-label">Harga (Rp)</label>
-          <input type="number" class="field-input" id="fHarga" placeholder="0"/>
+          <input type="text" inputmode="numeric" class="field-input" id="fHarga" placeholder="0" oninput="formatRpInput(this)" autocomplete="off"/>
         </div>
       </div>
       <div class="field">
@@ -562,7 +562,7 @@
         </div>
         <div class="field">
           <label class="field-label">Jumlah DP (Rp)</label>
-          <input type="number" class="field-input" id="fDP" placeholder="0"/>
+          <input type="text" inputmode="numeric" class="field-input" id="fDP" placeholder="0" oninput="formatRpInput(this)" autocomplete="off"/>
         </div>
       </div>
       <!-- NEW: Follow-up date field -->

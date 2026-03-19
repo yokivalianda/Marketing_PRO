@@ -245,3 +245,45 @@ window.addEventListener('resize', () => {
 // Patch applyTheme to also sync sidebar icon
 const _origApplyTheme = applyTheme;
 // (sync handled inside applyTheme via quickToggleTheme → sidebarThemeIco is set)
+
+// ── FORMAT INPUT RUPIAH ───────────────────────────
+// Dipanggil oninput pada field harga/dp.
+// Menampilkan angka dengan titik pemisah ribuan (1.000.000)
+// tapi menyimpan nilai numerik murni di dataset.raw
+function formatRpInput(inp) {
+  // Simpan posisi kursor
+  const sel = inp.selectionStart;
+  const prevLen = inp.value.length;
+
+  // Ambil hanya angka
+  const raw = inp.value.replace(/[^0-9]/g, '');
+
+  // Format dengan titik ribuan
+  const formatted = raw ? Number(raw).toLocaleString('id-ID') : '';
+
+  inp.value = formatted;
+  inp.dataset.raw = raw;   // simpan nilai murni untuk dibaca saveKons
+
+  // Kembalikan posisi kursor agar tidak lompat ke ujung
+  const diff = inp.value.length - prevLen;
+  const newPos = Math.max(0, sel + diff);
+  inp.setSelectionRange(newPos, newPos);
+}
+
+// Baca nilai numerik dari input Rp (hilangkan titik ribuan)
+function getRpValue(id) {
+  const inp = document.getElementById(id);
+  if (!inp) return 0;
+  // Prioritas: dataset.raw (sudah pernah diformat), lalu strip manual
+  const raw = inp.dataset.raw || inp.value.replace(/[^0-9]/g, '');
+  return parseInt(raw) || 0;
+}
+
+// Set nilai ke input Rp (format otomatis)
+function setRpValue(id, n) {
+  const inp = document.getElementById(id);
+  if (!inp) return;
+  const raw = String(n || 0);
+  inp.dataset.raw = raw;
+  inp.value = n ? Number(n).toLocaleString('id-ID') : '';
+}
