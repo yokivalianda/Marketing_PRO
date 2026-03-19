@@ -72,7 +72,6 @@ async function afterLogin(user) {
   shell.style.display = 'flex'; shell.classList.add('show');
   updateHeaderUI();
   setupAdminUI();
-  await loadProyek();
   renderDash(); renderKons();
   // Init push notification setelah login
   setTimeout(() => { if(typeof initPush === 'function') initPush(); }, 1000);
@@ -136,11 +135,6 @@ async function loadKons() {
   allKons = data || [];
   updateNotifPip();
 }
-async function reloadKons() {
-  await loadKons();
-  renderKons();
-  renderDash();
-}
 
 // ── REALTIME ─────────────────────────────────────
 function setupRealtime() {
@@ -174,9 +168,6 @@ async function saveKons() {
   const hp   = document.getElementById('fHP').value.trim();
   if (!nama || !hp) { showToast('Nama dan HP wajib diisi', '⚠️'); return; }
   const eid = document.getElementById('editId').value;
-  // Proyek dari dropdown form atau proyek aktif
-  const fProyekEl = document.getElementById('fProyekId');
-  const proyekIdVal = fProyekEl ? (fProyekEl.value || null) : (curProyekId || null);
   const obj = {
     nama, hp,
     unit:        document.getElementById('fUnit').value.trim(),
@@ -189,7 +180,6 @@ async function saveKons() {
     kpr:         document.getElementById('fKPR').value,
     sumber:      document.getElementById('fSumber').value,
     catatan:     document.getElementById('fCatatan').value.trim(),
-    proyek_id:   proyekIdVal,
   };
   setBtnLoading('btnSave', true, 'Menyimpan...');
   try {
@@ -760,7 +750,6 @@ async function confirmImport() {
       owner_id:   me.id,
       owner_name: myProf?.full_name || me.email,
       berkas:     [],
-        proyek_id:  curProyekId || null,
       log:        [{ action: 'Diimport dari Excel', time: new Date().toISOString(), note: r.catatan || '' }],
     }));
     const { error } = await sb.from('konsumen').insert(batch);

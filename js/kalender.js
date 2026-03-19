@@ -15,7 +15,7 @@ function renderKalender() {
 
   // Events map: 'YYYY-MM-DD' -> []
   const evMap = {};
-  kons.forEach(k => {
+  allKons.forEach(k => {
     if (k.tgl_followup) {
       const key = k.tgl_followup.slice(0, 10);
       if (!evMap[key]) evMap[key] = [];

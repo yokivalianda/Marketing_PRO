@@ -25,7 +25,3 @@ let chartTren     = null;
 let chartSumber   = null;
 
 let curSort = '';   // '' = default (terbaru), 'az' = A→Z, 'za' = Z→A
-// Multi-proyek state
-let allProyek   = [];    // semua proyek yang bisa diakses user
-let curProyekId = null;  // null = semua proyek
-let curProyek   = null;  // objek proyek aktif

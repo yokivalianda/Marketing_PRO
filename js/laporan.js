@@ -111,7 +111,7 @@ function getTodayStr() { return dateToStr(new Date()); }
 function dateToStr(d) { return d.toISOString().slice(0, 10); }
 
 function renderLapKpi() {
-  const k       = filterByPeriod(filterKonsByProyek(allKons), curPeriod);
+  const k       = filterByPeriod(allKons, curPeriod);
   const selesai = k.filter(x => x.status === 'selesai').length;
   const nilai   = k.filter(x => x.status === 'selesai').reduce((s, x) => s + (x.harga || 0), 0);
   const dp      = k.reduce((s, x) => s + (x.dp || 0), 0);
@@ -191,7 +191,7 @@ function destroyCharts() {
 function renderCharts() {
   if (typeof Chart === 'undefined') return;
   destroyCharts();
-  const k  = filterByPeriod(filterKonsByProyek(allKons), curPeriod);
+  const k  = filterByPeriod(allKons, curPeriod);
   const cl = getChartColors();
   const isLight = document.documentElement.classList.contains('light');
   Chart.defaults.color = cl.text;
@@ -223,12 +223,11 @@ function renderCharts() {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
       months.push({ label: d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }), year: d.getFullYear(), month: d.getMonth() });
     }
-    const baseKons = filterKonsByProyek(allKons);
-    const dataSelesai = months.map(m => baseKons.filter(x => {
+    const dataSelesai = months.map(m => allKons.filter(x => {
       const d = new Date(x.created_at);
       return x.status === 'selesai' && d.getFullYear() === m.year && d.getMonth() === m.month;
     }).length);
-    const dataBaru = months.map(m => baseKons.filter(x => {
+    const dataBaru = months.map(m => allKons.filter(x => {
       const d = new Date(x.created_at);
       return d.getFullYear() === m.year && d.getMonth() === m.month;
     }).length);

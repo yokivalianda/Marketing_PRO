@@ -152,10 +152,6 @@
       </button>
     </div>
   </header>
-
-  <!-- Proyek bar — muncul di bawah header -->
-  <div id="proyekBar" style="display:none">
-    <div id="proyekSwitcher" class="proyek-switcher"></div>
   </div>
 
   <div class="scroll-area" id="scrollArea">
@@ -574,22 +570,6 @@
 </div>
 
 <!-- ══ MODAL: TAMBAH/EDIT ══ -->
-<!-- ════ MODAL PROYEK ════ -->
-<div class="modal-bg" id="modalProyek">
-  <div class="modal-sheet">
-    <div class="sheet-pill"></div>
-    <div class="sheet-head">
-      <div class="sheet-title" id="proyekModalTitle">Proyek Baru</div>
-      <button class="sheet-close" onclick="closeModal('modalProyek')">✕</button>
-    </div>
-    <div class="sheet-body" id="modalProyekBody" style="padding:0 18px 8px"></div>
-    <div style="padding:0 18px 24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <button class="btn-secondary" onclick="closeModal('modalProyek')">Batal</button>
-      <button class="btn-primary" id="btnSaveProyek" onclick="saveProyek()">Simpan Proyek</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal-bg" id="modalAdd">
   <div class="modal-sheet">
     <div class="sheet-pill"></div>
@@ -826,7 +806,6 @@
 <script src="js/laporan.js"></script>
 <script src="js/kalender.js"></script>
 <script src="js/dokumen.js"></script>
-<script src="js/proyek.js"></script>
 <script src="js/push.js"></script>
 
 <script>
@@ -847,18 +826,6 @@ document.addEventListener('keydown', e => {
 initTheme();
 init();
 
-// Handle notifikasi deep link dari klik notifikasi push
-window.addEventListener('load', () => {
-  const params = new URLSearchParams(window.location.search);
-  const openId = params.get('open');
-  if (openId) {
-    const tryOpen = setInterval(() => {
-      const k = allKons?.find(x => x.id === openId);
-      if (k) { clearInterval(tryOpen); openDetail(openId); }
-    }, 500);
-    setTimeout(() => clearInterval(tryOpen), 8000);
-  }
-});
 </script>
 </body>
 </html>

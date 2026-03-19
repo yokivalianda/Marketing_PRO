@@ -13,7 +13,7 @@ function switchPage(p) {
 
 // ── DASHBOARD ─────────────────────────────────────
 function renderDash() {
-  const k = filterKonsByProyek(allKons);
+  const k = allKons;
   document.getElementById('stTotal').textContent   = k.length;
   document.getElementById('stSelesai').textContent = k.filter(x => x.status === 'selesai').length;
   document.getElementById('stDP').textContent      = k.filter(x => x.status === 'dp').length;
@@ -127,7 +127,7 @@ function toggleSort() {
 function renderKons() {
   const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
   const ow = document.getElementById('adminSel')?.value || '';
-  let list = filterKonsByProyek([...allKons]);
+  let list = [...allKons];
   if (curFilter !== 'semua') list = list.filter(k => k.status === curFilter);
   if (ow) list = list.filter(k => k.owner_id === ow);
   if (q)  list = list.filter(k =>
@@ -158,7 +158,6 @@ function cardHtml(k) {
       <div>
         <div class="card-name">${k.nama}</div>
         <div class="card-unit">${k.unit || '—'} · Kav. ${k.kavling || '—'}</div>
-          ${!curProyekId && k.proyek_id ? proyekBadge(k.proyek_id) : ''}
         ${myProf?.role === 'admin' ? `<div class="card-owner">👤 ${ownerName(k.owner_id)}</div>` : ''}
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
@@ -220,7 +219,6 @@ async function openDetail(id) {
       <div class="det-row"><span class="det-key">Follow-up</span><span class="det-val" style="color:var(--amber)">${k.tgl_followup ? fDateShort(k.tgl_followup) : '—'}</span></div>
       <div class="det-row"><span class="det-key">Pembiayaan</span><span class="det-val">${kprLabel(k.kpr)}</span></div>
       <div class="det-row"><span class="det-key">Sumber</span><span class="det-val">${sumberLabel(k.sumber)}</span></div>
-      <div class="det-row"><span class="det-key">Proyek</span><span class="det-val">${proyekNama(k.proyek_id)}</span></div>
       <div class="det-row"><span class="det-key">Marketing</span><span class="det-val">${ownerName(k.owner_id)}</span></div>
       ${k.catatan ? `<div class="det-row" style="flex-direction:column;gap:6px"><span class="det-key">Catatan</span><div class="tl-note">${k.catatan}</div></div>` : ''}
     </div>
@@ -249,22 +247,12 @@ async function openDetail(id) {
 }
 
 // ── ADD / EDIT MODAL ──────────────────────────────
-function populateProyekSelect(selectedId = null) {
-  const sel = document.getElementById('fProyekId');
-  if (!sel) return;
-  sel.innerHTML = '<option value="">— Tanpa Proyek —</option>' +
-    allProyek.map(p =>
-      `<option value="${p.id}" ${(selectedId || curProyekId) === p.id ? 'selected' : ''}>${p.nama}</option>`
-    ).join('');
-}
-
 function openAddModal() {
   document.getElementById('mAddTitle').textContent = 'Tambah Konsumen';
   document.getElementById('editId').value = '';
   document.getElementById('btnHapus').style.display = 'none';
   ['fNama','fHP','fUnit','fKavling','fTglBooking','fTglFollowup','fCatatan'].forEach(id => document.getElementById(id).value = '');
   setRpValue('fHarga', 0); setRpValue('fDP', 0);
-  populateProyekSelect();
   document.getElementById('fStatus').value = 'booking';
   document.getElementById('fKPR').value = '';
   document.getElementById('fSumber').value = '';
@@ -281,7 +269,6 @@ function openEditModal(id) {
   document.getElementById('fKavling').value   = k.kavling || '';
   setRpValue('fHarga', k.harga || 0);
   setRpValue('fDP',    k.dp    || 0);
-  populateProyekSelect(k.proyek_id);
   document.getElementById('fStatus').value    = k.status;
   document.getElementById('fTglBooking').value = k.tgl_booking || '';
   document.getElementById('fTglFollowup').value = k.tgl_followup || '';
