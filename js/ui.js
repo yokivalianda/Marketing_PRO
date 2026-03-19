@@ -133,18 +133,9 @@ function renderKons() {
 }
 
 // ── DETAIL MODAL ──────────────────────────────────
-function openDetail(id) {
+async function openDetail(id) {
   const k = allKons.find(x => x.id === id); if (!k) return;
   const canEdit = myProf?.role === 'admin' || k.owner_id === me.id;
-  const bi = [
-    { key: 'ktp',      label: 'KTP / e-KTP' },
-    { key: 'kk',       label: 'Kartu Keluarga' },
-    { key: 'slip',     label: 'Slip Gaji / SK Kerja' },
-    { key: 'tabungan', label: 'Rekening Tabungan 3 Bln' },
-    { key: 'npwp',     label: 'NPWP' },
-    { key: 'surat',    label: 'Surat Keterangan Lainnya' }
-  ];
-  const b  = k.berkas || {};
   const ci = Math.abs(hsh(id)) % 8;
   const logHtml = (k.log || []).slice().reverse().map(l => `
     <div class="tl-item">
@@ -156,6 +147,7 @@ function openDetail(id) {
       </div>
     </div>`).join('') || `<div style="color:var(--text-4);font-size:12px;padding:8px 0">Belum ada log</div>`;
 
+  // Skeleton dulu biar modal langsung terbuka
   document.getElementById('detailSheet').innerHTML = `
     <div class="sheet-pill"></div>
     <div class="sheet-head">
@@ -189,14 +181,12 @@ function openDetail(id) {
       <div class="det-row"><span class="det-key">Marketing</span><span class="det-val">${ownerName(k.owner_id)}</span></div>
       ${k.catatan ? `<div class="det-row" style="flex-direction:column;gap:6px"><span class="det-key">Catatan</span><div class="tl-note">${k.catatan}</div></div>` : ''}
     </div>
-    <div class="det-section">
-      <div class="det-sec-label">Checklist Berkas</div>
-      <div class="berkas-grid">
-        ${bi.map(bx => `
-          <div class="berkas-item" onclick="${canEdit ? `toggleBerkas('${id}','${bx.key}')` : ''}" style="${canEdit ? '' : 'cursor:default'}">
-            <div class="berkas-check ${b[bx.key] ? 'done' : ''}">${b[bx.key] ? '✓' : ''}</div>
-            <div class="berkas-label ${b[bx.key] ? 'done' : ''}">${bx.label}</div>
-          </div>`).join('')}
+    <div class="det-section" id="berkasSection">
+      <div class="det-sec-label">Checklist Berkas & Dokumen</div>
+      <div class="berkas-loading">
+        <div class="berkas-skeleton"></div><div class="berkas-skeleton"></div>
+        <div class="berkas-skeleton"></div><div class="berkas-skeleton"></div>
+        <div class="berkas-skeleton"></div><div class="berkas-skeleton"></div>
       </div>
     </div>
     <div class="det-section" style="padding-bottom:24px">
@@ -204,6 +194,15 @@ function openDetail(id) {
       <div class="tl" style="padding-top:8px">${logHtml}</div>
     </div>`;
   openModal('modalDetail');
+
+  // Load foto async setelah modal terbuka
+  const berkasHtml = await buildBerkasSection(k, canEdit);
+  const sec = document.getElementById('berkasSection');
+  if (sec) sec.innerHTML = `
+    <div class="det-sec-label">Checklist Berkas & Dokumen
+      ${canEdit ? `<span style="font-size:10px;color:var(--text-4);font-weight:400;margin-left:6px">Ketuk 📎 untuk upload foto</span>` : ''}
+    </div>
+    <div class="berkas-grid">${berkasHtml}</div>`;
 }
 
 // ── ADD / EDIT MODAL ──────────────────────────────

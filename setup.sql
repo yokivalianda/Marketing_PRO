@@ -113,3 +113,47 @@ ALTER PUBLICATION supabase_realtime ADD TABLE konsumen;
 -- (run this if upgrading from v3)
 -- ════════════════════════════════════
 ALTER TABLE konsumen ADD COLUMN IF NOT EXISTS tgl_followup DATE;
+
+-- ════════════════════════════════════════════════
+-- SETUP SUPABASE STORAGE untuk Upload Foto Dokumen
+-- Jalankan di: Supabase → SQL Editor
+-- ════════════════════════════════════════════════
+
+-- 1. Buat bucket "dokumen" (public agar bisa ditampilkan langsung)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'dokumen', 'dokumen', true,
+  10485760,  -- 10 MB per file
+  ARRAY['image/jpeg','image/png','image/gif','image/webp','image/heic','image/heif','application/pdf']
+) ON CONFLICT (id) DO NOTHING;
+
+-- 2. Policy: user login bisa upload ke folder miliknya
+CREATE POLICY "User upload foto konsumen sendiri"
+  ON storage.objects FOR INSERT
+  WITH CHECK (
+    bucket_id = 'dokumen'
+    AND auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+-- 3. Policy: semua user login bisa baca (untuk preview foto)
+CREATE POLICY "User bisa baca semua foto dokumen"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'dokumen' AND auth.role() = 'authenticated');
+
+-- 4. Policy: user bisa hapus foto di folder konsumen yang dia punya
+--    (cek owner_id konsumen)
+CREATE POLICY "User hapus foto konsumen sendiri"
+  ON storage.objects FOR DELETE
+  USING (
+    bucket_id = 'dokumen'
+    AND (
+      auth.uid()::text = (storage.foldername(name))[1]
+      OR EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = auth.uid() AND role = 'admin'
+      )
+    )
+  );
+
+-- Catatan: (storage.foldername(name))[1] = konsumen_id (bagian pertama path)
+-- Path format: {konsumen_id}/{berkas_key}/{filename}

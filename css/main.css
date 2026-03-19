@@ -995,3 +995,136 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
   html.light .sidebar-user { background: rgba(0,0,0,.04); }
   html.light .kons-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.1); }
 }
+
+/* ════════════════════════════════════════
+   BERKAS DENGAN FOTO DOKUMEN
+════════════════════════════════════════ */
+
+/* Wrap per berkas item */
+.berkas-item-wrap {
+  border-bottom: 1px solid var(--glass-border);
+}
+.berkas-item-wrap:last-child { border-bottom: none; }
+
+/* Override: hapus border bottom dari .berkas-item langsung
+   karena wrap sudah handle border */
+.berkas-item-wrap .berkas-item {
+  border-bottom: none;
+  padding-bottom: 8px;
+}
+
+/* Sisi kanan checklist: count + upload button */
+.berkas-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.berkas-foto-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand-light);
+  background: var(--brand-soft);
+  padding: 2px 7px;
+  border-radius: var(--r-full);
+}
+.berkas-upload-btn {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.berkas-upload-btn:hover { background: var(--brand-soft); border-color: rgba(99,102,241,.3); }
+.berkas-upload-btn:active { transform: scale(.88); }
+
+/* Thumbnail strip */
+.berkas-thumbs {
+  display: flex;
+  gap: 6px;
+  padding: 0 0 10px 34px;
+  flex-wrap: wrap;
+}
+.berkas-thumb {
+  width: 60px; height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid var(--glass-border);
+  cursor: pointer;
+  transition: all .2s;
+  background: var(--bg-elevated);
+  flex-shrink: 0;
+}
+.berkas-thumb:hover {
+  border-color: var(--brand);
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(99,102,241,.3);
+}
+.berkas-thumb-pdf {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+  color: var(--rose); background: var(--rose-soft);
+  border-color: rgba(244,63,94,.25);
+  letter-spacing: .5px;
+}
+.berkas-thumb-more {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  color: var(--text-3); background: var(--bg-elevated);
+  cursor: pointer;
+}
+.berkas-thumb-more:hover { background: var(--brand-soft); color: var(--brand-light); }
+
+/* Skeleton loader */
+.berkas-loading {
+  display: flex; flex-direction: column; gap: 0;
+}
+.berkas-skeleton {
+  height: 44px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-float) 50%, var(--bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+  margin-bottom: 2px;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Viewer image */
+.viewer-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.viewer-pdf-wrap {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 12px; padding: 40px;
+  text-align: center;
+}
+.viewer-pdf-icon { font-size: 64px; }
+.viewer-pdf-name {
+  font-size: 14px; font-weight: 600; color: #fff;
+  max-width: 300px; word-break: break-all;
+}
+.viewer-pdf-open {
+  padding: 10px 24px; background: var(--brand);
+  border-radius: var(--r-md); color: #fff;
+  font-size: 13px; font-weight: 700; text-decoration: none;
+  transition: all .2s;
+}
+.viewer-pdf-open:hover { opacity: .85; }
+
+/* Swipe gesture hint on mobile */
+@media (max-width: 767px) {
+  .berkas-thumb { width: 52px; height: 52px; }
+}

@@ -702,6 +702,34 @@
   </div>
 </div>
 
+<!-- ══ MODAL: FOTO VIEWER ══ -->
+<div class="modal-bg" id="modalFotoViewer" style="background:rgba(0,0,0,.92);backdrop-filter:blur(20px);align-items:center;justify-content:center;padding:0">
+  <div style="width:100%;max-width:760px;display:flex;flex-direction:column;height:100dvh;max-height:100dvh;position:relative" onclick="event.stopPropagation()">
+    <!-- Topbar -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;flex-shrink:0;background:rgba(0,0,0,.5)">
+      <div>
+        <div id="viewerFilename" style="font-size:13px;font-weight:600;color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+        <div id="viewerCounter" style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px"></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a id="viewerDownload" download target="_blank"
+          style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;text-decoration:none">⬇</a>
+        <button id="viewerDelete" onclick="viewerDelete()"
+          style="width:36px;height:36px;border-radius:10px;background:rgba(244,63,94,.2);border:1px solid rgba(244,63,94,.3);display:flex;align-items:center;justify-content:center;font-size:16px;color:#f43f5e;cursor:pointer">🗑</button>
+        <button onclick="closeModal('modalFotoViewer')"
+          style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;cursor:pointer">✕</button>
+      </div>
+    </div>
+    <!-- Image area -->
+    <div id="viewerContent" style="flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;min-height:0"></div>
+    <!-- Nav arrows -->
+    <button id="viewerPrev" onclick="viewerPrev()"
+      style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center">‹</button>
+    <button id="viewerNext" onclick="viewerNext()"
+      style="position:absolute;right:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center">›</button>
+  </div>
+</div>
+
 <!-- ══ SCRIPTS ══ -->
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -716,12 +744,23 @@
 <script src="js/ui.js"></script>
 <script src="js/laporan.js"></script>
 <script src="js/kalender.js"></script>
+<script src="js/dokumen.js"></script>
 
 <script>
 // ── Bootstrap ─────────────────────────────────────
 document.querySelectorAll('.modal-bg').forEach(el =>
   el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); })
 );
+
+// Keyboard nav untuk foto viewer
+document.addEventListener('keydown', e => {
+  const viewer = document.getElementById('modalFotoViewer');
+  if (!viewer?.classList.contains('open')) return;
+  if (e.key === 'ArrowLeft')  viewerPrev();
+  if (e.key === 'ArrowRight') viewerNext();
+  if (e.key === 'Escape')     closeModal('modalFotoViewer');
+});
+
 initTheme();
 init();
 </script>
