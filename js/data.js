@@ -171,14 +171,7 @@ async function saveKons() {
     } else {
       obj.owner_id   = me.id;
       obj.owner_name = myProf?.full_name || me.email;
-      obj.berkas = [
-        { key: 'ktp',      label: 'KTP / e-KTP',             done: false },
-        { key: 'kk',       label: 'Kartu Keluarga',           done: false },
-        { key: 'slip',     label: 'Slip Gaji / SK Kerja',     done: false },
-        { key: 'tabungan', label: 'Rekening Tabungan 3 Bln',  done: false },
-        { key: 'npwp',     label: 'NPWP',                     done: false },
-        { key: 'surat',    label: 'Surat Keterangan Lainnya', done: false },
-      ];
+      obj.berkas = [];  // marketing isi sendiri via Tambah Item Berkas
       obj.log = [{ action: 'Konsumen ditambahkan', time: new Date().toISOString(), note: obj.catatan }];
       const { error } = await sb.from('konsumen').insert(obj);
       if (error) throw error;
@@ -237,14 +230,7 @@ function normBerkas(raw) {
       key, label: labels[key] || key, done: !!done
     }));
   }
-  return [
-    { key:'ktp',      label:'KTP / e-KTP',             done:false },
-    { key:'kk',       label:'Kartu Keluarga',           done:false },
-    { key:'slip',     label:'Slip Gaji / SK Kerja',     done:false },
-    { key:'tabungan', label:'Rekening Tabungan 3 Bln',  done:false },
-    { key:'npwp',     label:'NPWP',                     done:false },
-    { key:'surat',    label:'Surat Keterangan Lainnya', done:false },
-  ];
+  return [];
 }
 
 // ── TAMBAH ITEM BERKAS ────────────────────────────
@@ -557,7 +543,7 @@ function _readExcel(file) {
       // Auto-detect column mapping (flexible header names)
       const sample = Object.keys(raw[0]);
       const map = autoMapColumns(sample);
-      const rows = raw.map(r => mapRow(r, map)).filter(r => r.nama && r.hp);
+      const rows = raw.map(r => mapRow(r, map)).filter(r => r != null && r.nama && r.hp);
 
       if (!rows.length) {
         showImportStatus(`❌ Tidak ada baris valid. Pastikan ada kolom Nama dan HP/No. HP`, 'error');
@@ -738,7 +724,7 @@ async function confirmImport() {
       ...r,
       owner_id:   me.id,
       owner_name: myProf?.full_name || me.email,
-      berkas:     { ktp:false, kk:false, slip:false, tabungan:false, npwp:false, surat:false },
+      berkas:     [],
       log:        [{ action: 'Diimport dari Excel', time: new Date().toISOString(), note: r.catatan || '' }],
     }));
     const { error } = await sb.from('konsumen').insert(batch);
