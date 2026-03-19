@@ -49,42 +49,47 @@ async function initPush() {
 
 // ── SUBSCRIBE ────────────────────────────────────
 async function enablePushNotification() {
-  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-    showToast('Browser Anda tidak mendukung push notification', '⚠️'); return;
+  // Cek dukungan dasar Notification API
+  if (!('Notification' in window)) {
+    showToast('Browser ini tidak mendukung notifikasi', '⚠️'); return;
   }
 
-  try {
-    const perm = await Notification.requestPermission();
-    if (perm !== 'granted') {
-      showToast('Izin notifikasi ditolak', '⚠️');
-      updatePushUI(false, 'denied');
-      return;
+  // Minta izin notifikasi
+  let perm = Notification.permission;
+  if (perm === 'default') {
+    perm = await Notification.requestPermission();
+  }
+  if (perm !== 'granted') {
+    showToast('Izin notifikasi ditolak — aktifkan di pengaturan browser', '⚠️');
+    updatePushUI(false, 'denied');
+    return;
+  }
+
+  pushEnabled = true;
+  updatePushUI(true, 'granted');
+  showToast('Notifikasi aktif!', '🔔');
+
+  // Coba subscribe ke push service (opsional — untuk push dari server)
+  if ('serviceWorker' in navigator && 'PushManager' in window) {
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      pushSub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
+      await syncSubscriptionToDb(pushSub);
+    } catch(e) {
+      // Gagal subscribe push service — notifikasi lokal tetap jalan
+      console.warn('Push subscription failed (notif lokal tetap aktif):', e.message);
     }
-
-    const reg = await navigator.serviceWorker.ready;
-    pushSub = await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-    });
-
-    pushEnabled = true;
-    await syncSubscriptionToDb(pushSub);
-    updatePushUI(true, 'granted');
-    showToast('Notifikasi aktif! Anda akan menerima reminder', '🔔');
-
-    // Kirim notifikasi test
-    setTimeout(() => sendLocalPush({
-      title: 'MarketPro — Notifikasi Aktif',
-      body: 'Anda akan menerima reminder follow-up, berkas, dan DP otomatis.',
-      icon: '/manifest.json',
-      tag: 'push-test',
-    }), 1000);
-
-  } catch(e) {
-    console.error('enablePush:', e);
-    showToast('Gagal mengaktifkan notifikasi: ' + e.message, '❌');
-    updatePushUI(false, 'error');
   }
+
+  // Test notifikasi
+  await sendLocalPush({
+    title: 'MarketPro — Notifikasi Aktif! 🎉',
+    body:  'Anda akan menerima reminder follow-up, berkas, dan DP secara otomatis.',
+    tag:   'push-test',
+  });
 }
 
 // ── UNSUBSCRIBE ──────────────────────────────────
@@ -168,23 +173,49 @@ function updatePushUI(enabled, state) {
   if (enabled && sb && me) updatePushDeviceList();
 }
 
-// ── SEND LOCAL PUSH (via SW) ──────────────────────
-// Kirim notifikasi lokal via postMessage ke Service Worker
-// Untuk push dari server lain diperlukan server-side VAPID signing
-function sendLocalPush({ title, body, icon, tag, url, data }) {
-  navigator.serviceWorker.ready.then(reg => {
-    reg.active?.postMessage({
-      type: 'SHOW_NOTIFICATION',
-      title,
-      body,
-      icon:  icon  || '/manifest.json',
-      badge: '/manifest.json',
-      tag:   tag   || 'marketpro-' + Date.now(),
-      url:   url   || '/',
-      data:  data  || {},
-      vibrate: [200, 100, 200],
-    });
-  });
+// ── SEND LOCAL NOTIFICATION ──────────────────────
+// Strategi berlapis:
+// 1. Coba Notification API langsung (paling reliable di halaman aktif)
+// 2. Fallback ke registration.showNotification() via SW
+// 3. Fallback ke postMessage ke SW active
+async function sendLocalPush({ title, body, icon, tag, url, data }) {
+  if (Notification.permission !== 'granted') return;
+
+  const opts = {
+    body:    body    || '',
+    icon:    icon    || './manifest.json',
+    badge:   './manifest.json',
+    tag:     tag     || 'mp-' + Date.now(),
+    data:    { ...(data || {}), url: url || '/' },
+    vibrate: [200, 100, 200],
+  };
+
+  try {
+    // Cara 1: registration.showNotification — paling reliable
+    const reg = await navigator.serviceWorker.ready;
+    await reg.showNotification(title, opts);
+    return;
+  } catch(e1) {
+    console.warn('SW showNotification failed:', e1);
+  }
+
+  try {
+    // Cara 2: Notification API langsung (fallback)
+    new Notification(title, opts);
+    return;
+  } catch(e2) {
+    console.warn('Notification API failed:', e2);
+  }
+
+  try {
+    // Cara 3: postMessage ke SW active
+    const reg = await navigator.serviceWorker.ready;
+    if (reg.active) {
+      reg.active.postMessage({ type: 'SHOW_NOTIFICATION', title, ...opts });
+    }
+  } catch(e3) {
+    console.warn('postMessage to SW failed:', e3);
+  }
 }
 
 // ── SCHEDULED CHECK ───────────────────────────────
