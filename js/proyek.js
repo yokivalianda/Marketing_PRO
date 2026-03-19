@@ -6,29 +6,27 @@
 async function loadProyek() {
   if (!sb || !me || !myProf) return;
 
+  // Wrapped ketat — tidak boleh throw ke caller (afterLogin)
+  allProyek = [];
   try {
-    let data, error;
+    let res;
     if (myProf.role === 'admin') {
-      ({ data, error } = await sb.from('proyek')
+      res = await sb.from('proyek')
         .select('id, nama, deskripsi, warna, owner_id, is_archived, proyek_members(user_id, role)')
         .eq('is_archived', false)
-        .order('created_at', { ascending: true }));
+        .order('created_at', { ascending: true });
     } else {
-      ({ data, error } = await sb.from('proyek')
+      res = await sb.from('proyek')
         .select('id, nama, deskripsi, warna, owner_id, is_archived, proyek_members!inner(user_id, role)')
         .eq('is_archived', false)
         .eq('proyek_members.user_id', me.id)
-        .order('created_at', { ascending: true }));
+        .order('created_at', { ascending: true });
     }
-
-    if (error) {
-      // Tabel belum ada atau RLS error — tetap tampilkan bar untuk admin
-      console.warn('loadProyek error:', error.message);
-      allProyek = [];
+    if (res.error) {
+      console.warn('loadProyek:', res.error.message);
     } else {
-      allProyek = data || [];
+      allProyek = res.data || [];
     }
-
     // Restore pilihan proyek dari localStorage
     if (allProyek.length > 0) {
       const saved = localStorage.getItem('mp_proyek_' + me.id);
@@ -36,11 +34,11 @@ async function loadProyek() {
       if (found) { curProyekId = found.id; curProyek = found; }
     }
   } catch(e) {
+    // Jangan re-throw — cukup log
     console.warn('loadProyek exception:', e.message);
-    allProyek = [];
   }
 
-  // Selalu render switcher — apapun hasilnya
+  // Selalu render switcher apapun hasilnya
   renderProyekSwitcher();
 }
 
