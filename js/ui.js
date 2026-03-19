@@ -14,7 +14,7 @@ function switchPage(p) {
 // ── DASHBOARD ─────────────────────────────────────
 function renderDash() {
   const k = allKons;
-  document.getElementById('stTotal').textContent      = k.length;
+  document.getElementById('stTotal').textContent      = k.filter(x => x.status !== 'cek-lokasi').length;
   document.getElementById('stSelesai').textContent    = k.filter(x => x.status === 'selesai').length;
   document.getElementById('stDP').textContent         = k.filter(x => x.status === 'dp').length;
   document.getElementById('stBooking').textContent    = k.filter(x => x.status === 'booking').length;
