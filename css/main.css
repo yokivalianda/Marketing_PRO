@@ -1186,66 +1186,43 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
 .berkas-add-btn:active { transform: scale(.98); }
 
 /* ════════════════════════════════════════
-   FILTER ABJAD (ALPHA BAR)
+   FILTER NAMA KONSUMEN
 ════════════════════════════════════════ */
-.alpha-bar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  padding: 10px 18px 6px;
+.nama-filter-bar {
+  display: none;   /* shown by JS when data exists */
+  align-items: center;
+  gap: 9px;
+  padding: 0 max(env(safe-area-inset-right), 18px) 10px max(env(safe-area-inset-left), 18px);
 }
-.atag {
-  min-width: 28px;
-  height: 28px;
-  padding: 0 6px;
-  border-radius: 8px;
-  border: 1.5px solid var(--glass-border);
-  background: transparent;
-  color: var(--text-3);
-  font-size: 11px;
-  font-weight: 700;
+.nama-filter-wrap {
+  flex: 1;
+  position: relative;
+}
+.nama-filter-bar .admin-select {
+  width: 100%;
+  padding-right: 32px;
+}
+/* Active state: highlight border saat filter nama aktif */
+.nama-filter-bar.active .admin-select {
+  border-color: rgba(99,102,241,.5);
+  background: var(--brand-soft);
+  color: var(--brand-light);
+}
+.nama-filter-clear {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  background: var(--rose-soft);
+  border: 1px solid rgba(244,63,94,.25);
+  color: var(--rose);
+  font-size: 12px;
   cursor: pointer;
-  font-family: var(--font-body);
-  transition: all .15s;
   display: flex; align-items: center; justify-content: center;
-  letter-spacing: .3px;
+  flex-shrink: 0;
+  transition: all .15s;
 }
-.atag:hover:not(.disabled) {
-  background: var(--glass-10);
-  color: var(--text-1);
-  border-color: var(--glass-border-hi);
-}
-.atag.on {
-  background: var(--brand);
-  border-color: var(--brand);
-  color: #fff;
-}
-.atag.disabled {
-  opacity: .2;
-  cursor: default;
-  pointer-events: none;
-}
-/* "Semua" button sedikit lebih lebar */
-.atag:first-child {
-  padding: 0 10px;
-  font-size: 10px;
-}
+.nama-filter-clear:hover  { background: var(--rose); color: #fff; }
+.nama-filter-clear:active { transform: scale(.9); }
 
-/* ── Group header per huruf ── */
-.alpha-group-header {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--text-4);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 14px 4px 6px;
-  border-bottom: 1px solid var(--glass-border);
-  margin-bottom: 2px;
-  position: sticky;
-  top: 0;
-  background: var(--bg-base);
-  z-index: 5;
-}
-html.light .alpha-group-header {
-  background: var(--bg-base);
+@media (min-width: 768px) {
+  .nama-filter-bar { padding-left: 20px; padding-right: 20px; }
 }

@@ -240,8 +240,16 @@
           <option value="">Semua Marketing</option>
         </select>
       </div>
-      <!-- Filter Abjad -->
-      <div class="alpha-bar" id="alphaBar"></div>
+      <!-- Filter Nama Konsumen -->
+      <div class="nama-filter-bar" id="namaFilterBar">
+        <span class="admin-bar-label">Filter nama:</span>
+        <div class="nama-filter-wrap">
+          <select class="admin-select" id="namaFilterSel" onchange="setNamaFilter(this.value)">
+            <option value="">Semua Konsumen</option>
+          </select>
+        </div>
+        <button class="nama-filter-clear" id="namaFilterClear" onclick="setNamaFilter('')" style="display:none" title="Reset">✕</button>
+      </div>
       <div style="padding:0 18px 8px">
         <button onclick="openImportModal()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;background:var(--emerald-soft);border:1.5px dashed rgba(16,185,129,.4);border-radius:var(--r-md);color:var(--emerald);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body)">
           <span style="font-size:17px">📥</span> Import dari Excel / CSV

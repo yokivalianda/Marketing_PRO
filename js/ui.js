@@ -7,7 +7,7 @@ function switchPage(p) {
   curPage = p;
   document.getElementById('scrollArea').scrollTop = 0;
   if (p === 'dashboard') renderDash();
-  if (p === 'konsumen')  renderAlphaBar();
+  if (p === 'konsumen')  renderNamaFilter();
   if (p === 'laporan')   { renderLapKpi(); renderCharts(); }
   if (p === 'kalender')  renderKalender();
 }
@@ -89,69 +89,68 @@ function renderDash() {
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
-  renderAlphaBar();
+  setNamaFilter('');   // reset nama filter saat ganti status
+  renderNamaFilter();
   renderKons();
 }
 
-// ── ALPHA BAR ────────────────────────────────────
-function renderAlphaBar() {
-  const bar = document.getElementById('alphaBar');
-  if (!bar) return;
+// ── FILTER NAMA ───────────────────────────────────
+function renderNamaFilter() {
+  const sel   = document.getElementById('namaFilterSel');
+  const bar   = document.getElementById('namaFilterBar');
+  if (!sel || !bar) return;
 
-  // Kumpulkan huruf awal yang ada di data saat ini
-  const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
-  const ow = document.getElementById('adminSel')?.value || '';
+  const ow    = document.getElementById('adminSel')?.value || '';
+  const saved = sel.value; // pertahankan pilihan jika masih ada
+
+  // Pool konsumen sesuai filter status & tim aktif
   let pool = [...allKons];
   if (curFilter !== 'semua') pool = pool.filter(k => k.status === curFilter);
   if (ow) pool = pool.filter(k => k.owner_id === ow);
-  if (q)  pool = pool.filter(k =>
-    k.nama.toLowerCase().includes(q) ||
-    (k.hp || '').includes(q) ||
-    (k.unit || '').toLowerCase().includes(q) ||
-    (k.kavling || '').toLowerCase().includes(q)
-  );
 
-  const available = new Set(pool.map(k => k.nama.charAt(0).toUpperCase()).filter(c => /[A-Z]/.test(c)));
+  // Sort A-Z
+  pool.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
 
-  if (available.size === 0) { bar.innerHTML = ''; return; }
+  sel.innerHTML = '<option value="">Semua Konsumen</option>' +
+    pool.map(k => `<option value="${k.id}" ${k.id === saved ? 'selected' : ''}>${k.nama}${k.unit ? ' · ' + k.unit : ''}${k.kavling ? ' / ' + k.kavling : ''}</option>`).join('');
 
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  bar.innerHTML = `
-    <button class="atag ${curAlpha === '' ? 'on' : ''}" onclick="setAlpha('')">Semua</button>
-    ${letters.map(l => `
-      <button class="atag ${curAlpha === l ? 'on' : ''} ${available.has(l) ? '' : 'disabled'}"
-        onclick="${available.has(l) ? `setAlpha('${l}')` : ''}">
-        ${l}
-      </button>`).join('')}`;
+  // Show/hide bar: selalu tampil jika ada data
+  bar.style.display = pool.length > 0 ? 'flex' : 'none';
 }
 
-function setAlpha(letter) {
-  curAlpha = letter;
-  renderAlphaBar();
+function setNamaFilter(konsumenId) {
+  const sel   = document.getElementById('namaFilterSel');
+  const clear = document.getElementById('namaFilterClear');
+  if (sel)   sel.value = konsumenId;
+  if (clear) clear.style.display = konsumenId ? 'flex' : 'none';
+
+  // Highlight bar saat filter aktif
+  const bar = document.getElementById('namaFilterBar');
+  if (bar) bar.classList.toggle('active', !!konsumenId);
+
   renderKons();
 }
+
 function fillAdminSel() {
   const sel = document.getElementById('adminSel');
   sel.innerHTML = '<option value="">Semua Marketing</option>';
   allProfs.forEach(p => { const o = document.createElement('option'); o.value = p.id; o.textContent = p.full_name || p.email; sel.appendChild(o); });
 }
 function renderKons() {
-  const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
-  const ow = document.getElementById('adminSel')?.value || '';
+  const q       = (document.getElementById('searchFld')?.value || '').toLowerCase();
+  const ow      = document.getElementById('adminSel')?.value || '';
+  const namaId  = document.getElementById('namaFilterSel')?.value || '';
   let list = [...allKons];
   if (curFilter !== 'semua') list = list.filter(k => k.status === curFilter);
-  if (ow) list = list.filter(k => k.owner_id === ow);
-  if (q)  list = list.filter(k =>
+  if (ow)     list = list.filter(k => k.owner_id === ow);
+  if (namaId) list = list.filter(k => k.id === namaId);
+  if (q)      list = list.filter(k =>
     k.nama.toLowerCase().includes(q) ||
     (k.hp || '').includes(q) ||
     (k.unit || '').toLowerCase().includes(q) ||
     (k.kavling || '').toLowerCase().includes(q)
   );
-  // Filter abjad
-  if (curAlpha) list = list.filter(k => k.nama.charAt(0).toUpperCase() === curAlpha);
 
-  // Urutkan A-Z saat alpha aktif, else urutan default (created_at desc)
-  if (curAlpha || q) list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
 
   const el = document.getElementById('konsFeed');
   if (!list.length) {
@@ -159,25 +158,7 @@ function renderKons() {
     return;
   }
 
-  // Group by huruf awal jika alpha filter aktif ATAU tidak ada search query
-  const useGroup = !q;
-  if (useGroup) {
-    // Build grouped output
-    const groups = {};
-    list.forEach(k => {
-      const letter = k.nama.charAt(0).toUpperCase();
-      const groupKey = /[A-Z]/.test(letter) ? letter : '#';
-      if (!groups[groupKey]) groups[groupKey] = [];
-      groups[groupKey].push(k);
-    });
-    const sorted = Object.keys(groups).sort((a, b) => a === '#' ? 1 : b === '#' ? -1 : a.localeCompare(b));
-    el.innerHTML = sorted.map(letter => `
-      <div class="alpha-group-header">${letter}</div>
-      ${groups[letter].map(k => cardHtml(k)).join('')}
-    `).join('');
-  } else {
-    el.innerHTML = list.map(k => cardHtml(k)).join('');
-  }
+  el.innerHTML = list.map(k => cardHtml(k)).join('');
 }
 
 function cardHtml(k) {

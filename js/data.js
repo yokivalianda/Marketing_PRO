@@ -51,7 +51,7 @@ async function afterLogin(user) {
   shell.style.display = 'flex'; shell.classList.add('show');
   updateHeaderUI();
   setupAdminUI();
-  renderDash(); renderAlphaBar(); renderKons();
+  renderDash(); renderNamaFilter(); renderKons();
   initTheme();
 }
 
@@ -131,7 +131,7 @@ function setupRealtime() {
       }
       updateNotifPip();
       if (curPage === 'dashboard') renderDash();
-      if (curPage === 'konsumen')  renderKons();
+      if (curPage === 'konsumen')  { renderNamaFilter(); renderKons(); }
       if (curPage === 'laporan')   { renderLapKpi(); renderCharts(); }
       if (curPage === 'kalender')  renderKalender();
     }).subscribe();
