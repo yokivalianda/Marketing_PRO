@@ -85,6 +85,18 @@ function renderDash() {
 }
 
 // ── KONSUMEN LIST ────────────────────────────────
+function fillAdminSel() {
+  const sel = document.getElementById('adminSel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Semua Marketing</option>';
+  allProfs.filter(p => p.role !== 'admin').forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.id;
+    o.textContent = p.full_name || p.email;
+    sel.appendChild(o);
+  });
+}
+
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
