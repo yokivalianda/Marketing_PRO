@@ -53,13 +53,13 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 
 ---
 
-## 💰 Sistem Monetisasi
+## 💰 Langganan Paket Bulanan
 
 | | Gratis | Pro | Business |
 |---|---|---|---|
 | **Harga** | Rp 0 | Rp 100.000/bln | Rp 299.000/bln |
 | **Konsumen** | Maks 20 | Tidak terbatas | Tidak terbatas |
-| **Trial** | — | 14 hari gratis | 14 hari gratis |
+| **Trial** | — | 14 hari gratis | - |
 | Export Excel/PDF/CSV | ✕ | ✓ | ✓ |
 | Upload foto berkas | ✕ | ✓ maks 10/item | ✓ tidak terbatas |
 | Filter lanjutan & bulan | ✕ | ✓ | ✓ |
@@ -68,6 +68,7 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 | Backup & restore | ✕ | ✓ (data sendiri) | ✓ (seluruh tim) |
 | Mode offline | ✕ | ✓ | ✓ |
 | Import Excel/CSV | ✕ | ✓ | ✓ |
+| Template Checklist berkas per bank | X | X | ✓
 
 > Semua user baru otomatis mendapat **trial Pro 14 hari gratis**.
 
