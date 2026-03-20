@@ -1618,3 +1618,93 @@ html.is-offline .live-dot {
   background: var(--amber);
   animation: none;
 }
+
+/* ════════════════════════════════════════
+   BACKUP & RESTORE
+════════════════════════════════════════ */
+.backup-section { padding: 4px 0 12px; }
+.backup-section-title {
+  font-size: 14px; font-weight: 700; margin-bottom: 6px;
+}
+.backup-section-desc {
+  font-size: 12px; color: var(--text-3); line-height: 1.6; margin-bottom: 10px;
+}
+.backup-last {
+  font-size: 11px; color: var(--text-4); margin-bottom: 10px;
+}
+.backup-includes {
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.bi-item {
+  font-size: 12px; color: var(--text-2);
+}
+.backup-divider {
+  height: 1px; background: var(--glass-border); margin: 16px 0;
+}
+.backup-preview {
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+}
+.bp-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0; border-bottom: 1px solid var(--glass-border);
+  font-size: 12px;
+}
+.bp-row:last-child { border-bottom: none; }
+.bp-key { color: var(--text-3); }
+.bp-val { font-weight: 700; color: var(--text-1); text-align: right; }
+
+/* Restore mode */
+.restore-mode-group {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+}
+.restore-mode-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px;
+  background: var(--glass-10);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.restore-mode-item:has(input:checked) {
+  border-color: rgba(99,102,241,.45);
+  background: var(--brand-soft);
+}
+.restore-mode-item input[type="radio"] {
+  margin-top: 2px; flex-shrink: 0;
+  accent-color: var(--brand);
+}
+
+/* Upload area */
+.restore-upload-area {
+  border: 2px dashed var(--glass-border);
+  border-radius: var(--r-md);
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 2px;
+}
+.restore-upload-area:hover {
+  border-color: rgba(99,102,241,.4);
+  background: var(--brand-soft);
+}
+
+/* Warning */
+.restore-warning {
+  background: rgba(244,63,94,.08);
+  border: 1px solid rgba(244,63,94,.2);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+  font-size: 12px;
+  color: var(--rose);
+  margin-top: 8px;
+  line-height: 1.5;
+}

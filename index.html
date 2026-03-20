@@ -568,6 +568,13 @@
             </div>
             <div class="set-arrow">›</div>
           </div>
+          <div class="set-row" onclick="openBackupModal()">
+            <div class="set-row-info">
+              <div class="set-row-name">💾 Backup & Restore Data</div>
+              <div class="set-row-desc">Download backup JSON atau pulihkan dari file</div>
+            </div>
+            <div class="set-arrow">›</div>
+          </div>
           <div class="set-row" onclick="exportXLSX()">
             <div class="set-row-info">
               <div class="set-row-name">📗 Export Excel (XLSX)</div>
@@ -719,6 +726,18 @@
       <button class="btn-secondary" onclick="closeModal('modalTarget')">Batal</button>
       <button class="btn-primary" id="btnSaveTarget" onclick="saveTargetModal()">Simpan Target</button>
     </div>
+  </div>
+</div>
+
+<!-- ════ MODAL BACKUP & RESTORE ════ -->
+<div class="modal-bg" id="modalBackup">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">💾 Backup & Restore</div>
+      <button class="sheet-close" onclick="closeModal('modalBackup')">✕</button>
+    </div>
+    <div class="sheet-body" id="modalBackupBody" style="padding:0 18px 24px"></div>
   </div>
 </div>
 
@@ -960,6 +979,7 @@
 <script src="js/kalender.js"></script>
 <script src="js/dokumen.js"></script>
 <script src="js/target.js"></script>
+<script src="js/backup.js"></script>
 <script src="js/offline.js"></script>
 <script src="js/push.js"></script>
 
