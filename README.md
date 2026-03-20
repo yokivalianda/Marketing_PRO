@@ -11,7 +11,6 @@
 Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan sistem monetisasi plan Gratis / Pro / Business.
 
 [🚀 **Coba Demo**](demo.html) · [📱 **Buka Aplikasi**](https://propmapdev.netlify.app/)
-[🚀 **Coba Demo**](https://propmapid.netlify.app/demo) · [📱 **Buka Aplikasi**](https://propmapid.netlify.app/)
 
 </div>
 
@@ -54,13 +53,13 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 
 ---
 
-## 💰 Paket Langganan per Bulan/Tahun
+## 💰 Sistem Monetisasi
 
 | | Gratis | Pro | Business |
 |---|---|---|---|
 | **Harga** | Rp 0 | Rp 100.000/bln | Rp 299.000/bln |
 | **Konsumen** | Maks 20 | Tidak terbatas | Tidak terbatas |
-| **Trial** | — | 14 hari gratis | - |
+| **Trial** | — | 14 hari gratis | 14 hari gratis |
 | Export Excel/PDF/CSV | ✕ | ✓ | ✓ |
 | Upload foto berkas | ✕ | ✓ maks 10/item | ✓ tidak terbatas |
 | Filter lanjutan & bulan | ✕ | ✓ | ✓ |

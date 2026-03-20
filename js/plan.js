@@ -201,6 +201,8 @@ async function submitCheckout() {
   document.getElementById('checkoutForm').style.display    = 'none';
   document.getElementById('checkoutSuccess').style.display = 'block';
   document.getElementById('checkoutOrderId').textContent   = orderId;
+  const cpiOid = document.getElementById('cpiOrderId');
+  if (cpiOid) cpiOid.textContent = orderId;
   document.getElementById('checkoutPlanDisplay').textContent = PLANS[plan]?.name;
   document.getElementById('checkoutPriceDisplay').textContent =
     'Rp ' + (plan === 'pro' ? '100.000' : '299.000');
@@ -287,6 +289,32 @@ function renderPlanInfo() {
         </div>
       </div>` : ''}
     </div>`;
+}
+
+// ── COPY HELPERS ─────────────────────────────────
+function copyRekening(noRek, btn) {
+  navigator.clipboard.writeText(noRek).then(() => {
+    const ori = btn.innerHTML;
+    btn.innerHTML = '✅ Tersalin!';
+    btn.style.background = 'rgba(16,185,129,.15)';
+    btn.style.color = 'var(--emerald)';
+    setTimeout(() => { btn.innerHTML = ori; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  }).catch(() => {
+    // Fallback untuk browser lama
+    const el = document.createElement('textarea');
+    el.value = noRek;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.innerHTML = '✅ Tersalin!';
+    setTimeout(() => { btn.innerHTML = '📋 Salin'; }, 2000);
+  });
+}
+
+function copyOrderId(btn) {
+  const orderId = document.getElementById('cpiOrderId')?.textContent || '';
+  copyRekening(orderId, btn);
 }
 
 // ── PANEL AKTIVASI (Admin only) ───────────────────
