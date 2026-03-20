@@ -1,64 +1,87 @@
 // PropMap v4.2 — Service Worker
-// App-shell caching + Offline support + Push Notification
+// Network-first untuk JS/CSS/HTML — cache hanya untuk offline fallback
 
-const CACHE_VER = 'propmap-v4-2';
+const CACHE_VER = 'propmap-v4-2-' + '20260321';
 const SHELL = [
   './', './index.html', './manifest.json',
   './css/main.css',
-  './js/config.js', './js/helpers.js', './js/auth.js',
+  './js/config.js', './js/plan.js', './js/helpers.js', './js/auth.js',
   './js/data.js', './js/ui.js', './js/laporan.js',
   './js/kalender.js', './js/dokumen.js',
   './js/target.js', './js/push.js', './js/offline.js',
+  './js/backup.js',
 ];
 
 // ── INSTALL ──────────────────────────────────────
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE_VER).then(c => {
-      return Promise.allSettled(SHELL.map(url => c.add(url).catch(() => {})));
-    })
+    caches.open(CACHE_VER).then(c =>
+      Promise.allSettled(SHELL.map(url => c.add(url).catch(() => {})))
+    )
   );
+  // Aktifkan SW baru langsung tanpa menunggu tab lama tutup
   self.skipWaiting();
 });
 
-// ── ACTIVATE ─────────────────────────────────────
+// ── ACTIVATE — hapus cache lama ──────────────────
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE_VER).map(k => caches.delete(k)))
-    )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 // ── FETCH ─────────────────────────────────────────
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
 
-  // External APIs — network only, no caching
-  const isExternal = ['supabase.co','supabase.io','googleapis.com',
-    'gstatic.com','jsdelivr.net','cdnjs.cloudflare.com'].some(h => url.hostname.includes(h));
+  // External APIs — network only, jangan cache
+  const isExternal = [
+    'supabase.co','supabase.io','googleapis.com',
+    'gstatic.com','jsdelivr.net','cdnjs.cloudflare.com'
+  ].some(h => url.hostname.includes(h));
   if (isExternal) return;
 
   // POST / non-GET — network only
   if (e.request.method !== 'GET') return;
 
-  // App shell — cache first, fallback network
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
-        // Cache fresh JS/CSS
-        if (res.ok && (url.pathname.endsWith('.js') || url.pathname.endsWith('.css'))) {
+  const isAppFile = url.pathname.endsWith('.js')
+    || url.pathname.endsWith('.css')
+    || url.pathname.endsWith('.html')
+    || url.pathname === '/'
+    || url.pathname.endsWith('/');
+
+  if (isAppFile) {
+    // NETWORK-FIRST untuk JS/CSS/HTML
+    // → Selalu ambil dari server dulu
+    // → Kalau offline, fallback ke cache
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          // Simpan versi terbaru ke cache untuk offline
           caches.open(CACHE_VER).then(c => c.put(e.request, res.clone()));
         }
         return res;
-      }).catch(() => {
-        // Offline fallback — return index.html untuk navigasi
-        if (e.request.mode === 'navigate') return caches.match('./index.html');
-      });
-    })
-  );
+      }).catch(() =>
+        // Offline: kembalikan dari cache
+        caches.match(e.request).then(cached =>
+          cached || caches.match('./index.html')
+        )
+      )
+    );
+  } else {
+    // File lain (gambar, font, dll) — cache first
+    e.respondWith(
+      caches.match(e.request).then(cached => {
+        if (cached) return cached;
+        return fetch(e.request).then(res => {
+          if (res.ok) caches.open(CACHE_VER).then(c => c.put(e.request, res.clone()));
+          return res;
+        }).catch(() => caches.match('./index.html'));
+      })
+    );
+  }
 });
 
 // ── PUSH ─────────────────────────────────────────
@@ -101,7 +124,6 @@ self.addEventListener('message', e => {
       vibrate: [200, 100, 200],
     });
   }
-  // Trigger sync dari halaman
   if (e.data?.type === 'SYNC_NOW') {
     self.registration.sync?.register('sync-queue').catch(() => {});
   }
