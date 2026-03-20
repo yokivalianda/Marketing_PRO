@@ -1,12 +1,12 @@
 // ── LABELS ──────────────────────────────────────
 function sLabel(s) {
-  return {booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',selesai:'Selesai',batal:'Batal'}[s] || s;
+  return {'cek-lokasi':'Prospek Konsumen',booking:'Booking',dp:'Proses DP',berkas:'Kumpul Berkas',acc:'SP3K/ACC',selesai:'Selesai',batal:'Batal'}[s] || s;
 }
 function kprLabel(s) {
-  return {'kpr-btn':'KPR BTN','kpr-bni':'KPR BNI','kpr-bri':'KPR BRI','kpr-mandiri':'KPR Mandiri','kpr-bsm':'KPR Syariah','cash-keras':'Cash Keras','cash-bertahap':'Cash Bertahap','subsidi':'KPR Subsidi FLPP'}[s] || s || '—';
+  return {'kpr-btn':'KPR BTN','kpr-bni':'KPR BNI','kpr-bri':'KPR BRI','kpr-mandiri':'KPR Mandiri','kpr-bsm':'KPR Syariah/BSN','kpr-sumsel':'KPR Bank Sumsel Babel','kpr-bsi':'KPR BSI','cash-keras':'Cash Keras','cash-bertahap':'Cash Bertahap'}[s] || s || '—';
 }
 function sumberLabel(s) {
-  return {referral:'Referral',medsos:'Media Sosial',pameran:'Pameran',brosur:'Brosur',website:'Website','walk-in':'Walk In',telepon:'Telepon'}[s] || s || '—';
+  return {tiktok:'TikTok',facebook:'Facebook',instagram:'Instagram',broker:'Broker',datangan:'Konsumen Datangan'}[s] || s || '—';
 }
 
 // ── FORMAT ───────────────────────────────────────
@@ -155,14 +155,31 @@ function setBtnLoading(id, loading, txt) {
 }
 
 // ── FILTER DATA BY PERIOD ────────────────────────
+// curDateFrom / curDateTo diset oleh filter custom (format YYYY-MM-DD)
+// Jika kosong, filter period preset yang aktif
+let curDateFrom = '';
+let curDateTo   = '';
+
 function filterByPeriod(list, period) {
+  // Mode custom range
+  if (curDateFrom || curDateTo) {
+    const from = curDateFrom ? new Date(curDateFrom + 'T00:00:00') : null;
+    const to   = curDateTo   ? new Date(curDateTo   + 'T23:59:59') : null;
+    return list.filter(k => {
+      const d = new Date(k.created_at);
+      if (from && d < from) return false;
+      if (to   && d > to)   return false;
+      return true;
+    });
+  }
+  // Mode preset
   const now = new Date();
   return list.filter(k => {
     const d = new Date(k.created_at);
-    if (period === 'bulan')    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    if (period === 'kuartal')  { const q = Math.floor(now.getMonth() / 3); return Math.floor(d.getMonth() / 3) === q && d.getFullYear() === now.getFullYear(); }
-    if (period === 'tahun')    return d.getFullYear() === now.getFullYear();
-    return true; // semua
+    if (period === 'bulan')   return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    if (period === 'kuartal') { const q = Math.floor(now.getMonth() / 3); return Math.floor(d.getMonth() / 3) === q && d.getFullYear() === now.getFullYear(); }
+    if (period === 'tahun')   return d.getFullYear() === now.getFullYear();
+    return true;
   });
 }
 

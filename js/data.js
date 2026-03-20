@@ -6,29 +6,50 @@ async function init() {
     hideSplash(); showSetupGuide(); return;
   }
 
+  // Init Supabase client
   try {
     sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    setLoadTxt('Memeriksa sesi...');
-
-    const hash = window.location.hash;
-    if (hash.includes('type=recovery')) {
-      hideSplash(); showAuth();
-      sb.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY') {
-          document.getElementById('auth').classList.add('show');
-          showNewPassPanel();
-          history.replaceState(null, '', window.location.pathname);
-        }
-      });
-      return;
-    }
-
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) { await afterLogin(session.user); }
-    else { hideSplash(); showAuth(); }
   } catch(e) {
     hideSplash(); showAuth();
-    showAuthErr('Gagal terhubung. Periksa konfigurasi Supabase.');
+    showAuthErr('Gagal inisialisasi Supabase: ' + e.message);
+    return;
+  }
+
+  // Password recovery
+  const hash = window.location.hash;
+  if (hash.includes('type=recovery')) {
+    hideSplash(); showAuth();
+    sb.auth.onAuthStateChange((event) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        document.getElementById('auth').classList.add('show');
+        showNewPassPanel();
+        history.replaceState(null, '', window.location.pathname);
+      }
+    });
+    return;
+  }
+
+  // Cek sesi
+  let session = null;
+  try {
+    setLoadTxt('Memeriksa sesi...');
+    const { data } = await sb.auth.getSession();
+    session = data?.session;
+  } catch(e) {
+    hideSplash(); showAuth();
+    showAuthErr('Gagal terhubung ke Supabase. Periksa koneksi internet.');
+    return;
+  }
+
+  if (!session) { hideSplash(); showAuth(); return; }
+
+  // afterLogin — error di sini tidak boleh muncul sebagai "Gagal terhubung"
+  try {
+    await afterLogin(session.user);
+  } catch(e) {
+    console.error('afterLogin error:', e);
+    hideSplash(); showAuth();
+    showAuthErr('Gagal memuat data: ' + (e.message || 'Unknown error'));
   }
 }
 
@@ -51,7 +72,13 @@ async function afterLogin(user) {
   shell.style.display = 'flex'; shell.classList.add('show');
   updateHeaderUI();
   setupAdminUI();
+  await loadTarget();
+  if (typeof setupTargetAdminLink === "function") setupTargetAdminLink();
   renderDash(); renderKons();
+  if (typeof renderMonthFilter === "function") renderMonthFilter();
+  // Init push notification setelah login
+  setTimeout(() => { if(typeof initPush === 'function') initPush(); }, 1000);
+  setTimeout(() => { if(typeof checkAndSendPushReminders === 'function') checkAndSendPushReminders(); }, 2000);
   initTheme();
 }
 
@@ -131,7 +158,8 @@ function setupRealtime() {
       }
       updateNotifPip();
       if (curPage === 'dashboard') renderDash();
-      if (curPage === 'konsumen')  renderKons();
+      if (typeof checkAndSendPushReminders === 'function') checkAndSendPushReminders();
+      if (curPage === 'konsumen')  { renderKons(); if (typeof renderMonthFilter === 'function') renderMonthFilter(); }
       if (curPage === 'laporan')   { renderLapKpi(); renderCharts(); }
       if (curPage === 'kalender')  renderKalender();
     }).subscribe();

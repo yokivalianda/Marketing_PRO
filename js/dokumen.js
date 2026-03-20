@@ -45,19 +45,30 @@ async function uploadFotoDokumen(konsumenId, berkasKey, file) {
 
 // ── AMBIL SEMUA FOTO SATU BERKAS ─────────────────
 async function listFotoBerkas(konsumenId, berkasKey) {
-  // Cari owner_id dari data konsumen
-  const k        = allKons.find(x => x.id === konsumenId);
-  const ownerId  = k?.owner_id || me.id;
-  const { data, error } = await sb.storage
-    .from(STORAGE_BUCKET)
-    .list(`${ownerId}/${konsumenId}/${berkasKey}`, { sortBy: { column: 'created_at', order: 'asc' } });
+  const k       = allKons.find(x => x.id === konsumenId);
+  const ownerId = k?.owner_id || me.id;
 
-  if (error || !data) return [];
-  return data.filter(f => f.name && !f.name.startsWith('.')).map(f => ({
-    name: f.name,
-    path: `${ownerId}/${konsumenId}/${berkasKey}/${f.name}`,
-    size: f.metadata?.size || 0,
-  }));
+  // Coba dengan owner_id dulu (path standar)
+  const tryList = async (uid) => {
+    const { data, error } = await sb.storage
+      .from(STORAGE_BUCKET)
+      .list(`${uid}/${konsumenId}/${berkasKey}`, { sortBy: { column: 'created_at', order: 'asc' } });
+    if (error || !data) return [];
+    return data.filter(f => f.name && !f.name.startsWith('.')).map(f => ({
+      name: f.name,
+      path: `${uid}/${konsumenId}/${berkasKey}/${f.name}`,
+      size: f.metadata?.size || 0,
+    }));
+  };
+
+  let result = await tryList(ownerId);
+
+  // Fallback: coba dengan me.id jika owner berbeda dan result kosong
+  if (result.length === 0 && ownerId !== me.id) {
+    result = await tryList(me.id);
+  }
+
+  return result;
 }
 
 // ── GET PUBLIC URL ────────────────────────────────
@@ -142,6 +153,7 @@ async function handleFotoUpload(konsumenId, berkasKey, input) {
 
   if (uploaded > 0) {
     showToast(`${uploaded} foto berhasil diupload`, '✅');
+
     // Log aktivitas
     const k = allKons.find(x => x.id === konsumenId);
     if (k) {
@@ -152,8 +164,11 @@ async function handleFotoUpload(konsumenId, berkasKey, input) {
       }];
       await sb.from('konsumen').update({ log }).eq('id', konsumenId);
     }
-    // Re-render detail
-    setTimeout(() => openDetail(konsumenId), 300);
+
+    // Refresh hanya bagian berkas — tidak re-render seluruh modal
+    // Delay sedikit agar Supabase Storage selesai mengindex file
+    await new Promise(r => setTimeout(r, 600));
+    await refreshBerkasSection(konsumenId);
   }
 }
 
@@ -216,6 +231,30 @@ async function viewerDelete() {
     _viewerIndex = Math.min(_viewerIndex, _viewerFotos.length - 1);
     renderViewer();
     setTimeout(() => openDetail(_viewerKonsId), 300);
+  }
+}
+
+// ── REFRESH HANYA SECTION BERKAS (tanpa re-render seluruh modal) ──
+async function refreshBerkasSection(konsumenId) {
+  const sec = document.getElementById('berkasSection');
+  if (!sec) return; // Modal sudah ditutup
+
+  const k = allKons.find(x => x.id === konsumenId);
+  if (!k) return;
+  const canEdit = myProf?.role === 'admin' || k.owner_id === me.id;
+
+  // Tampilkan loading singkat
+  sec.querySelector('.berkas-grid') && (sec.querySelector('.berkas-grid').style.opacity = '0.5');
+
+  const berkasHtml = await buildBerkasSection(k, canEdit);
+  // Cek lagi apakah section masih ada (user mungkin sudah tutup modal)
+  const secNow = document.getElementById('berkasSection');
+  if (secNow) {
+    secNow.innerHTML = `
+      <div class="det-sec-label">Checklist Berkas & Dokumen
+        ${canEdit ? '<span style="font-size:10px;color:var(--text-4);font-weight:400;margin-left:6px">Ketuk 📎 untuk upload foto</span>' : ''}
+      </div>
+      <div class="berkas-grid">${berkasHtml}</div>`;
   }
 }
 

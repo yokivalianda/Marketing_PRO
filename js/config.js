@@ -25,3 +25,4 @@ let chartTren     = null;
 let chartSumber   = null;
 
 let curSort = '';   // '' = default (terbaru), 'az' = A→Z, 'za' = Z→A
+let allTarget = [];   // cache target_bulanan

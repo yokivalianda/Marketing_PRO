@@ -91,7 +91,7 @@ function renderCalEvents(evMap) {
     evHtml += `<div style="text-align:center;padding:24px;color:var(--text-4);font-size:13px">Tidak ada jadwal${calSelected ? ' di tanggal ini' : ''}</div>`;
   } else {
     evHtml += displayEvents.map(k => {
-      const statusColors = { booking: 'var(--brand)', dp: 'var(--amber)', berkas: 'var(--violet)', selesai: 'var(--emerald)', batal: 'var(--rose)' };
+      const statusColors = { 'cek-lokasi': '#0ea5e9', booking: 'var(--brand)', dp: 'var(--amber)', berkas: 'var(--violet)', acc: '#ec4899', selesai: 'var(--emerald)', batal: 'var(--rose)' };
       const dateLabel = calSelected ? '' : `<span class="cal-event-time">${fDateShort(k.tgl_followup)}</span>`;
       return `
         <div class="cal-event-item" onclick="openDetail('${k.id}')">

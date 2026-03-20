@@ -1231,3 +1231,310 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
   border-color: rgba(245,158,11,.4);
   color: var(--amber);
 }
+
+/* ════════════════════════════════════════
+   CUSTOM DATE RANGE PICKER
+════════════════════════════════════════ */
+.ptag-custom {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.35);
+  color: var(--brand-light);
+}
+.ptag-custom.active {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.quick-preset {
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--glass-border);
+  background: var(--bg-elevated);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all .15s;
+}
+.quick-preset:hover {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.4);
+  color: var(--brand-light);
+}
+.quick-preset:active { transform: scale(.95); }
+
+/* input[type=date] dark mode fix */
+input[type="date"] {
+  color-scheme: dark;
+}
+html.light input[type="date"] {
+  color-scheme: light;
+}
+
+/* ════════════════════════════════════════
+   FILTER LANJUTAN
+════════════════════════════════════════ */
+#filterAdvBtn {
+  position: relative;
+  gap: 4px;
+}
+#filterAdvBtn.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.4);
+  color: var(--brand-light);
+}
+.fadv-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--brand); color: #fff;
+  font-size: 9px; font-weight: 800; margin-left: 2px;
+}
+
+.fadv-panel {
+  margin: 0 18px 10px;
+  background: var(--bg-overlay);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 14px;
+  animation: pageIn .2s ease;
+}
+.fadv-group { display: flex; flex-direction: column; gap: 7px; }
+.fadv-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .8px;
+}
+.fadv-row { display: flex; align-items: center; gap: 8px; }
+.fadv-input {
+  flex: 1; padding: 8px 10px;
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-sm);
+  color: var(--text-1); font-size: 12px;
+  font-family: var(--font-body);
+  outline: none; min-width: 0;
+  transition: border-color .2s;
+}
+.fadv-input:focus { border-color: rgba(99,102,241,.5); }
+input[type="date"].fadv-input { color-scheme: dark; }
+html.light input[type="date"].fadv-input { color-scheme: light; }
+.fadv-sep { color: var(--text-4); font-size: 13px; flex-shrink: 0; }
+
+.fadv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fchip {
+  padding: 5px 11px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-2);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s; white-space: nowrap;
+}
+.fchip:hover { background: var(--glass-10); color: var(--text-1); }
+.fchip.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.45);
+  color: var(--brand-light);
+}
+.fchip:active { transform: scale(.94); }
+
+.fadv-reset {
+  width: 100%; padding: 9px;
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  color: var(--text-3);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s;
+}
+.fadv-reset:hover {
+  background: var(--rose-soft);
+  border-color: rgba(244,63,94,.25);
+  color: var(--rose);
+}
+
+#konsResultCount {
+  font-size: 11px; font-weight: 700;
+  color: var(--text-3);
+  padding: 4px 20px 0;
+  letter-spacing: .3px;
+}
+
+@media (min-width: 768px) {
+  .fadv-panel { margin-left: 20px; margin-right: 20px; }
+}
+
+/* ════════════════════════════════════════
+   TARGET PENJUALAN BULANAN
+════════════════════════════════════════ */
+
+/* History bar per marketing */
+.target-history { display: flex; flex-direction: column; gap: 8px; }
+.th-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border-radius: var(--r-md);
+  background: var(--glass-10); border: 1px solid var(--glass-border);
+}
+.th-row-now {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.25);
+}
+.th-bulan { font-size: 11px; font-weight: 700; color: var(--text-3); width: 56px; flex-shrink: 0; }
+.th-bar-wrap { flex: 1; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.th-bar-track { flex: 1; height: 6px; background: var(--bg-float); border-radius: var(--r-full); overflow: hidden; }
+.th-bar-fill { height: 100%; border-radius: var(--r-full); transition: width .6s cubic-bezier(.22,1,.36,1); }
+.th-pct { font-size: 10px; color: var(--text-3); font-family: var(--font-mono); width: 32px; text-align: right; flex-shrink: 0; }
+.th-nums { font-size: 12px; font-weight: 700; font-family: var(--font-mono); width: 42px; text-align: right; flex-shrink: 0; }
+
+/* Grid history admin */
+.th-header-row, .th-grid-row {
+  display: grid;
+  grid-template-columns: 120px repeat(6, 1fr);
+  gap: 4px; align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--glass-border);
+}
+.th-header-row { border-bottom: 2px solid var(--glass-border-hi); }
+.th-col-name {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  display: flex; align-items: center; gap: 6px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.th-col-month {
+  font-size: 10px; font-weight: 700; color: var(--text-4);
+  text-align: center; letter-spacing: .3px;
+}
+.th-col-cell {
+  font-size: 11px; font-weight: 700; font-family: var(--font-mono);
+  text-align: center;
+}
+.th-av {
+  width: 22px; height: 22px; border-radius: 6px;
+  font-size: 10px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: #fff;
+}
+
+/* ════════════════════════════════════════
+   STATUS CEK LOKASI
+════════════════════════════════════════ */
+/* Stat tile */
+.t-sky { }
+.t-sky .tile-value { color: #0ea5e9; }
+
+/* Badge */
+.s-cek-lokasi { background: rgba(14,165,233,.12); color: #0ea5e9; }
+
+/* Kartu konsumen */
+.kons-card.st-cek-lokasi::before { background: #0ea5e9; }
+.kons-card.st-cek-lokasi { background: linear-gradient(135deg, rgba(14,165,233,.04) 0%, var(--bg-overlay) 60%); }
+html.light .kons-card.st-cek-lokasi { background: linear-gradient(135deg, rgba(14,165,233,.05) 0%, var(--bg-overlay) 60%); }
+
+/* Pipeline card */
+.pc-cek-lokasi .pipe-card::before { background: #0ea5e9; }
+.pc-cek-lokasi .pipe-num { color: #0ea5e9; }
+
+/* Kalender event dot */
+.cal-event-cek-lokasi { background: #0ea5e9; }
+
+/* ════════════════════════════════════════
+   STATUS SP3K / ACC
+════════════════════════════════════════ */
+.t-rose .tile-value { color: #ec4899; }
+.s-acc { background: rgba(236,72,153,.12); color: #ec4899; }
+.kons-card.st-acc::before { background: #ec4899; }
+.kons-card.st-acc { background: linear-gradient(135deg, rgba(236,72,153,.04) 0%, var(--bg-overlay) 60%); }
+html.light .kons-card.st-acc { background: linear-gradient(135deg, rgba(236,72,153,.05) 0%, var(--bg-overlay) 60%); }
+.pc-acc .pipe-card::before { background: #ec4899; }
+.pc-acc .pipe-num { color: #ec4899; }
+
+/* ════════════════════════════════════════
+   FILTER BULAN
+════════════════════════════════════════ */
+.month-filter-bar {
+  padding: 8px 18px 10px;
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--glass-border);
+  animation: pageIn .2s ease;
+}
+.month-filter-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.month-filter-left { display: flex; align-items: center; gap: 8px; }
+.month-filter-label {
+  font-size: 11px; font-weight: 700;
+  color: var(--text-3); text-transform: uppercase; letter-spacing: .7px;
+}
+.month-filter-field {
+  font-size: 11px; font-weight: 700;
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-full);
+  color: var(--text-2);
+  padding: 3px 10px;
+  font-family: var(--font-body);
+  outline: none; cursor: pointer;
+}
+.month-filter-clear {
+  font-size: 11px; font-weight: 700;
+  color: var(--rose); background: var(--rose-soft);
+  border: 1px solid rgba(244,63,94,.2);
+  border-radius: var(--r-full);
+  padding: 3px 10px;
+  cursor: pointer; font-family: var(--font-body);
+  display: flex; align-items: center; gap: 4px;
+  transition: all .15s;
+}
+.month-filter-clear:hover { background: var(--rose); color: #fff; }
+
+/* Chips bulan */
+.month-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.mchip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  border: 1.5px solid var(--glass-border);
+  background: var(--bg-overlay);
+  color: var(--text-2);
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s; white-space: nowrap;
+}
+.mchip:hover { background: var(--glass-10); color: var(--text-1); border-color: var(--glass-border-hi); }
+.mchip.on {
+  background: var(--brand-soft);
+  border-color: rgba(99,102,241,.45);
+  color: var(--brand-light);
+}
+.mchip:active { transform: scale(.94); }
+.mchip-count {
+  background: var(--glass-10);
+  border-radius: var(--r-full);
+  padding: 1px 6px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+.mchip.on .mchip-count {
+  background: rgba(99,102,241,.2);
+}
+
+/* Badge pada tombol filter */
+.mfilter-badge {
+  background: var(--brand);
+  color: #fff;
+  font-size: 9px; font-weight: 800;
+  padding: 1px 5px;
+  border-radius: var(--r-full);
+  margin-left: 2px;
+}
+
+@media (min-width: 768px) {
+  .month-filter-bar { padding-left: 20px; padding-right: 20px; }
+}

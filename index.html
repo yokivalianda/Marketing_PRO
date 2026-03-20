@@ -182,6 +182,16 @@
               <div class="tile-value" id="stBooking">—</div>
               <div class="tile-sub">Antrian booking</div>
             </div>
+            <div class="stat-tile t-sky">
+              <div class="tile-label">Prospek Konsumen</div>
+              <div class="tile-value" id="stCekLokasi">—</div>
+              <div class="tile-sub">Belum booking</div>
+            </div>
+            <div class="stat-tile t-rose">
+              <div class="tile-label">SP3K / ACC</div>
+              <div class="tile-value" id="stAcc">—</div>
+              <div class="tile-sub">Disetujui bank</div>
+            </div>
           </div>
         </div>
       </div>
@@ -227,14 +237,97 @@
         </div>
       </div>
       <div class="filter-row" id="filterRow">
-        <button class="ftag on" data-f="semua"   onclick="setFilter('semua')">Semua</button>
-        <button class="ftag"    data-f="booking" onclick="setFilter('booking')">📋 Booking</button>
+        <button class="ftag on" data-f="semua"      onclick="setFilter('semua')">Semua</button>
+        <button class="ftag"    data-f="cek-lokasi" onclick="setFilter('cek-lokasi')">📍 Prospek</button>
+        <button class="ftag"    data-f="booking"    onclick="setFilter('booking')">📋 Booking</button>
         <button class="ftag"    data-f="dp"      onclick="setFilter('dp')">💰 Proses DP</button>
         <button class="ftag"    data-f="berkas"  onclick="setFilter('berkas')">📁 Berkas</button>
+        <button class="ftag"    data-f="acc"     onclick="setFilter('acc')">🏦 SP3K/ACC</button>
         <button class="ftag"    data-f="selesai" onclick="setFilter('selesai')">✅ Selesai</button>
         <button class="ftag"    data-f="batal"   onclick="setFilter('batal')">❌ Batal</button>
         <div class="filter-divider"></div>
         <button class="ftag sort-btn" id="sortBtn" onclick="toggleSort()">A→Z</button>
+        <div class="filter-divider"></div>
+        <button class="ftag" id="filterAdvBtn" onclick="toggleFilterAdv()">⚙ Filter</button>
+        <div class="filter-divider"></div>
+        <button class="ftag" id="monthFilterBtn" onclick="toggleMonthFilter()">📆 Bulan</button>
+      </div>
+
+      <!-- Panel Filter Lanjutan -->
+      <div id="filterAdvPanel" style="display:none">
+        <div class="fadv-panel">
+
+          <div class="fadv-group">
+            <div class="fadv-label">Rentang Harga (Rp)</div>
+            <div class="fadv-row">
+              <input type="text" inputmode="numeric" class="fadv-input" id="fAdvHargaMin"
+                placeholder="Min" oninput="formatRpInput(this);renderKons()"/>
+              <span class="fadv-sep">—</span>
+              <input type="text" inputmode="numeric" class="fadv-input" id="fAdvHargaMax"
+                placeholder="Max" oninput="formatRpInput(this);renderKons()"/>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Sumber Leads</div>
+            <div class="fadv-chips" id="fAdvSumber">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvSumber','')">Semua</button>
+              <button class="fchip" data-v="tiktok" onclick="setFchip('fAdvSumber','tiktok')">TikTok</button>
+              <button class="fchip" data-v="facebook" onclick="setFchip('fAdvSumber','facebook')">Facebook</button>
+              <button class="fchip" data-v="instagram" onclick="setFchip('fAdvSumber','instagram')">Instagram</button>
+              <button class="fchip" data-v="broker" onclick="setFchip('fAdvSumber','broker')">Broker</button>
+              <button class="fchip" data-v="datangan" onclick="setFchip('fAdvSumber','datangan')">Konsumen Datangan</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Jenis Pembiayaan</div>
+            <div class="fadv-chips" id="fAdvKpr">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvKpr','')">Semua</button>
+              <button class="fchip" data-v="kpr-btn" onclick="setFchip('fAdvKpr','kpr-btn')">KPR BTN</button>
+              <button class="fchip" data-v="kpr-bni" onclick="setFchip('fAdvKpr','kpr-bni')">KPR BNI</button>
+              <button class="fchip" data-v="kpr-bri" onclick="setFchip('fAdvKpr','kpr-bri')">KPR BRI</button>
+              <button class="fchip" data-v="kpr-mandiri" onclick="setFchip('fAdvKpr','kpr-mandiri')">KPR Mandiri</button>
+              <button class="fchip" data-v="kpr-bsm" onclick="setFchip('fAdvKpr','kpr-bsm')">KPR Syariah/BSN</button>
+              <button class="fchip" data-v="kpr-sumsel" onclick="setFchip('fAdvKpr','kpr-sumsel')">KPR Sumsel Babel</button>
+              <button class="fchip" data-v="kpr-bsi" onclick="setFchip('fAdvKpr','kpr-bsi')">KPR BSI</button>
+              <button class="fchip" data-v="cash-keras" onclick="setFchip('fAdvKpr','cash-keras')">Cash Keras</button>
+              <button class="fchip" data-v="cash-bertahap" onclick="setFchip('fAdvKpr','cash-bertahap')">Cash Bertahap</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Tanggal Booking</div>
+            <div class="fadv-row">
+              <input type="date" class="fadv-input" id="fAdvTglMin" onchange="renderKons()"/>
+              <span class="fadv-sep">—</span>
+              <input type="date" class="fadv-input" id="fAdvTglMax" onchange="renderKons()"/>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Kelengkapan Berkas</div>
+            <div class="fadv-chips" id="fAdvBerkas">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvBerkas','')">Semua</button>
+              <button class="fchip" data-v="lengkap" onclick="setFchip('fAdvBerkas','lengkap')">Sudah Lengkap</button>
+              <button class="fchip" data-v="belum" onclick="setFchip('fAdvBerkas','belum')">Belum Lengkap</button>
+              <button class="fchip" data-v="kosong" onclick="setFchip('fAdvBerkas','kosong')">Belum Ada Berkas</button>
+            </div>
+          </div>
+
+          <div class="fadv-group">
+            <div class="fadv-label">Jadwal Follow-up</div>
+            <div class="fadv-chips" id="fAdvFollowup">
+              <button class="fchip on" data-v="" onclick="setFchip('fAdvFollowup','')">Semua</button>
+              <button class="fchip" data-v="hari-ini" onclick="setFchip('fAdvFollowup','hari-ini')">Hari Ini</button>
+              <button class="fchip" data-v="minggu-ini" onclick="setFchip('fAdvFollowup','minggu-ini')">Minggu Ini</button>
+              <button class="fchip" data-v="terlambat" onclick="setFchip('fAdvFollowup','terlambat')">Terlambat</button>
+              <button class="fchip" data-v="belum-ada" onclick="setFchip('fAdvFollowup','belum-ada')">Belum Dijadwal</button>
+            </div>
+          </div>
+
+          <button class="fadv-reset" onclick="resetFilterAdv()">✕ Reset Semua Filter</button>
+        </div>
       </div>
       <div class="admin-bar" id="adminBar">
         <span class="admin-bar-label">Filter tim:</span>
@@ -243,11 +336,28 @@
         </select>
       </div>
 
+      <!-- Filter Bulan -->
+      <div class="month-filter-bar" id="monthFilterBar" style="display:none">
+        <div class="month-filter-head">
+          <div class="month-filter-left">
+            <span class="month-filter-label">Bulan</span>
+            <select class="month-filter-field" id="monthFilterField" onchange="renderMonthFilter();renderKons()">
+              <option value="tgl_booking">Booking</option>
+              <option value="created_at">Input Data</option>
+              <option value="tgl_followup">Follow-up</option>
+            </select>
+          </div>
+          <button class="month-filter-clear" id="monthFilterClear" onclick="clearMonthFilter()" style="display:none">✕ Reset</button>
+        </div>
+        <div class="month-chips" id="monthChips"></div>
+      </div>
+
       <div style="padding:0 18px 8px">
         <button onclick="openImportModal()" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;background:var(--emerald-soft);border:1.5px dashed rgba(16,185,129,.4);border-radius:var(--r-md);color:var(--emerald);font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font-body)">
           <span style="font-size:17px">📥</span> Import dari Excel / CSV
         </button>
       </div>
+      <div id="konsResultCount" style="display:none"></div>
       <div class="kons-feed" id="konsFeed"></div>
       <button class="fab" onclick="openAddModal()">＋</button>
     </div>
@@ -260,6 +370,40 @@
         <button class="ptag"    data-p="kuartal" onclick="setPeriod('kuartal')">Kuartal Ini</button>
         <button class="ptag"    data-p="tahun"   onclick="setPeriod('tahun')">Tahun Ini</button>
         <button class="ptag"    data-p="semua"   onclick="setPeriod('semua')">Semua</button>
+        <button class="ptag ptag-custom"         onclick="toggleCustomRange()">📅 Custom</button>
+      </div>
+      <!-- Active period label -->
+      <div style="padding:0 18px 4px;display:flex;align-items:center;gap:8px">
+        <span id="activePeriodLabel" style="display:none;font-size:11px;font-weight:700;color:var(--brand-light);background:var(--brand-soft);padding:3px 10px;border-radius:var(--r-full)"></span>
+        <button id="clearRangeBtn" onclick="clearCustomRange()" style="display:none;font-size:11px;color:var(--rose);background:var(--rose-soft);border:none;border-radius:var(--r-full);padding:3px 10px;cursor:pointer;font-family:var(--font-body);font-weight:700">✕ Reset</button>
+      </div>
+      <!-- Custom date range picker -->
+      <div id="customRangePicker" style="display:none;margin:0 18px 12px;background:var(--bg-overlay);border:1px solid var(--glass-border);border-radius:var(--r-lg);padding:16px;animation:pageIn .2s ease">
+        <!-- Quick presets -->
+        <div style="font-size:10px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Preset Cepat</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+          <button class="quick-preset" onclick="setQuickRange('7d')">7 Hari</button>
+          <button class="quick-preset" onclick="setQuickRange('30d')">30 Hari</button>
+          <button class="quick-preset" onclick="setQuickRange('90d')">90 Hari</button>
+          <button class="quick-preset" onclick="setQuickRange('bln-lalu')">Bln Lalu</button>
+          <button class="quick-preset" onclick="setQuickRange('kwartal-lalu')">Kwt Lalu</button>
+        </div>
+        <!-- Date inputs -->
+        <div style="font-size:10px;font-weight:700;color:var(--text-4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">Rentang Tanggal</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div>
+            <div class="field-label" style="margin-bottom:5px">Dari</div>
+            <input type="date" class="field-input" id="dateFrom" style="padding:10px 12px;font-size:13px"/>
+          </div>
+          <div>
+            <div class="field-label" style="margin-bottom:5px">Sampai</div>
+            <input type="date" class="field-input" id="dateTo" style="padding:10px 12px;font-size:13px"/>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <button class="btn-secondary" onclick="toggleCustomRange()" style="padding:10px">Batal</button>
+          <button class="btn-primary"   onclick="applyCustomRange()"  style="padding:10px">Terapkan →</button>
+        </div>
       </div>
 
       <div class="lap-kpi" id="lapKpi"></div>
@@ -311,9 +455,14 @@
       </div>
 
       <!-- Target -->
-      <div class="section" style="margin-top:8px">
+      <div class="section" style="margin-top:8px;margin-bottom:16px">
         <div class="section-head">
-          <div class="section-title"><span class="sticon">📅</span>Target Periode Ini</div>
+          <div class="section-title"><span class="sticon">🎯</span>Target Penjualan</div>
+          <div id="targetAdminLink" style="display:none">
+            <button onclick="openSetTargetBulk()" style="font-size:11px;font-weight:700;color:var(--brand-light);background:var(--brand-soft);border:1px solid rgba(99,102,241,.25);border-radius:var(--r-full);padding:4px 12px;cursor:pointer;font-family:var(--font-body)">
+              ⚙ Atur Semua
+            </button>
+          </div>
         </div>
         <div id="lapTarget"></div>
       </div>
@@ -422,6 +571,29 @@
       </div>
 
       <div class="set-group">
+        <div class="set-group-label">Notifikasi</div>
+        <div class="set-form">
+          <div class="theme-toggle-wrap">
+            <div class="theme-toggle-info">
+              <div class="theme-toggle-name" id="pushLabel">🔕 Notifikasi Nonaktif</div>
+              <div class="theme-toggle-desc" id="pushDesc">Aktifkan untuk menerima reminder otomatis di HP</div>
+            </div>
+            <label class="toggle-pill">
+              <input type="checkbox" id="pushToggle" onchange="togglePushNotification(this.checked)"/>
+              <div class="toggle-track"><div class="toggle-thumb" id="pushThumb">🔕</div></div>
+            </label>
+          </div>
+          <div id="pushRow" style="padding:12px 16px;border-top:1px solid var(--glass-border)">
+            <div style="font-size:11px;color:var(--text-3);margin-bottom:10px;font-weight:600">Kirim notifikasi ke</div>
+            <div id="pushDeviceList" style="font-size:12px;color:var(--text-4)">Belum ada device terdaftar</div>
+          </div>
+        </div>
+        <div style="padding:4px 0 0;font-size:11px;color:var(--text-4);line-height:1.6">
+          Reminder dikirim saat: follow-up hari ini & besok, booking &gt; 7 hari, dan DP &gt; 14 hari.
+        </div>
+      </div>
+
+      <div class="set-group">
         <div class="set-group-label">Tampilan</div>
         <div class="set-form">
           <div class="theme-toggle-wrap">
@@ -512,6 +684,22 @@
 </div>
 
 <!-- ══ MODAL: TAMBAH/EDIT ══ -->
+<!-- ════ MODAL TARGET ════ -->
+<div class="modal-bg" id="modalTarget">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">🎯 Set Target Bulanan</div>
+      <button class="sheet-close" onclick="closeModal('modalTarget')">✕</button>
+    </div>
+    <div class="sheet-body" id="modalTargetBody" style="padding:0 18px 8px"></div>
+    <div style="padding:0 18px 24px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn-secondary" onclick="closeModal('modalTarget')">Batal</button>
+      <button class="btn-primary" id="btnSaveTarget" onclick="saveTargetModal()">Simpan Target</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modalAdd">
   <div class="modal-sheet">
     <div class="sheet-pill"></div>
@@ -548,9 +736,11 @@
       <div class="field">
         <label class="field-label">Status</label>
         <select class="field-select" id="fStatus">
+          <option value="cek-lokasi">📍 Prospek Konsumen</option>
           <option value="booking">📋 Booking</option>
           <option value="dp">💰 Proses DP</option>
           <option value="berkas">📁 Kumpul Berkas</option>
+          <option value="acc">🏦 SP3K / ACC</option>
           <option value="selesai">✅ Selesai (Akad)</option>
           <option value="batal">❌ Batal</option>
         </select>
@@ -578,23 +768,22 @@
           <option value="kpr-bni">KPR BNI</option>
           <option value="kpr-bri">KPR BRI</option>
           <option value="kpr-mandiri">KPR Mandiri</option>
-          <option value="kpr-bsm">KPR Syariah / BSM</option>
+          <option value="kpr-bsm">KPR Syariah / BSN</option>
+          <option value="kpr-sumsel">KPR Bank Sumsel Babel</option>
+          <option value="kpr-bsi">KPR BSI</option>
           <option value="cash-keras">Cash Keras</option>
           <option value="cash-bertahap">Cash Bertahap</option>
-          <option value="subsidi">KPR Subsidi FLPP</option>
         </select>
       </div>
       <div class="field">
         <label class="field-label">Sumber Leads</label>
         <select class="field-select" id="fSumber">
           <option value="">— Pilih —</option>
-          <option value="referral">Referral</option>
-          <option value="medsos">Media Sosial</option>
-          <option value="pameran">Pameran</option>
-          <option value="brosur">Brosur / Spanduk</option>
-          <option value="website">Website / Online</option>
-          <option value="walk-in">Walk In</option>
-          <option value="telepon">Telepon Langsung</option>
+          <option value="tiktok">TikTok</option>
+          <option value="facebook">Facebook</option>
+          <option value="instagram">Instagram</option>
+          <option value="broker">Broker</option>
+          <option value="datangan">Konsumen Datangan</option>
         </select>
       </div>
       <div class="field">
@@ -748,6 +937,8 @@
 <script src="js/laporan.js"></script>
 <script src="js/kalender.js"></script>
 <script src="js/dokumen.js"></script>
+<script src="js/target.js"></script>
+<script src="js/push.js"></script>
 
 <script>
 // ── Bootstrap ─────────────────────────────────────
@@ -766,6 +957,19 @@ document.addEventListener('keydown', e => {
 
 initTheme();
 init();
+
+// Handle notifikasi deep link dari klik notifikasi push
+window.addEventListener('load', () => {
+  const params = new URLSearchParams(window.location.search);
+  const openId = params.get('open');
+  if (openId) {
+    const tryOpen = setInterval(() => {
+      const k = allKons?.find(x => x.id === openId);
+      if (k) { clearInterval(tryOpen); openDetail(openId); }
+    }, 500);
+    setTimeout(() => clearInterval(tryOpen), 8000);
+  }
+});
 </script>
 </body>
 </html>

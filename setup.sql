@@ -174,3 +174,72 @@ CREATE POLICY "dokumen_delete"
 SELECT policyname, cmd FROM pg_policies
 WHERE schemaname = 'storage' AND tablename = 'objects'
   AND policyname LIKE 'dokumen%';
+
+-- ════════════════════════════════════════════════
+-- WEB PUSH NOTIFICATION — Tabel Subscriptions
+-- ════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id          uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     uuid REFERENCES auth.users ON DELETE CASCADE,
+  endpoint    text NOT NULL,
+  p256dh      text NOT NULL,
+  auth        text NOT NULL,
+  user_agent  text,
+  created_at  timestamptz DEFAULT now(),
+  updated_at  timestamptz DEFAULT now(),
+  UNIQUE (user_id, endpoint)
+);
+
+ALTER TABLE push_subscriptions ENABLE ROW LEVEL SECURITY;
+
+-- User hanya bisa lihat & kelola subscription miliknya sendiri
+CREATE POLICY "User kelola subscription sendiri"
+  ON push_subscriptions FOR ALL
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+-- Admin bisa baca semua subscription (untuk kirim push ke semua user)
+CREATE POLICY "Admin baca semua subscription"
+  ON push_subscriptions FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles
+      WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+
+-- ════════════════════════════════════════════════
+-- TARGET PENJUALAN BULANAN — v4.2
+-- Jalankan di Supabase SQL Editor
+-- ════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS target_bulanan (
+  id          uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id     uuid REFERENCES auth.users ON DELETE CASCADE,
+  tahun       int  NOT NULL,
+  bulan       int  NOT NULL,   -- 1-12
+  target      int  NOT NULL DEFAULT 5,
+  catatan     text DEFAULT '',
+  created_at  timestamptz DEFAULT now(),
+  updated_at  timestamptz DEFAULT now(),
+  UNIQUE (user_id, tahun, bulan)
+);
+
+ALTER TABLE target_bulanan ENABLE ROW LEVEL SECURITY;
+
+-- Marketing bisa lihat & ubah target milik sendiri
+CREATE POLICY "User kelola target sendiri"
+  ON target_bulanan FOR ALL
+  USING (user_id = auth.uid())
+  WITH CHECK (user_id = auth.uid());
+
+-- Admin bisa lihat & ubah semua target
+CREATE POLICY "Admin kelola semua target"
+  ON target_bulanan FOR ALL
+  USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  )
+  WITH CHECK (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );

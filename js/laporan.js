@@ -1,10 +1,114 @@
 // ── LAPORAN KPI ──────────────────────────────────
 function setPeriod(p) {
   curPeriod = p;
+  // Reset custom range saat pilih preset
+  curDateFrom = '';
+  curDateTo   = '';
   document.querySelectorAll('.ptag').forEach(c => c.classList.toggle('on', c.dataset.p === p));
+  // Tutup custom picker jika terbuka
+  const picker = document.getElementById('customRangePicker');
+  if (picker) picker.style.display = 'none';
+  updatePeriodLabel();
   renderLapKpi();
   renderCharts();
 }
+
+// ── CUSTOM DATE RANGE ────────────────────────────
+function toggleCustomRange() {
+  const picker = document.getElementById('customRangePicker');
+  if (!picker) return;
+  const isOpen = picker.style.display !== 'none';
+  picker.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) {
+    // Pre-fill dengan nilai saat ini
+    const from = document.getElementById('dateFrom');
+    const to   = document.getElementById('dateTo');
+    if (from && !from.value) from.value = curDateFrom || getFirstDayOfMonth();
+    if (to   && !to.value)   to.value   = curDateTo   || getTodayStr();
+  }
+}
+
+function applyCustomRange() {
+  const from = document.getElementById('dateFrom')?.value || '';
+  const to   = document.getElementById('dateTo')?.value   || '';
+  if (from && to && from > to) {
+    showToast('Tanggal mulai harus sebelum tanggal akhir', '⚠️'); return;
+  }
+  curDateFrom = from;
+  curDateTo   = to;
+  curPeriod   = 'custom';
+  // Nonaktifkan semua preset
+  document.querySelectorAll('.ptag').forEach(c => c.classList.remove('on'));
+  document.getElementById('customRangePicker').style.display = 'none';
+  updatePeriodLabel();
+  renderLapKpi();
+  renderCharts();
+  showToast('Filter diterapkan', '✅');
+}
+
+function clearCustomRange() {
+  curDateFrom = '';
+  curDateTo   = '';
+  setPeriod('bulan');
+  const from = document.getElementById('dateFrom');
+  const to   = document.getElementById('dateTo');
+  if (from) from.value = '';
+  if (to)   to.value   = '';
+}
+
+// Preset cepat di dalam date picker
+function setQuickRange(type) {
+  const today = new Date();
+  let from, to;
+  if (type === '7d') {
+    from = new Date(today); from.setDate(today.getDate() - 6);
+    to = today;
+  } else if (type === '30d') {
+    from = new Date(today); from.setDate(today.getDate() - 29);
+    to = today;
+  } else if (type === '90d') {
+    from = new Date(today); from.setDate(today.getDate() - 89);
+    to = today;
+  } else if (type === 'bln-lalu') {
+    from = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+    to   = new Date(today.getFullYear(), today.getMonth(), 0);
+  } else if (type === 'kwartal-lalu') {
+    const q = Math.floor(today.getMonth() / 3);
+    from = new Date(today.getFullYear(), (q - 1) * 3, 1);
+    to   = new Date(today.getFullYear(), q * 3, 0);
+  }
+  if (from && to) {
+    document.getElementById('dateFrom').value = dateToStr(from);
+    document.getElementById('dateTo').value   = dateToStr(to);
+  }
+}
+
+function updatePeriodLabel() {
+  const lbl  = document.getElementById('activePeriodLabel');
+  const btn  = document.getElementById('clearRangeBtn');
+  const isCustom = curPeriod === 'custom' && (curDateFrom || curDateTo);
+  if (lbl) {
+    if (isCustom) {
+      const from = curDateFrom ? fDateShort(curDateFrom) : '—';
+      const to   = curDateTo   ? fDateShort(curDateTo)   : '—';
+      lbl.textContent   = `${from} – ${to}`;
+      lbl.style.display = 'inline';
+    } else {
+      lbl.style.display = 'none';
+    }
+  }
+  if (btn) btn.style.display = isCustom ? 'inline' : 'none';
+  // Highlight tombol custom saat aktif
+  document.querySelectorAll('.ptag-custom').forEach(el =>
+    el.classList.toggle('active', isCustom)
+  );
+}
+
+function getFirstDayOfMonth() {
+  const d = new Date(); d.setDate(1); return dateToStr(d);
+}
+function getTodayStr() { return dateToStr(new Date()); }
+function dateToStr(d) { return d.toISOString().slice(0, 10); }
 
 function renderLapKpi() {
   const k       = filterByPeriod(allKons, curPeriod);
@@ -20,11 +124,13 @@ function renderLapKpi() {
 
   // Pipeline progress bars
   const pipes = [
-    { k: 'booking', l: 'Booking',       c: '#6366f1' },
-    { k: 'dp',      l: 'Proses DP',     c: '#f59e0b' },
-    { k: 'berkas',  l: 'Kumpul Berkas', c: '#a855f7' },
-    { k: 'selesai', l: 'Selesai',       c: '#10b981' },
-    { k: 'batal',   l: 'Batal',         c: '#f43f5e' },
+    { k: 'cek-lokasi', l: 'Prospek Konsumen',    c: '#0ea5e9' },
+    { k: 'booking',    l: 'Booking',        c: '#6366f1' },
+    { k: 'dp',         l: 'Proses DP',      c: '#f59e0b' },
+    { k: 'berkas',     l: 'Kumpul Berkas',  c: '#a855f7' },
+    { k: 'acc',        l: 'SP3K/ACC',       c: '#ec4899' },
+    { k: 'selesai',    l: 'Selesai',        c: '#10b981' },
+    { k: 'batal',      l: 'Batal',          c: '#f43f5e' },
   ];
   document.getElementById('lapProg').innerHTML = pipes.map(p => {
     const cnt = k.filter(x => x.status === p.k).length;
@@ -53,18 +159,8 @@ function renderLapKpi() {
       </div>`).join('');
   }
 
-  // Target
-  const target = myProf?.target || 5;
-  const pct    = Math.min(Math.round(selesai / target * 100), 100);
-  document.getElementById('lapTarget').innerHTML = `
-    <div class="target-card">
-      <div class="target-head">
-        <div><div class="target-label">Akad Selesai</div><div style="font-size:11px;color:var(--text-3);margin-top:2px">Target periode ini</div></div>
-        <div class="target-num">${selesai}<span style="font-size:14px;color:var(--text-3);font-family:var(--font-body);font-weight:500"> / ${target}</span></div>
-      </div>
-      <div class="target-track"><div class="target-fill" style="width:${pct}%"></div></div>
-      <div class="target-pct">${pct}% tercapai</div>
-    </div>`;
+  // Target — render via target.js module
+  if (typeof renderTargetSection === 'function') renderTargetSection();
 }
 
 // ── CHARTS via Chart.js ───────────────────────────
@@ -95,12 +191,12 @@ function renderCharts() {
   // ── Chart 1: Pipeline donut ────────────────────
   const c1 = document.getElementById('chartPipeline');
   if (c1) {
-    const counts = ['booking','dp','berkas','selesai','batal'].map(s => k.filter(x => x.status === s).length);
+    const counts = ['cek-lokasi','booking','dp','berkas','acc','selesai','batal'].map(s => k.filter(x => x.status === s).length);
     chartPipeline = new Chart(c1, {
       type: 'doughnut',
       data: {
-        labels: ['Booking','Proses DP','Kumpul Berkas','Selesai','Batal'],
-        datasets: [{ data: counts, backgroundColor: [cl.brand, cl.amber, cl.violet, cl.emerald, cl.rose], borderWidth: 0, hoverOffset: 6 }]
+        labels: ['Prospek Konsumen','Booking','Proses DP','Kumpul Berkas','Selesai','Batal'],
+        datasets: [{ data: counts, backgroundColor: [cl.sky, cl.brand, cl.amber, cl.violet, '#ec4899', cl.emerald, cl.rose], borderWidth: 0, hoverOffset: 6 }]
       },
       options: {
         cutout: '65%',

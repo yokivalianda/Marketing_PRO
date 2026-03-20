@@ -14,16 +14,22 @@ function switchPage(p) {
 // ── DASHBOARD ─────────────────────────────────────
 function renderDash() {
   const k = allKons;
-  document.getElementById('stTotal').textContent   = k.length;
-  document.getElementById('stSelesai').textContent = k.filter(x => x.status === 'selesai').length;
-  document.getElementById('stDP').textContent      = k.filter(x => x.status === 'dp').length;
-  document.getElementById('stBooking').textContent = k.filter(x => x.status === 'booking').length;
+  document.getElementById('stTotal').textContent      = k.filter(x => x.status !== 'cek-lokasi').length;
+  document.getElementById('stSelesai').textContent    = k.filter(x => x.status === 'selesai').length;
+  document.getElementById('stDP').textContent         = k.filter(x => x.status === 'dp').length;
+  document.getElementById('stBooking').textContent    = k.filter(x => x.status === 'booking').length;
+  const elCL = document.getElementById('stCekLokasi');
+  if (elCL) elCL.textContent = k.filter(x => x.status === 'cek-lokasi').length;
+  const elAcc = document.getElementById('stAcc');
+  if (elAcc) elAcc.textContent = k.filter(x => x.status === 'acc').length;
   document.getElementById('stTotalSub').textContent = myProf?.role === 'admin' ? 'Semua tim' : 'Konsumen saya';
 
   const pipes = [
+    { k: 'cek-lokasi', l: 'Prospek Konsumen', c: 'cek-lokasi' },
     { k: 'booking', l: 'Booking', c: 'booking' },
     { k: 'dp', l: 'Proses DP', c: 'dp' },
     { k: 'berkas', l: 'Berkas', c: 'berkas' },
+    { k: 'acc',     l: 'SP3K/ACC', c: 'acc' },
     { k: 'selesai', l: 'Selesai', c: 'selesai' },
     { k: 'batal', l: 'Batal', c: 'batal' },
   ];
@@ -85,6 +91,18 @@ function renderDash() {
 }
 
 // ── KONSUMEN LIST ────────────────────────────────
+function fillAdminSel() {
+  const sel = document.getElementById('adminSel');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Semua Marketing</option>';
+  allProfs.filter(p => p.role !== 'admin').forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.id;
+    o.textContent = p.full_name || p.email;
+    sel.appendChild(o);
+  });
+}
+
 function setFilter(f) {
   curFilter = f;
   document.querySelectorAll('.ftag').forEach(c => c.classList.toggle('on', c.dataset.f === f));
@@ -112,6 +130,231 @@ function toggleSort() {
 }
 
 
+// ── FILTER LANJUTAN ──────────────────────────────
+function toggleFilterAdv() {
+  const panel = document.getElementById('filterAdvPanel');
+  const btn   = document.getElementById('filterAdvBtn');
+  if (!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('on', !isOpen);
+  updateFilterAdvBadge();
+}
+
+function setFchip(groupId, val) {
+  document.querySelectorAll('#' + groupId + ' .fchip').forEach(c =>
+    c.classList.toggle('on', c.dataset.v === val)
+  );
+  renderKons();
+  updateFilterAdvBadge();
+}
+
+function getAdvFilters() {
+  if (!document.getElementById('filterAdvPanel'))
+    return { sumber:'', kpr:'', berkas:'', followup:'', hargaMin:0, hargaMax:0, tglMin:'', tglMax:'' };
+  return {
+    sumber:   document.querySelector('#fAdvSumber .fchip.on')?.dataset.v   || '',
+    kpr:      document.querySelector('#fAdvKpr .fchip.on')?.dataset.v      || '',
+    berkas:   document.querySelector('#fAdvBerkas .fchip.on')?.dataset.v   || '',
+    followup: document.querySelector('#fAdvFollowup .fchip.on')?.dataset.v || '',
+    hargaMin: getRpValue('fAdvHargaMin') || 0,
+    hargaMax: getRpValue('fAdvHargaMax') || 0,
+    tglMin:   document.getElementById('fAdvTglMin')?.value  || '',
+    tglMax:   document.getElementById('fAdvTglMax')?.value  || '',
+  };
+}
+
+function countActiveAdv() {
+  const f = getAdvFilters();
+  return [f.sumber, f.kpr, f.berkas, f.followup,
+          f.hargaMin > 0, f.hargaMax > 0, f.tglMin, f.tglMax
+  ].filter(Boolean).length;
+}
+
+function updateFilterAdvBadge() {
+  const btn = document.getElementById('filterAdvBtn');
+  if (!btn) return;
+  const n = countActiveAdv();
+  const isOpen = document.getElementById('filterAdvPanel')?.style.display !== 'none';
+  btn.classList.toggle('on', n > 0 || isOpen);
+  // Badge angka
+  const badge = btn.querySelector('.fadv-count');
+  if (n > 0) {
+    if (!badge) {
+      const b = document.createElement('span');
+      b.className = 'fadv-count';
+      b.textContent = n;
+      btn.appendChild(b);
+    } else { badge.textContent = n; }
+  } else {
+    badge?.remove();
+  }
+}
+
+function resetFilterAdv() {
+  ['fAdvSumber','fAdvKpr','fAdvBerkas','fAdvFollowup'].forEach(id => {
+    document.querySelectorAll('#' + id + ' .fchip').forEach(c =>
+      c.classList.toggle('on', c.dataset.v === '')
+    );
+  });
+  ['fAdvHargaMin','fAdvHargaMax'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; el.dataset.raw = ''; }
+  });
+  ['fAdvTglMin','fAdvTglMax'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  renderKons();
+  updateFilterAdvBadge();
+}
+
+function applyAdvFilters(list) {
+  const f   = getAdvFilters();
+  const now = new Date();
+  const todayStr = now.toDateString();
+
+  if (f.sumber)   list = list.filter(k => k.sumber === f.sumber);
+  if (f.kpr)      list = list.filter(k => k.kpr === f.kpr);
+  if (f.hargaMin) list = list.filter(k => (k.harga || 0) >= f.hargaMin);
+  if (f.hargaMax) list = list.filter(k => (k.harga || 0) <= f.hargaMax);
+  if (f.tglMin)   list = list.filter(k => k.tgl_booking && k.tgl_booking >= f.tglMin);
+  if (f.tglMax)   list = list.filter(k => k.tgl_booking && k.tgl_booking <= f.tglMax);
+
+  if (f.berkas) {
+    list = list.filter(k => {
+      const bList = normBerkas(k.berkas);
+      if (f.berkas === 'kosong')  return bList.length === 0;
+      if (f.berkas === 'lengkap') return bList.length > 0 && bList.every(b => b.done);
+      if (f.berkas === 'belum')   return bList.length > 0 && bList.some(b => !b.done);
+      return true;
+    });
+  }
+
+  if (f.followup) {
+    const startWeek = new Date(now); startWeek.setDate(now.getDate() - now.getDay());
+    const endWeek   = new Date(startWeek); endWeek.setDate(startWeek.getDate() + 6);
+    list = list.filter(k => {
+      const fd = k.tgl_followup ? new Date(k.tgl_followup + 'T00:00:00') : null;
+      if (f.followup === 'belum-ada')   return !k.tgl_followup;
+      if (!fd) return false;
+      if (f.followup === 'hari-ini')    return fd.toDateString() === todayStr;
+      if (f.followup === 'minggu-ini')  return fd >= startWeek && fd <= endWeek;
+      if (f.followup === 'terlambat')   return fd < new Date(todayStr);
+      return true;
+    });
+  }
+
+  return list;
+}
+
+// ── FILTER BULAN ─────────────────────────────────
+let curMonthKey = ''; // format: YYYY-MM
+
+function toggleMonthFilter() {
+  const bar = document.getElementById('monthFilterBar');
+  const btn = document.getElementById('monthFilterBtn');
+  if (!bar) return;
+  const isOpen = bar.style.display !== 'none';
+  bar.style.display = isOpen ? 'none' : 'block';
+  btn.classList.toggle('on', !isOpen);
+  if (!isOpen) renderMonthFilter();
+}
+
+function renderMonthFilter() {
+  const chipsEl = document.getElementById('monthChips');
+  if (!chipsEl) return;
+
+  const field = document.getElementById('monthFilterField')?.value || 'tgl_booking';
+
+  // Kumpulkan semua bulan yang ada dari field yang dipilih
+  const monthSet = {};
+  allKons.forEach(k => {
+    const raw = k[field];
+    if (!raw) return;
+    const d = new Date(raw);
+    if (isNaN(d)) return;
+    const key   = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+    if (!monthSet[key]) monthSet[key] = label;
+  });
+
+  // Sort terbaru dulu
+  const months = Object.entries(monthSet).sort((a, b) => b[0].localeCompare(a[0]));
+
+  if (!months.length) {
+    chipsEl.innerHTML = '<span style="font-size:12px;color:var(--text-4)">Tidak ada data</span>';
+    return;
+  }
+
+  chipsEl.innerHTML = months.map(([key, label]) => `
+    <button class="mchip ${curMonthKey === key ? 'on' : ''}"
+            onclick="setMonthFilter('${key}')">
+      ${label}
+      <span class="mchip-count">${countByMonth(key, field)}</span>
+    </button>`).join('');
+}
+
+function countByMonth(monthKey, field) {
+  return allKons.filter(k => {
+    const raw = k[field]; if (!raw) return false;
+    const d = new Date(raw); if (isNaN(d)) return false;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    return key === monthKey;
+  }).length;
+}
+
+function setMonthFilter(key) {
+  curMonthKey = curMonthKey === key ? '' : key; // toggle
+  const clearBtn = document.getElementById('monthFilterClear');
+  const btn      = document.getElementById('monthFilterBtn');
+  if (clearBtn) clearBtn.style.display = curMonthKey ? 'flex' : 'none';
+  if (btn) btn.classList.toggle('on', !!curMonthKey || document.getElementById('monthFilterBar')?.style.display !== 'none');
+  renderMonthFilter();
+  renderKons();
+  updateMonthFilterBadge();
+}
+
+function clearMonthFilter() {
+  curMonthKey = '';
+  const clearBtn = document.getElementById('monthFilterClear');
+  if (clearBtn) clearBtn.style.display = 'none';
+  updateMonthFilterBadge();
+  renderMonthFilter();
+  renderKons();
+}
+
+function updateMonthFilterBadge() {
+  const btn = document.getElementById('monthFilterBtn');
+  if (!btn) return;
+  const isOpen = document.getElementById('monthFilterBar')?.style.display !== 'none';
+  btn.classList.toggle('on', !!curMonthKey || isOpen);
+  // Badge bulan aktif
+  const badge = btn.querySelector('.mfilter-badge');
+  if (curMonthKey) {
+    const d = new Date(curMonthKey + '-01');
+    const short = d.toLocaleDateString('id-ID', { month: 'short' });
+    if (!badge) {
+      const b = document.createElement('span');
+      b.className = 'mfilter-badge';
+      b.textContent = short;
+      btn.appendChild(b);
+    } else badge.textContent = short;
+  } else {
+    badge?.remove();
+  }
+}
+
+function applyMonthFilter(list) {
+  if (!curMonthKey) return list;
+  const field = document.getElementById('monthFilterField')?.value || 'tgl_booking';
+  return list.filter(k => {
+    const raw = k[field]; if (!raw) return false;
+    const d = new Date(raw); if (isNaN(d)) return false;
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    return key === curMonthKey;
+  });
+}
+
 function renderKons() {
   const q  = (document.getElementById('searchFld')?.value || '').toLowerCase();
   const ow = document.getElementById('adminSel')?.value || '';
@@ -124,10 +367,30 @@ function renderKons() {
     (k.unit || '').toLowerCase().includes(q) ||
     (k.kavling || '').toLowerCase().includes(q)
   );
+
+  // Filter lanjutan
+  list = applyAdvFilters(list);
+  // Filter bulan
+  list = applyMonthFilter(list);
+
   if (curSort === 'az') list.sort((a, b) => a.nama.localeCompare(b.nama, 'id'));
   if (curSort === 'za') list.sort((a, b) => b.nama.localeCompare(a.nama, 'id'));
 
   const el = document.getElementById('konsFeed');
+
+  // Counter hasil
+  const counter = document.getElementById('konsResultCount');
+  if (counter) {
+    const total = allKons.length;
+    const hasFilter = countActiveAdv() > 0 || q || (curFilter !== 'semua') || ow;
+    if (hasFilter && list.length < total) {
+      counter.textContent = list.length + ' dari ' + total + ' konsumen';
+      counter.style.display = 'block';
+    } else {
+      counter.style.display = 'none';
+    }
+  }
+
   if (!list.length) {
     el.innerHTML = `<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">Tidak ditemukan</div><div class="empty-sub">Ubah filter atau kata kunci</div></div>`;
     return;
