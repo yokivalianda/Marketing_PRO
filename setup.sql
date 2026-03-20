@@ -243,3 +243,131 @@ CREATE POLICY "Admin kelola semua target"
   WITH CHECK (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
   );
+
+-- ════════════════════════════════════════════════════════
+-- MONETISASI — PropMap Plan System
+-- Jalankan di Supabase SQL Editor
+-- ════════════════════════════════════════════════════════
+
+-- 1. Tambah kolom plan ke tabel profiles
+ALTER TABLE profiles
+  ADD COLUMN IF NOT EXISTS plan          text NOT NULL DEFAULT 'free',
+  ADD COLUMN IF NOT EXISTS plan_expires  timestamptz,
+  ADD COLUMN IF NOT EXISTS trial_ends    timestamptz;
+
+-- Set semua user yang sudah ada ke trial 14 hari
+UPDATE profiles
+  SET plan = 'trial',
+      trial_ends = now() + interval '14 days'
+  WHERE plan = 'free';
+
+-- 2. Tabel subscriptions — catat history pembayaran
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id           uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  workspace_id uuid REFERENCES auth.users ON DELETE CASCADE,
+  plan         text NOT NULL,               -- 'pro' | 'business'
+  status       text NOT NULL DEFAULT 'active', -- 'active' | 'expired' | 'cancelled'
+  amount       int  NOT NULL,               -- dalam Rupiah
+  payment_ref  text,                        -- referensi dari Midtrans/Xendit
+  started_at   timestamptz DEFAULT now(),
+  expires_at   timestamptz,
+  created_at   timestamptz DEFAULT now()
+);
+
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Admin lihat subscription workspace"
+  ON subscriptions FOR SELECT
+  USING (
+    workspace_id = auth.uid() OR
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- User bisa insert order milik sendiri
+CREATE POLICY "User insert subscription sendiri"
+  ON subscriptions FOR INSERT
+  WITH CHECK (workspace_id = auth.uid());
+
+-- Admin bisa update semua subscription (approve/reject)
+CREATE POLICY "Admin update subscription"
+  ON subscriptions FOR UPDATE
+  USING (
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
+  );
+
+-- 3. Function: cek plan aktif user
+CREATE OR REPLACE FUNCTION get_active_plan(uid uuid)
+RETURNS text AS $$
+DECLARE
+  p text;
+  te timestamptz;
+  pe timestamptz;
+BEGIN
+  SELECT plan, trial_ends, plan_expires
+    INTO p, te, pe
+    FROM profiles WHERE id = uid;
+
+  -- Trial masih aktif
+  IF p = 'trial' AND te IS NOT NULL AND te > now() THEN
+    RETURN 'trial';
+  END IF;
+
+  -- Pro/Business masih aktif
+  IF p IN ('pro', 'business') AND (pe IS NULL OR pe > now()) THEN
+    RETURN p;
+  END IF;
+
+  -- Default: free
+  RETURN 'free';
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- 4. Function: cek limit konsumen per workspace
+CREATE OR REPLACE FUNCTION check_konsumen_limit(uid uuid)
+RETURNS boolean AS $$
+DECLARE
+  current_plan text;
+  cnt int;
+BEGIN
+  current_plan := get_active_plan(uid);
+  IF current_plan != 'free' THEN RETURN true; END IF;
+
+  SELECT COUNT(*) INTO cnt FROM konsumen WHERE owner_id = uid;
+  RETURN cnt < 50;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+COMMENT ON TABLE subscriptions IS 'History langganan PropMap per workspace';
+
+-- ════════════════════════════════════════════════════════
+-- FIX RLS SUBSCRIPTIONS — Admin bisa lihat semua order
+-- Jalankan di Supabase SQL Editor
+-- ════════════════════════════════════════════════════════
+DROP POLICY IF EXISTS "Admin lihat subscription workspace" ON subscriptions;
+DROP POLICY IF EXISTS "User insert subscription sendiri" ON subscriptions;
+DROP POLICY IF EXISTS "Admin update subscription" ON subscriptions;
+DROP POLICY IF EXISTS "User dan admin select subscription" ON subscriptions;
+
+-- User bisa insert order sendiri
+CREATE POLICY "User insert subscription sendiri"
+  ON subscriptions FOR INSERT
+  WITH CHECK (workspace_id = auth.uid());
+
+-- User lihat order sendiri, Admin lihat semua
+CREATE POLICY "User dan admin select subscription"
+  ON subscriptions FOR SELECT
+  USING (
+    workspace_id = auth.uid()
+    OR EXISTS (
+      SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+    )
+  );
+
+-- Admin bisa update semua order (untuk aktivasi)
+CREATE POLICY "Admin update subscription"
+  ON subscriptions FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'
+    )
+  );

@@ -7,6 +7,7 @@ const BACKUP_VERSION = '4.2';
 
 // ── BACKUP ────────────────────────────────────────
 async function doBackup() {
+  if (!requirePro('backup')) return;
   setBtnLoading('btnBackup', true, 'Membuat backup...');
   try {
     // 1. Ambil semua konsumen (admin: semua, marketing: milik sendiri)
@@ -147,26 +148,34 @@ async function confirmRestore() {
       if (el) el.textContent = msg;
     };
 
-    if (mode === 'replace') {
-      // Hapus semua data milik user dulu
+    // Marketing hanya bisa merge, tidak bisa replace
+    const effectiveMode = myProf?.role === 'admin' ? mode : 'merge';
+
+    if (effectiveMode === 'replace') {
       updateProgress('Menghapus data lama...');
-      if (myProf?.role === 'admin') {
-        await sb.from('konsumen').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      } else {
-        await sb.from('konsumen').delete().eq('owner_id', me.id);
-      }
+      await sb.from('konsumen').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    }
+
+    // Filter konsumen: marketing hanya restore miliknya
+    const konsumenToRestore = myProf?.role === 'admin'
+      ? payload.konsumen
+      : payload.konsumen.filter(k => k.owner_id === me.id);
+
+    if (konsumenToRestore.length === 0 && myProf?.role !== 'admin') {
+      setBtnLoading('btnRestoreConfirm', false, '⚠ Pulihkan Data');
+      showToast('File backup tidak berisi konsumen milik Anda', '⚠️');
+      return;
     }
 
     // Insert / upsert konsumen dalam batch
     const BATCH = 20;
-    for (let i = 0; i < payload.konsumen.length; i += BATCH) {
-      const batch = payload.konsumen.slice(i, i + BATCH).map(k => ({
+    for (let i = 0; i < konsumenToRestore.length; i += BATCH) {
+      const batch = konsumenToRestore.slice(i, i + BATCH).map(k => ({
         ...k,
-        // Pastikan owner_id valid untuk mode non-admin
         owner_id: myProf?.role === 'admin' ? k.owner_id : me.id,
       }));
 
-      updateProgress(`Memulihkan konsumen ${i + 1}–${Math.min(i + BATCH, payload.konsumen.length)} dari ${payload.konsumen.length}...`);
+      updateProgress(`Memulihkan konsumen ${i + 1}–${Math.min(i + BATCH, konsumenToRestore.length)} dari ${konsumenToRestore.length}...`);
 
       const { error } = await sb.from('konsumen').upsert(batch, { onConflict: 'id' });
       if (error) {
@@ -217,19 +226,20 @@ function openBackupModal() {
     ? new Date(lastBackup).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })
     : 'Belum pernah backup';
 
+  const isAdmin = myProf?.role === 'admin';
   document.getElementById('modalBackupBody').innerHTML = `
 
     <!-- Backup section -->
     <div class="backup-section">
       <div class="backup-section-title">💾 Buat Backup</div>
       <div class="backup-section-desc">
-        Download seluruh data konsumen sebagai file JSON. Simpan di tempat aman.
+        Download data konsumen sebagai file JSON. Simpan di tempat aman.
       </div>
       <div class="backup-last">Backup terakhir: <strong>${lastBackupStr}</strong></div>
       <div class="backup-includes">
         <div class="bi-item">✓ Semua data konsumen (nama, status, berkas, log)</div>
         <div class="bi-item">✓ Target penjualan bulanan</div>
-        ${myProf?.role === 'admin' ? '<div class="bi-item">✓ Data profil tim marketing</div>' : ''}
+        ${isAdmin ? '<div class="bi-item">✓ Data profil tim marketing</div>' : '<div class="bi-item" style="color:var(--text-3)">⚠ Hanya konsumen milik Anda</div>'}
       </div>
       <button class="btn-primary" id="btnBackup" onclick="doBackupAndRecord()" style="width:100%;margin-top:12px">
         💾 Buat Backup Sekarang
@@ -242,10 +252,10 @@ function openBackupModal() {
     <div class="backup-section">
       <div class="backup-section-title">📂 Pulihkan dari Backup</div>
       <div class="backup-section-desc">
-        Upload file backup (.json) untuk memulihkan data.
+        Upload file backup (.json) untuk memulihkan data konsumen Anda.
       </div>
 
-      <!-- Mode restore -->
+      <!-- Mode restore — Replace hanya untuk admin -->
       <div class="restore-mode-group">
         <label class="restore-mode-item">
           <input type="radio" name="restoreMode" value="merge" checked/>
@@ -254,13 +264,14 @@ function openBackupModal() {
             <div style="font-size:11px;color:var(--text-3)">Data backup ditambahkan, data yang ID-nya sama ditimpa</div>
           </div>
         </label>
+        ${isAdmin ? `
         <label class="restore-mode-item">
           <input type="radio" name="restoreMode" value="replace"/>
           <div>
             <div style="font-size:13px;font-weight:600">Ganti Semua (Replace)</div>
             <div style="font-size:11px;color:var(--text-3)">Hapus semua data lama, ganti dengan isi backup</div>
           </div>
-        </label>
+        </label>` : ''}
       </div>
 
       <!-- Upload area -->

@@ -209,6 +209,13 @@
 <!-- ══ APP SHELL ══ -->
 <div id="shell">
 
+  <!-- Trial / Plan banner -->
+  <div id="trialBanner" style="display:none">
+    <span class="trial-ico">✨</span>
+    <span class="trial-msg">Trial Pro: <strong id="trialDays">14</strong> hari tersisa</span>
+    <button class="trial-upgrade-btn" onclick="openUpgradePage()">Upgrade →</button>
+  </div>
+
   <!-- Offline bar -->
   <div id="offlineBar" style="display:none">
     <span class="offline-icon">📵</span>
@@ -621,18 +628,52 @@
       </div>
 
       <div class="set-group">
+        <div class="set-group-label">Paket Langganan</div>
+        <div id="planInfoSection"></div>
+        <div id="upgradeRow" style="display:none" class="set-form">
+          <div class="set-row" onclick="openUpgradePage()">
+            <div class="set-row-info">
+              <div class="set-row-name">⚡ Upgrade ke Pro</div>
+              <div class="set-row-desc">Mulai dari Rp 100.000/bulan — unlock semua fitur</div>
+            </div>
+            <div class="set-arrow" style="color:#6366f1">›</div>
+          </div>
+        </div>
+        <div id="manageRow" style="display:none" class="set-form">
+          <div class="set-row" onclick="openUpgradePage()">
+            <div class="set-row-info">
+              <div class="set-row-name">💳 Kelola Langganan</div>
+              <div class="set-row-desc">Perpanjang atau ubah paket Anda</div>
+            </div>
+            <div class="set-arrow">›</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="set-group">
         <div class="set-group-label">Profil Saya</div>
         <div class="set-form">
           <div style="padding:14px 16px;border-bottom:1px solid var(--glass-border)">
             <div class="field-label" style="margin-bottom:6px">Nama Tampilan</div>
             <input type="text" class="field-input" id="setPName" placeholder="Nama Anda"/>
           </div>
-          <div style="padding:14px 16px;border-bottom:1px solid var(--glass-border)">
-            <div class="field-label" style="margin-bottom:6px">Target Penjualan / Bulan</div>
-            <input type="number" class="field-input" id="setPTarget" placeholder="Contoh: 5"/>
-          </div>
+          <input type="hidden" id="setPTarget" value="5"/>
           <div style="padding:14px 16px">
             <button class="btn-primary" onclick="saveProfil()">Simpan Profil</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Backup untuk Marketing Pro -->
+      <div class="set-group" id="marketingBackupGrp" style="display:none">
+        <div class="set-group-label">Data Saya</div>
+        <div class="set-form">
+          <div class="set-row" onclick="openBackupModal()">
+            <div class="set-row-info">
+              <div class="set-row-name">💾 Backup & Restore Data</div>
+              <div class="set-row-desc">Backup konsumen milik Anda atau pulihkan dari file</div>
+            </div>
+            <div class="set-arrow">›</div>
           </div>
         </div>
       </div>
@@ -644,6 +685,13 @@
             <div class="set-row-info">
               <div class="set-row-name">👥 Kelola Pengguna</div>
               <div class="set-row-desc">Atur role anggota tim</div>
+            </div>
+            <div class="set-arrow">›</div>
+          </div>
+          <div class="set-row" onclick="openAktivasiModal()">
+            <div class="set-row-info">
+              <div class="set-row-name">💳 Aktivasi Plan</div>
+              <div class="set-row-desc">Aktifkan langganan Pro/Business setelah pembayaran</div>
             </div>
             <div class="set-arrow">›</div>
           </div>
@@ -823,6 +871,187 @@
       <button class="sheet-close" onclick="closeModal('modalBackup')">✕</button>
     </div>
     <div class="sheet-body" id="modalBackupBody" style="padding:0 18px 24px"></div>
+  </div>
+</div>
+
+<!-- ════ MODAL UPGRADE ════ -->
+<div class="modal-bg" id="modalUpgrade">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">⚡ Upgrade ke Pro</div>
+      <button class="sheet-close" onclick="closeModal('modalUpgrade')">✕</button>
+    </div>
+    <div class="sheet-body" style="padding:0 18px 24px">
+      <div class="upgrade-locked-feature" id="upgradeFeatureLabel"></div>
+      <div class="upgrade-current" id="upgradeCurrentPlan"></div>
+      <div class="upgrade-plans">
+        <!-- Pro -->
+        <div class="upgrade-plan-card upgrade-plan-featured">
+          <div class="upc-badge">Paling Populer</div>
+          <div class="upc-name">Pro</div>
+          <div class="upc-price">Rp 100.000<span>/bulan</span></div>
+          <div class="upc-desc">Untuk tim marketing aktif</div>
+          <div class="upc-features">
+            <div class="upc-feat">✓ Konsumen tidak terbatas</div>
+            <div class="upc-feat">✓ Export Excel, PDF, CSV</div>
+            <div class="upc-feat">✓ Upload foto berkas (maks 10/item)</div>
+            <div class="upc-feat">✓ Filter lanjutan + filter bulan</div>
+            <div class="upc-feat">✓ Target penjualan bulanan</div>
+            <div class="upc-feat">✓ Notifikasi push ke HP</div>
+            <div class="upc-feat">✓ Backup & restore data</div>
+            <div class="upc-feat">✓ Mode offline</div>
+            <div class="upc-feat">✓ Import Excel/CSV</div>
+          </div>
+          <button class="btn-primary" onclick="choosePlan('pro')" style="width:100%;margin-top:14px">
+            Pilih Pro →
+          </button>
+        </div>
+        <!-- Business -->
+        <div class="upgrade-plan-card">
+          <div class="upc-name">Business</div>
+          <div class="upc-price">Rp 299.000<span>/bulan</span></div>
+          <div class="upc-desc">Untuk developer skala besar</div>
+          <div class="upc-features">
+            <div class="upc-feat">✓ Semua fitur Pro</div>
+            <div class="upc-feat">✓ Pengguna tidak terbatas</div>
+            <div class="upc-feat">✓ Upload foto berkas tidak terbatas</div>
+            <div class="upc-feat">✓ Prioritas support</div>
+            <div class="upc-feat">✓ Onboarding tim</div>
+          </div>
+          <button class="btn-secondary" onclick="choosePlan('business')" style="width:100%;margin-top:14px">
+            Pilih Business →
+          </button>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--text-4);text-align:center;margin-top:12px">
+        Pembayaran via transfer bank · Diaktifkan dalam 1×24 jam
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODAL AKTIVASI PLAN ════ -->
+<div class="modal-bg" id="modalAktivasi">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">💳 Aktivasi Plan</div>
+      <button class="sheet-close" onclick="closeModal('modalAktivasi')">✕</button>
+    </div>
+    <div class="sheet-body" style="padding:0 18px 24px">
+
+      <!-- Daftar order pending -->
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">
+        Order Menunggu Konfirmasi
+      </div>
+      <div id="pendingOrderList">
+        <div style="font-size:12px;color:var(--text-4);padding:8px 0">Memuat...</div>
+      </div>
+
+      <div style="height:1px;background:var(--glass-border);margin:16px 0"></div>
+
+      <!-- Form aktivasi manual -->
+      <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px">
+        Aktivasi Manual
+      </div>
+      <div class="field">
+        <label class="field-label">Pilih User</label>
+        <select class="field-select" id="aktivasiUserId">
+          <option value="">— Pilih user —</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Plan</label>
+        <select class="field-select" id="aktivasiPlan">
+          <option value="trial">Trial Pro (gratis)</option>
+          <option value="pro">Pro — Rp 100.000/bulan</option>
+          <option value="business">Business — Rp 299.000/bulan</option>
+          <option value="free">Turunkan ke Gratis</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label">Durasi</label>
+        <select class="field-select" id="aktivasiDurasi">
+          <option value="1">1 bulan</option>
+          <option value="3">3 bulan</option>
+          <option value="6">6 bulan</option>
+          <option value="12">12 bulan (1 tahun)</option>
+          <option value="0">Tidak terbatas</option>
+        </select>
+      </div>
+      <div id="aktivasiErr" style="font-size:12px;color:var(--rose);margin-bottom:8px"></div>
+      <div id="aktivasiOk" style="display:none;font-size:12px;color:var(--emerald);margin-bottom:8px;font-weight:700"></div>
+      <button class="btn-primary" id="btnAktivasi" onclick="submitAktivasi()" style="width:100%">
+        ✓ Aktifkan Sekarang
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ MODAL CHECKOUT ════ -->
+<div class="modal-bg" id="modalCheckout">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title">💳 Detail Pembayaran</div>
+      <button class="sheet-close" onclick="closeModal('modalCheckout')">✕</button>
+    </div>
+    <div class="sheet-body" style="padding:0 18px 24px">
+      <input type="hidden" id="checkoutPlanKey"/>
+      <!-- Form -->
+      <div id="checkoutForm">
+        <div class="checkout-summary">
+          <span id="checkoutPlanName" style="font-weight:700"></span>
+          <span id="checkoutPrice" style="font-weight:800;color:var(--brand-light)"></span>
+        </div>
+        <div class="field" style="margin-top:14px">
+          <label class="field-label">Nama Lengkap</label>
+          <input type="text" class="field-input" id="checkoutName" placeholder="Nama sesuai rekening"/>
+        </div>
+        <div class="field">
+          <label class="field-label">Email</label>
+          <input type="email" class="field-input" id="checkoutEmail" placeholder="email@contoh.com"/>
+        </div>
+        <div class="field">
+          <label class="field-label">No. HP / WhatsApp</label>
+          <input type="tel" class="field-input" id="checkoutPhone" placeholder="08xx-xxxx-xxxx"/>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin:8px 0 14px;line-height:1.6">
+          Setelah klik Lanjut, Anda akan mendapat instruksi pembayaran via WhatsApp atau email.
+        </div>
+        <div class="auth-error" id="checkoutErr" style="margin-bottom:10px"></div>
+        <button class="btn-primary" id="btnCheckout" onclick="submitCheckout()" style="width:100%">
+          Lanjut Pembayaran →
+        </button>
+      </div>
+      <!-- Success -->
+      <div id="checkoutSuccess" style="display:none;text-align:center;padding:16px 0">
+        <div style="font-size:40px;margin-bottom:12px">🎉</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:8px">Pesanan Diterima!</div>
+        <div style="font-size:13px;color:var(--text-2);line-height:1.7;margin-bottom:16px">
+          Order ID: <strong id="checkoutOrderId"></strong><br/>
+          Paket: <strong id="checkoutPlanDisplay"></strong><br/>
+          Total: <strong id="checkoutPriceDisplay"></strong>
+        </div>
+        <div class="checkout-payment-info">
+          <div class="cpi-title">Transfer ke rekening berikut:</div>
+          <div class="cpi-bank">🏦 BANK JAGO SYARIAH · 5087 8612 5417</div>
+          <div class="cpi-name">A.N. YOKI VALIANDA</div>
+          <div class="cpi-note">Sertakan Order ID sebagai berita transfer.<br/>
+          Akun diaktifkan dalam 1×24 jam setelah pembayaran dikonfirmasi.</div>
+        </div>
+        <div style="margin-top:14px;font-size:12px;color:var(--text-3)">
+          Konfirmasi via WhatsApp ke<br/>
+          <a href="https://wa.me/6289699934870" style="color:var(--brand-light);font-weight:700">
+            +62 896-9993-4870
+          </a>
+        </div>
+        <button class="btn-secondary" onclick="closeModal('modalCheckout')" style="width:100%;margin-top:16px">
+          Tutup
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1077,6 +1306,7 @@
 <script src="js/kalender.js"></script>
 <script src="js/dokumen.js"></script>
 <script src="js/target.js"></script>
+<script src="js/plan.js"></script>
 <script src="js/backup.js"></script>
 <script src="js/offline.js"></script>
 <script src="js/push.js"></script>
