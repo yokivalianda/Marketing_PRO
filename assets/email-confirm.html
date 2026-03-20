@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Konfirmasi Akun PropMap</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f0f0f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 32px 16px; }
+  .wrapper { max-width: 520px; margin: 0 auto; }
+  .card { background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(99,102,241,.12); }
+
+  /* Header */
+  .header { background: #6366f1; padding: 36px 40px 32px; text-align: center; }
+  .logo-wrap { margin-bottom: 8px; text-align: center; }
+  .logo-box { width: 48px; height: 48px; background: rgba(255,255,255,.2); border-radius: 14px; text-align: center; vertical-align: middle; }
+  .logo-name { font-size: 22px; font-weight: 900; color: #fff; letter-spacing: -1px; }
+  .logo-name em { font-style: normal; color: rgba(255,255,255,.7); }
+  .header-title { font-size: 15px; color: rgba(255,255,255,.8); font-weight: 500; margin-top: 4px; }
+
+  /* Body */
+  .body { padding: 36px 40px; }
+  .greeting { font-size: 22px; font-weight: 800; color: #0f0f1a; margin-bottom: 12px; letter-spacing: -.5px; }
+  .text { font-size: 15px; color: #4a4a6a; line-height: 1.7; margin-bottom: 20px; }
+  .btn-wrap { text-align: center; margin: 28px 0; }
+  .btn { display: inline-block; background: #6366f1; color: #ffffff; text-decoration: none; padding: 14px 36px; border-radius: 12px; font-size: 15px; font-weight: 700; letter-spacing: -.2px; }
+  .expire-note { font-size: 12px; color: #9090b0; text-align: center; margin-top: -8px; margin-bottom: 24px; }
+  .divider { height: 1px; background: #f0f0f8; margin: 24px 0; }
+  .link-fallback { font-size: 12px; color: #9090b0; line-height: 1.6; }
+  .link-fallback a { color: #6366f1; word-break: break-all; }
+  .info-box { background: #f5f5fa; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; }
+  .info-row { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #4a4a6a; margin-bottom: 8px; line-height: 1.5; }
+  .info-row:last-child { margin-bottom: 0; }
+  .info-ico { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* Footer */
+  .footer { background: #f8f8fc; padding: 20px 40px; text-align: center; border-top: 1px solid #ebebf5; }
+  .footer-text { font-size: 12px; color: #9090b0; line-height: 1.6; }
+  .footer-text a { color: #6366f1; text-decoration: none; }
+
+  @media (max-width: 560px) {
+    .body, .header, .footer { padding-left: 24px; padding-right: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="card">
+
+    <!-- Header -->
+    <div class="header">
+      <table cellpadding="0" cellspacing="0" border="0" style="margin:0 auto 8px auto">
+        <tr>
+          <td style="vertical-align:middle;padding-right:10px">
+            <table cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td style="width:44px;height:44px;background:rgba(255,255,255,0.2);border-radius:12px;text-align:center;vertical-align:middle">
+                  <span style="font-size:24px;line-height:44px;display:block">&#127968;</span>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td style="vertical-align:middle">
+            <span style="font-size:24px;font-weight:900;color:#ffffff;letter-spacing:-1px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">Prop<span style="color:rgba(255,255,255,0.65)">Map</span></span>
+          </td>
+        </tr>
+      </table>
+      <div class="header-title">CRM Marketing Properti</div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <div class="greeting">Halo 👋</div>
+      <p class="text">
+        Terima kasih sudah mendaftar di <strong>PropMap</strong> — platform CRM untuk tim marketing properti Anda.
+        Akun dengan email <strong>{{ .Email }}</strong> siap diaktifkan.
+        Klik tombol di bawah untuk mulai menggunakan PropMap.
+      </p>
+
+      <div class="btn-wrap">
+        <a href="{{ .ConfirmationURL }}" class="btn">✓ &nbsp;Aktifkan Akun Saya</a>
+      </div>
+      <p class="expire-note">Link aktif selama 24 jam. Jangan bagikan ke siapapun.</p>
+
+      <div class="info-box">
+        <div class="info-row"><span class="info-ico">📧</span><span>Email: <strong>{{ .Email }}</strong></span></div>
+        <div class="info-row"><span class="info-ico">🔐</span><span>Setelah aktif, Anda bisa langsung masuk dan mulai menambahkan data konsumen.</span></div>
+        <div class="info-row"><span class="info-ico">👤</span><span>Akun baru otomatis mendapat role <strong>Marketing</strong>. Hubungi Admin untuk upgrade role.</span></div>
+      </div>
+
+      <div class="divider"></div>
+      <p class="link-fallback">
+        Jika tombol tidak berfungsi, salin dan buka link ini di browser:<br/>
+        <a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="footer-text">
+        Email ini dikirim karena ada pendaftaran akun baru di PropMap.<br/>
+        Jika bukan Anda yang mendaftar, abaikan email ini.<br/><br/>
+        &copy; 2026 PropMap &nbsp;·&nbsp; CRM Marketing Properti Indonesia
+      </p>
+    </div>
+
+  </div>
+
+  <p style="text-align:center;font-size:11px;color:#b0b0c8;margin-top:16px">
+    Dikirim oleh PropMap &nbsp;·&nbsp; Jangan balas email ini
+  </p>
+</div>
+</body>
+</html>

@@ -22,24 +22,30 @@ Install di HP (PWA), multi-user, sinkronisasi real-time, dan hadir dengan fitur 
 <table>
   <tr>
     <td align="center">
-      <img src="screenshots/screen-01-dashboard-dark.svg" width="180" alt="Dashboard"/>
-      <br/><sub><b>Dashboard · Gelap</b></sub>
+      <img src="screenshots/screen-01-dashboard-dark.svg" width="160" alt="Dashboard"/>
+      <br/><sub><b>Dashboard</b></sub>
     </td>
     <td align="center">
-      <img src="screenshots/screen-02-konsumen-dark.svg" width="180" alt="Konsumen"/>
+      <img src="screenshots/screen-02-konsumen-dark.svg" width="160" alt="Konsumen"/>
       <br/><sub><b>Daftar Konsumen</b></sub>
     </td>
     <td align="center">
-      <img src="screenshots/screen-03-detail-dark.svg" width="180" alt="Detail"/>
-      <br/><sub><b>Detail & Berkas</b></sub>
+      <img src="screenshots/screen-03-filter-dark.svg" width="160" alt="Filter Lanjutan"/>
+      <br/><sub><b>Filter Lanjutan</b></sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="screenshots/screen-04-laporan-light.svg" width="160" alt="Laporan"/>
+      <br/><sub><b>Laporan & Target ☀️</b></sub>
     </td>
     <td align="center">
-      <img src="screenshots/screen-04-laporan-light.svg" width="180" alt="Laporan"/>
-      <br/><sub><b>Laporan ☀️</b></sub>
-    </td>
-    <td align="center">
-      <img src="screenshots/screen-05-kalender-dark.svg" width="180" alt="Kalender"/>
+      <img src="screenshots/screen-05-kalender-dark.svg" width="160" alt="Kalender"/>
       <br/><sub><b>Kalender Follow-up</b></sub>
+    </td>
+    <td align="center">
+      <img src="screenshots/screen-06-login-light.svg" width="160" alt="Login"/>
+      <br/><sub><b>Login & Google OAuth ☀️</b></sub>
     </td>
   </tr>
 </table>
@@ -65,7 +71,17 @@ Install di HP (PWA), multi-user, sinkronisasi real-time, dan hadir dengan fitur 
 | 🏆 **Ranking Tim** | Laporan performa dan ranking marketing untuk Admin |
 | 📞 **Aksi Cepat** | Telepon dan WhatsApp langsung dari detail konsumen |
 | 📌 **Log Aktivitas** | Setiap perubahan tercatat otomatis dengan timestamp |
-| 💻 **Layout Desktop** | Sidebar navigasi, konten terpusat — tidak melebar di layar lebar |
+| 🔑 **Login Google** | Sign in / sign up dengan akun Google — satu klik tanpa password |
+| 📧 **Konfirmasi Email** | Panel verifikasi email setelah daftar + kirim ulang konfirmasi |
+| 📍 **7 Status Pipeline** | Prospek → Booking → Proses DP → Berkas → SP3K/ACC → Selesai/Batal |
+| 🔍 **Filter Lanjutan** | Filter harga, sumber, KPR, tanggal booking, berkas, follow-up |
+| 📆 **Filter Bulan** | Filter konsumen per bulan booking, input, atau follow-up |
+| 🎯 **Target Penjualan** | Target bulanan per marketing + history 6 bulan + bulk set Admin |
+| 📗 **Export Excel XLSX** | 3 sheet: data konsumen, ringkasan, performa per marketing |
+| 📵 **Mode Offline** | IndexedDB cache + antrian sync otomatis saat kembali online |
+| 💾 **Backup & Restore** | Download JSON + restore Merge/Replace All dengan validasi checksum |
+| ⚡ **Optimistic Locking** | Deteksi konflik edit bersamaan + modal diff perubahan |
+| 💻 **Layout Desktop** | Sidebar navigasi, konten terpusat, support layar lebar |
 
 ---
 
@@ -270,19 +286,22 @@ A: PropMap punya optimistic locking — jika ada konflik, sistem mendeteksi perb
 
 ## 🗺 Roadmap
 
-- [x] Web Push Notification ke HP
-- [x] Kalender jadwal follow-up dengan reminder push
-- [x] Filter laporan berdasarkan rentang tanggal kustom
-- [x] Optimistic locking untuk mencegah konflik edit bersamaan
+- [x] Web Push Notification
+- [x] Kalender follow-up dengan reminder
+- [x] Filter laporan rentang tanggal kustom
+- [x] Optimistic locking — konflik edit bersamaan
 - [x] Mode offline dengan IndexedDB + background sync
 - [x] Backup & restore data JSON
 - [x] Target penjualan bulanan per marketing
 - [x] Export Excel multi-sheet (XLSX)
-- [x] Filter lanjutan (harga, sumber, KPR, berkas, follow-up)
-- [x] Filter bulan konsumen (booking/input/follow-up)
+- [x] Filter lanjutan + filter bulan
+- [x] Login dengan Google OAuth
+- [x] Konfirmasi email setelah daftar
+- [x] Template email branded (konfirmasi + reset password)
 - [ ] Integrasi WhatsApp Business API
 - [ ] Template berkas KPR per bank
 - [ ] Foto profil konsumen
+- [ ] Notifikasi real-time di desktop
 
 ---
 

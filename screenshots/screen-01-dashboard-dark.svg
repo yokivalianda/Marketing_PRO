@@ -2,115 +2,109 @@
 <defs>
   <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1"/><stop offset="100%" stop-color="#a855f7"/></linearGradient>
   <linearGradient id="hero-bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#0c0c12"/><stop offset="100%" stop-color="#111118"/></linearGradient>
-  <linearGradient id="mesh1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.18"/><stop offset="100%" stop-color="transparent"/></linearGradient>
-  <linearGradient id="mesh2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#a855f7" stop-opacity="0.12"/><stop offset="100%" stop-color="transparent"/></linearGradient>
   <clipPath id="phone"><rect x="0" y="0" width="390" height="844" rx="44"/></clipPath>
 </defs>
 <g clip-path="url(#phone)">
-  <!-- BG -->
   <rect width="390" height="844" fill="#050508"/>
-  <!-- Status bar -->
   <rect width="390" height="44" fill="#050508"/>
   <text x="28" y="29" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" fill="#f0f0f8">9:41</text>
   <rect x="310" y="18" width="42" height="13" rx="3" fill="none" stroke="#f0f0f8" stroke-width="1.2" stroke-opacity=".6"/>
   <rect x="312" y="20" width="32" height="9" rx="1.5" fill="#10b981"/>
-  <rect x="355" y="20" width="13" height="9" rx="2" fill="none" stroke="#f0f0f8" stroke-width="1.2" stroke-opacity=".5"/>
   <!-- Header -->
-  <rect y="44" width="390" height="56" fill="rgba(5,5,8,0.88)"/>
+  <rect y="44" width="390" height="56" fill="rgba(5,5,8,0.94)"/>
   <rect y="99" width="390" height="1" fill="rgba(255,255,255,0.08)"/>
-  <rect x="18" y="60" width="34" height="34" rx="10" fill="url(#brand)"/>
-  <rect x="16" y="60" width="30" height="30" rx="8" fill="#6366f1"/><path d="M31 69.15 L25.15 74.35 L25.15 80.85 L29.05 80.85 L29.05 76.3 L32.95 76.3 L32.95 80.85 L36.85 80.85 L36.85 74.35 Z" fill="white" opacity="0.9"/><circle cx="35.16" cy="70.06" r="2.86" fill="#6366f1"/><circle cx="35.16" cy="70.06" r="1.8200000000000003" fill="white"/><circle cx="35.16" cy="70.06" r="0.715" fill="#6366f1"/>
-  <text x="60" y="76" font-family="SF Pro Display, system-ui" font-size="17" font-weight="800" letter-spacing="-1" fill="#f0f0f8">Prop<tspan fill="#818cf8">Map</tspan></text>
-  <!-- User pill -->
-  <rect x="200" y="62" width="108" height="28" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <circle cx="214" cy="76" r="10" fill="url(#brand)"/>
-  <text x="214" y="80" font-family="SF Pro Display, system-ui" font-size="10" font-weight="800" text-anchor="middle" fill="white">A</text>
-  <text x="228" y="80" font-family="SF Pro Display, system-ui" font-size="11" font-weight="600" fill="#f0f0f8">Admin</text>
-  <!-- Theme btn -->
-  <rect x="316" y="62" width="40" height="28" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="336" y="80" font-family="serif" font-size="15" text-anchor="middle" fill="#9898b8">🌙</text>
-  <!-- Notif btn -->
-  <rect x="342" y="62" width="40" height="28" rx="10" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="362" y="80" font-family="serif" font-size="15" text-anchor="middle" fill="#9898b8">🔔</text>
-  <circle cx="375" cy="65" r="5" fill="#f43f5e" stroke="#050508" stroke-width="1.5"/>
-  <!-- HERO -->
-  <rect y="100" width="390" height="260" fill="url(#hero-bg)"/>
-  <ellipse cx="60" cy="200" rx="150" ry="120" fill="url(#mesh1)"/>
-  <ellipse cx="340" cy="160" rx="120" ry="100" fill="url(#mesh2)"/>
-  <!-- Grid texture -->
-  <pattern id="grid" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="0" y2="32" stroke="rgba(255,255,255,0.018)" stroke-width="1"/><line x1="0" y1="0" x2="32" y2="0" stroke="rgba(255,255,255,0.018)" stroke-width="1"/></pattern>
-  <rect y="100" width="390" height="260" fill="url(#grid)"/>
-  <text x="22" y="136" font-family="SF Pro Display, system-ui" font-size="12" fill="#4a4a68" font-weight="500">Halo 👋</text>
-  <rect x="60" y="124" width="60" height="18" rx="9" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
-  <circle cx="70" cy="133" r="3" fill="#10b981"/>
-  <text x="78" y="137" font-family="SF Pro Display, system-ui" font-size="9" font-weight="700" fill="#10b981" letter-spacing=".5">Live</text>
-  <text x="22" y="165" font-family="SF Pro Display, system-ui" font-size="26" font-weight="800" letter-spacing="-1.2" fill="#f0f0f8">Admin Demo</text>
-  <text x="22" y="190" font-family="SF Pro Display, system-ui" font-size="26" font-weight="800" letter-spacing="-1.2" fill="#818cf8">Selamat bekerja!</text>
+  <rect x="16" y="60" width="30" height="30" rx="8" fill="#6366f1"/>
+  <path d="M31 66L23 72.5V80H27.5V75H34.5V80H39V72.5Z" fill="white" opacity="0.9"/>
+  <circle cx="36.5" cy="68" r="3.5" fill="#6366f1"/>
+  <circle cx="36.5" cy="68" r="2.2" fill="white"/>
+  <circle cx="36.5" cy="68" r="0.9" fill="#6366f1"/>
+  <text x="54" y="76" font-family="SF Pro Display, system-ui" font-size="17" font-weight="800" letter-spacing="-1" fill="#f0f0f8">Prop<tspan fill="#818cf8">Map</tspan></text>
+  <rect x="198" y="62" width="108" height="28" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <circle cx="212" cy="76" r="10" fill="url(#brand)"/>
+  <text x="212" y="80" font-family="SF Pro Display, system-ui" font-size="10" font-weight="800" text-anchor="middle" fill="white">M</text>
+  <text x="226" y="80" font-family="SF Pro Display, system-ui" font-size="11" font-weight="600" fill="#f0f0f8">Marketing</text>
+  <rect x="314" y="62" width="30" height="28" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="329" y="80" font-family="serif" font-size="14" text-anchor="middle" fill="#9898b8">☀️</text>
+  <rect x="350" y="62" width="30" height="28" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+  <text x="365" y="80" font-family="serif" font-size="14" text-anchor="middle" fill="#9898b8">🔔</text>
+  <!-- Hero -->
+  <rect y="100" width="390" height="220" fill="url(#hero-bg)"/>
+  <ellipse cx="80" cy="180" rx="160" ry="120" fill="#6366f1" fill-opacity="0.12"/>
+  <ellipse cx="330" cy="150" rx="120" ry="100" fill="#a855f7" fill-opacity="0.09"/>
+  <text x="22" y="134" font-family="SF Pro Display, system-ui" font-size="12" fill="rgba(255,255,255,0.4)">Halo 👋  <tspan fill="#10b981" font-weight="700">● Live</tspan></text>
+  <text x="22" y="160" font-family="SF Pro Display, system-ui" font-size="22" font-weight="900" letter-spacing="-1" fill="#f0f0f8">Marketing</text>
+  <text x="22" y="186" font-family="SF Pro Display, system-ui" font-size="22" font-weight="900" letter-spacing="-1" fill="#818cf8">Professional</text>
   <!-- Stat tiles -->
-  <rect x="22" y="210" width="165" height="74" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="36" y="233" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68" font-weight="600" letter-spacing=".3">TOTAL KONSUMEN</text>
-  <text x="36" y="265" font-family="JetBrains Mono, monospace" font-size="32" font-weight="800" letter-spacing="-2" fill="#818cf8">8</text>
-  <rect x="199" y="210" width="165" height="74" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="213" y="233" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68" font-weight="600" letter-spacing=".3">AKAD SELESAI</text>
-  <text x="213" y="265" font-family="JetBrains Mono, monospace" font-size="32" font-weight="800" letter-spacing="-2" fill="#10b981">2</text>
-  <rect x="22" y="294" width="165" height="60" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="36" y="314" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68" font-weight="600" letter-spacing=".3">PROSES DP</text>
-  <text x="36" y="342" font-family="JetBrains Mono, monospace" font-size="28" font-weight="800" letter-spacing="-2" fill="#f59e0b">1</text>
-  <rect x="199" y="294" width="165" height="60" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <text x="213" y="314" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68" font-weight="600" letter-spacing=".3">BOOKING</text>
-  <text x="213" y="342" font-family="JetBrains Mono, monospace" font-size="28" font-weight="800" letter-spacing="-2" fill="#a855f7">2</text>
-  <!-- Pipeline section -->
-  <text x="22" y="387" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">📊 Pipeline</text>
-  <!-- Pipeline cards -->
-  <rect x="22" y="398" width="60" height="56" rx="12" fill="#111118" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <rect x="22" y="398" width="60" height="2" rx="1" fill="#6366f1"/>
-  <text x="52" y="430" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" letter-spacing="-2" text-anchor="middle" fill="#818cf8">2</text>
-  <text x="52" y="446" font-family="SF Pro Display, system-ui" font-size="8.5" text-anchor="middle" fill="#4a4a68" font-weight="600">Booking</text>
-  <rect x="90" y="398" width="60" height="56" rx="12" fill="#111118" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <rect x="90" y="398" width="60" height="2" rx="1" fill="#f59e0b"/>
-  <text x="120" y="430" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" letter-spacing="-2" text-anchor="middle" fill="#f59e0b">1</text>
-  <text x="120" y="446" font-family="SF Pro Display, system-ui" font-size="8.5" text-anchor="middle" fill="#4a4a68" font-weight="600">Proses DP</text>
-  <rect x="158" y="398" width="60" height="56" rx="12" fill="#111118" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <rect x="158" y="398" width="60" height="2" rx="1" fill="#a855f7"/>
-  <text x="188" y="430" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" letter-spacing="-2" text-anchor="middle" fill="#a855f7">2</text>
-  <text x="188" y="446" font-family="SF Pro Display, system-ui" font-size="8.5" text-anchor="middle" fill="#4a4a68" font-weight="600">Berkas</text>
-  <rect x="226" y="398" width="60" height="56" rx="12" fill="#111118" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <rect x="226" y="398" width="60" height="2" rx="1" fill="#10b981"/>
-  <text x="256" y="430" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" letter-spacing="-2" text-anchor="middle" fill="#10b981">2</text>
-  <text x="256" y="446" font-family="SF Pro Display, system-ui" font-size="8.5" text-anchor="middle" fill="#4a4a68" font-weight="600">Selesai</text>
-  <rect x="294" y="398" width="60" height="56" rx="12" fill="#111118" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-  <rect x="294" y="398" width="60" height="2" rx="1" fill="#f43f5e"/>
-  <text x="324" y="430" font-family="JetBrains Mono, monospace" font-size="20" font-weight="800" letter-spacing="-2" text-anchor="middle" fill="#f43f5e">1</text>
-  <text x="324" y="446" font-family="SF Pro Display, system-ui" font-size="8.5" text-anchor="middle" fill="#4a4a68" font-weight="600">Batal</text>
-  <!-- Recent section -->
-  <text x="22" y="483" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">🕐 Terbaru</text>
-  <text x="330" y="483" font-family="SF Pro Display, system-ui" font-size="11" fill="#818cf8" font-weight="600">Lihat semua →</text>
-  <!-- Feed items -->
-  <rect x="22" y="497" width="30" height="30" rx="9" fill="url(#brand)"/>
-  <text x="37" y="516" font-family="SF Pro Display, system-ui" font-size="13" font-weight="800" text-anchor="middle" fill="white">B</text>
-  <text x="60" y="511" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" fill="#f0f0f8">Budi Santoso</text>
-  <text x="60" y="526" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">T36/72</text>
-  <rect x="100" y="522" width="42" height="13" rx="6" fill="rgba(99,102,241,0.12)"/>
-  <text x="121" y="532" font-family="SF Pro Display, system-ui" font-size="9" font-weight="700" text-anchor="middle" fill="#818cf8">Booking</text>
-  <text x="360" y="511" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e2e42" text-anchor="end">2j lalu</text>
-  <rect x="22" y="534" width="346" height="1" fill="rgba(255,255,255,0.06)"/>
-  <rect x="22" y="545" width="30" height="30" rx="9" fill="linear-gradient(135deg,#10b981,#059669)"/>
-  <rect x="22" y="545" width="30" height="30" rx="9" fill="#10b981"/>
-  <text x="37" y="564" font-family="SF Pro Display, system-ui" font-size="13" font-weight="800" text-anchor="middle" fill="white">S</text>
-  <text x="60" y="559" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" fill="#f0f0f8">Siti Rahma</text>
-  <text x="60" y="574" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">T45/90</text>
-  <rect x="100" y="570" width="54" height="13" rx="6" fill="rgba(245,158,11,0.12)"/>
-  <text x="127" y="580" font-family="SF Pro Display, system-ui" font-size="9" font-weight="700" text-anchor="middle" fill="#f59e0b">Proses DP</text>
-  <text x="360" y="559" font-family="JetBrains Mono, monospace" font-size="10" fill="#2e2e42" text-anchor="end">5j lalu</text>
-  <rect x="22" y="582" width="346" height="1" fill="rgba(255,255,255,0.06)"/>
-  <rect x="22" y="593" width="30" height="30" rx="9" fill="#f59e0b"/>
-  <text x="37" y="612" font-family="SF Pro Display, system-ui" font-size="13" font-weight="800" text-anchor="middle" fill="white">A</text>
-  <text x="60" y="607" font-family="SF Pro Display, system-ui" font-size="13" font-weight="600" fill="#f0f0f8">Andi Firmansyah</text>
-  <text x="60" y="622" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">T36/60</text>
-  <rect x="100" y="618" width="70" height="13" rx="6" fill="rgba(168,85,247,0.12)"/>
-  <text x="135" y="628" font-family="SF Pro Display, system-ui" font-size="9" font-weight="700" text-anchor="middle" fill="#a855f7">Kumpul Berkas</text>
+  <rect x="22" y="204" width="80" height="64" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(99,102,241,0.2)" stroke-width="1"/>
+  <text x="62" y="226" font-family="SF Pro Display, system-ui" font-size="9" fill="#4a4a68" text-anchor="middle">Total</text>
+  <text x="62" y="248" font-family="SF Pro Display, system-ui" font-size="24" font-weight="800" text-anchor="middle" fill="#818cf8">6</text>
+  <text x="62" y="261" font-family="SF Pro Display, system-ui" font-size="8" fill="#2e2e42" text-anchor="middle">Konsumen saya</text>
+  <rect x="110" y="204" width="80" height="64" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
+  <text x="150" y="226" font-family="SF Pro Display, system-ui" font-size="9" fill="#4a4a68" text-anchor="middle">Selesai</text>
+  <text x="150" y="248" font-family="SF Pro Display, system-ui" font-size="24" font-weight="800" text-anchor="middle" fill="#10b981">2</text>
+  <text x="150" y="261" font-family="SF Pro Display, system-ui" font-size="8" fill="#2e2e42" text-anchor="middle">Transaksi tuntas</text>
+  <rect x="198" y="204" width="80" height="64" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(245,158,11,0.2)" stroke-width="1"/>
+  <text x="238" y="226" font-family="SF Pro Display, system-ui" font-size="9" fill="#4a4a68" text-anchor="middle">Proses DP</text>
+  <text x="238" y="248" font-family="SF Pro Display, system-ui" font-size="24" font-weight="800" text-anchor="middle" fill="#f59e0b">1</text>
+  <text x="238" y="261" font-family="SF Pro Display, system-ui" font-size="8" fill="#2e2e42" text-anchor="middle">Menunggu</text>
+  <rect x="286" y="204" width="82" height="64" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(168,85,247,0.2)" stroke-width="1"/>
+  <text x="327" y="226" font-family="SF Pro Display, system-ui" font-size="9" fill="#4a4a68" text-anchor="middle">Booking</text>
+  <text x="327" y="248" font-family="SF Pro Display, system-ui" font-size="24" font-weight="800" text-anchor="middle" fill="#a855f7">3</text>
+  <text x="327" y="261" font-family="SF Pro Display, system-ui" font-size="8" fill="#2e2e42" text-anchor="middle">Antrian</text>
+  <!-- Pipeline scroll -->
+  <rect y="320" width="390" height="50" fill="#050508"/>
+  <text x="22" y="342" font-family="SF Pro Display, system-ui" font-size="12" font-weight="700" fill="#f0f0f8">📊 Pipeline</text>
+  <rect x="22" y="352" width="60" height="10" rx="5" fill="#0ea5e9" fill-opacity="0.3"/>
+  <rect x="90" y="352" width="70" height="10" rx="5" fill="#6366f1" fill-opacity="0.5"/>
+  <rect x="168" y="352" width="55" height="10" rx="5" fill="#f59e0b" fill-opacity="0.4"/>
+  <rect x="231" y="352" width="65" height="10" rx="5" fill="#a855f7" fill-opacity="0.35"/>
+  <rect x="304" y="352" width="45" height="10" rx="5" fill="#ec4899" fill-opacity="0.3"/>
+  <rect x="357" y="352" width="15" height="10" rx="5" fill="#10b981" fill-opacity="0.5"/>
+  <!-- Follow-up section -->
+  <rect y="370" width="390" height="1" fill="rgba(255,255,255,0.06)"/>
+  <text x="22" y="392" font-family="SF Pro Display, system-ui" font-size="12" font-weight="700" fill="#f0f0f8">📅 Follow-up Mendatang</text>
+  <text x="318" y="392" font-family="SF Pro Display, system-ui" font-size="11" fill="#6366f1">Lihat →</text>
+  <!-- Followup item 1 -->
+  <rect x="22" y="402" width="354" height="52" rx="14" fill="#111118" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <circle cx="48" cy="428" r="16" fill="url(#brand)"/>
+  <text x="48" y="432" font-family="SF Pro Display, system-ui" font-size="13" font-weight="800" text-anchor="middle" fill="white">M</text>
+  <text x="74" y="422" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">Muhammad Rizki</text>
+  <rect x="74" y="428" width="44" height="14" rx="7" fill="rgba(99,102,241,0.12)"/>
+  <text x="96" y="439" font-family="SF Pro Display, system-ui" font-size="8" font-weight="700" text-anchor="middle" fill="#818cf8">Booking</text>
+  <text x="330" y="430" font-family="SF Pro Display, system-ui" font-size="10" font-weight="700" fill="#f59e0b">25 Mar 2026</text>
+  <!-- Followup item 2 -->
+  <rect x="22" y="462" width="354" height="52" rx="14" fill="#111118" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <circle cx="48" cy="488" r="16" fill="#10b981"/>
+  <text x="48" y="492" font-family="SF Pro Display, system-ui" font-size="13" font-weight="800" text-anchor="middle" fill="white">F</text>
+  <text x="74" y="482" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">Fiki</text>
+  <rect x="74" y="488" width="44" height="14" rx="7" fill="rgba(99,102,241,0.12)"/>
+  <text x="96" y="499" font-family="SF Pro Display, system-ui" font-size="8" font-weight="700" text-anchor="middle" fill="#818cf8">Booking</text>
+  <text x="330" y="490" font-family="SF Pro Display, system-ui" font-size="10" font-weight="700" fill="#f59e0b">1 Apr 2026</text>
+  <!-- Terbaru -->
+  <rect y="522" width="390" height="1" fill="rgba(255,255,255,0.06)"/>
+  <text x="22" y="544" font-family="SF Pro Display, system-ui" font-size="12" font-weight="700" fill="#f0f0f8">🕐 Terbaru</text>
+  <text x="308" y="544" font-family="SF Pro Display, system-ui" font-size="11" fill="#6366f1">Lihat semua →</text>
+  <!-- Recent items -->
+  <rect x="22" y="554" width="354" height="46" rx="12" fill="rgba(255,255,255,0.02)"/>
+  <circle cx="44" cy="577" r="14" fill="#10b981"/>
+  <text x="44" y="581" font-family="SF Pro Display, system-ui" font-size="12" font-weight="800" text-anchor="middle" fill="white">F</text>
+  <text x="66" y="572" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">Fiki</text>
+  <text x="66" y="587" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">36/84  ·  <tspan fill="#818cf8">Booking</tspan></text>
+  <text x="342" y="579" font-family="SF Pro Display, system-ui" font-size="10" fill="#2e2e42">14j lalu</text>
+  <rect x="22" y="606" width="354" height="46" rx="12" fill="rgba(255,255,255,0.02)"/>
+  <circle cx="44" cy="629" r="14" fill="#6366f1"/>
+  <text x="44" y="633" font-family="SF Pro Display, system-ui" font-size="12" font-weight="800" text-anchor="middle" fill="white">A</text>
+  <text x="66" y="624" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">Agung Setiawan</text>
+  <text x="66" y="639" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">F22  ·  <tspan fill="#a855f7">Kumpul Berkas</tspan></text>
+  <text x="342" y="631" font-family="SF Pro Display, system-ui" font-size="10" fill="#2e2e42">20j lalu</text>
+  <rect x="22" y="658" width="354" height="46" rx="12" fill="rgba(255,255,255,0.02)"/>
+  <circle cx="44" cy="681" r="14" fill="#ec4899"/>
+  <text x="44" y="685" font-family="SF Pro Display, system-ui" font-size="12" font-weight="800" text-anchor="middle" fill="white">R</text>
+  <text x="66" y="676" font-family="SF Pro Display, system-ui" font-size="13" font-weight="700" fill="#f0f0f8">Rica Rosani</text>
+  <text x="66" y="691" font-family="SF Pro Display, system-ui" font-size="10" fill="#4a4a68">J41-E  ·  <tspan fill="#ec4899">SP3K/ACC</tspan></text>
+  <text x="342" y="683" font-family="SF Pro Display, system-ui" font-size="10" fill="#2e2e42">20j lalu</text>
   <!-- Tab bar -->
-  <rect y="754" width="390" height="90" fill="rgba(5,5,8,0.94)"/>
+  <rect y="754" width="390" height="90" fill="rgba(5,5,8,0.96)"/>
   <rect y="754" width="390" height="1" fill="rgba(255,255,255,0.08)"/>
   <text x="39" y="785" font-family="serif" font-size="22" text-anchor="middle" fill="#818cf8">🏠</text>
   <text x="39" y="800" font-family="SF Pro Display, system-ui" font-size="10" font-weight="600" text-anchor="middle" fill="#818cf8">Dashboard</text>
@@ -122,9 +116,7 @@
   <text x="273" y="800" font-family="SF Pro Display, system-ui" font-size="10" font-weight="600" text-anchor="middle" fill="#2e2e42">Laporan</text>
   <text x="351" y="785" font-family="serif" font-size="22" text-anchor="middle" fill="#2e2e42">⚙️</text>
   <text x="351" y="800" font-family="SF Pro Display, system-ui" font-size="10" font-weight="600" text-anchor="middle" fill="#2e2e42">Pengaturan</text>
-  <!-- Home indicator -->
-  <rect x="155" y="828" width="80" height="4" rx="2" fill="rgba(255,255,255,0.25)"/>
-  <!-- Phone border -->
-  <rect x="0" y="0" width="390" height="844" rx="44" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+  <rect x="155" y="828" width="80" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+  <rect x="0" y="0" width="390" height="844" rx="44" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1.5"/>
 </g>
 </svg>

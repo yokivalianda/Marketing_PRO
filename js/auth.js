@@ -16,11 +16,44 @@ function showMainPanel() {
   document.getElementById('authPanelMain').style.display   = 'block';
   document.getElementById('authPanelForgot').style.display = 'none';
   document.getElementById('authPanelNewPass').style.display = 'none';
+  document.getElementById('authPanelVerify').style.display = 'none';
   document.getElementById('authErr').classList.remove('show');
   document.getElementById('forgotErr').classList.remove('show');
   document.getElementById('forgotOk').classList.remove('show');
   document.getElementById('forgotForm').style.display = 'block';
 }
+function showVerifyPanel(email) {
+  document.getElementById('authPanelMain').style.display   = 'none';
+  document.getElementById('authPanelForgot').style.display = 'none';
+  document.getElementById('authPanelNewPass').style.display = 'none';
+  document.getElementById('authPanelVerify').style.display = 'block';
+  document.getElementById('resendOk').classList.remove('show');
+  // Tampilkan email user
+  const el = document.getElementById('verifyEmailDisplay');
+  if (el) el.textContent = email;
+  // Simpan email untuk resend
+  window._verifyEmail = email;
+}
+
+function goToLoginAfterVerify() {
+  const email = window._verifyEmail || '';
+  showMainPanel();
+  switchAuthTab('masuk');
+  if (email) document.getElementById('inEmail').value = email;
+}
+
+async function resendVerifyEmail() {
+  const email = window._verifyEmail;
+  if (!email) return;
+  try {
+    await sb.auth.resend({ type: 'signup', email });
+    document.getElementById('resendOk').classList.add('show');
+    setTimeout(() => document.getElementById('resendOk').classList.remove('show'), 4000);
+  } catch(e) {
+    showToast('Gagal kirim ulang: ' + e.message, '❌');
+  }
+}
+
 function showForgotPanel() {
   document.getElementById('authPanelMain').style.display   = 'none';
   document.getElementById('authPanelForgot').style.display = 'block';
@@ -68,6 +101,50 @@ async function doLogin() {
   }
 }
 
+// ── GOOGLE LOGIN ────────────────────────────────
+async function doLoginGoogle() {
+  setBtnLoading('btnGoogle', true, 'Menghubungkan...');
+  hideAuthErr();
+  try {
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+    if (error) throw error;
+    // Browser akan redirect ke Google — loading state tetap
+  } catch(e) {
+    showAuthErr(e.message || 'Login Google gagal. Coba lagi.');
+    setBtnLoading('btnGoogle', false, '');
+  }
+}
+
+// Handle redirect balik dari Google OAuth
+async function handleOAuthCallback() {
+  const { data: { session }, error } = await sb.auth.getSession();
+  if (error || !session) return;
+
+  // Pastikan profil ada di tabel profiles
+  const user = session.user;
+  const { data: prof } = await sb.from('profiles').select('id').eq('id', user.id).single();
+  if (!prof) {
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    await sb.from('profiles').insert({
+      id: user.id,
+      email: user.email,
+      full_name: name,
+      role: 'marketing',
+      target: 5
+    });
+  }
+}
+
 // ── REGISTER ────────────────────────────────────
 async function doRegister() {
   const name  = document.getElementById('inRegName').value.trim();
@@ -79,11 +156,21 @@ async function doRegister() {
   try {
     const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { full_name: name } } });
     if (error) throw error;
-    await sb.from('profiles').upsert({ id: data.user.id, email, full_name: name, role: 'marketing', target: 5 });
-    showToast('Akun dibuat! Silakan masuk.', '✅');
-    switchAuthTab('masuk');
-    document.getElementById('inEmail').value = email;
-    setBtnLoading('btnDaftar', false, 'Buat Akun →');
+    // Cek apakah Supabase butuh konfirmasi email
+    // identities kosong = email sudah terdaftar sebelumnya
+    const needsConfirm = data.user && !data.session;
+    if (needsConfirm) {
+      // Email konfirmasi diperlukan — tampilkan panel verifikasi
+      setBtnLoading('btnDaftar', false, 'Buat Akun →');
+      showVerifyPanel(email);
+    } else {
+      // Email confirm dinonaktifkan di Supabase — langsung masuk
+      await sb.from('profiles').upsert({ id: data.user.id, email, full_name: name, role: 'marketing', target: 5 });
+      showToast('Akun dibuat! Silakan masuk.', '✅');
+      switchAuthTab('masuk');
+      document.getElementById('inEmail').value = email;
+      setBtnLoading('btnDaftar', false, 'Buat Akun →');
+    }
   } catch(e) {
     showAuthErr(e.message || 'Pendaftaran gagal.');
     setBtnLoading('btnDaftar', false, 'Buat Akun →');
