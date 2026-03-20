@@ -10,7 +10,7 @@
 **Aplikasi CRM web real-time untuk monitoring dan pengelolaan data konsumen properti.**  
 Install di HP (PWA), multi-user, sinkronisasi real-time, dan hadir dengan fitur lengkap: kalender, grafik pipeline, upload dokumen, import Excel, target penjualan, mode offline, dan backup data.
 
-[🚀 **Coba Demo**](demo.html) · [📱 **Buka Aplikasi**](https://propmadev.netlify.app/)
+[🚀 **Coba Demo**](https://propmapid.netlify.app/demo) · [📱 **Buka Aplikasi**](https://propmapid.netlify.app/)
 
 </div>
 
