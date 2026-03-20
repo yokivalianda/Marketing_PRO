@@ -183,35 +183,18 @@ async function submitCheckout() {
   // Buat order ID dulu
   const orderId = `ORDER-${Date.now()}`;
 
-  // Simpan ke localStorage agar admin bisa lihat walau DB belum ada
-  const orderData = {
-    id: orderId,
-    workspace_id: me.id,
-    user_name: name,
-    user_email: email,
-    user_phone: phone,
-    plan,
-    amount: plan === 'pro' ? 100000 : 299000,
-    status: 'pending',
-    created_at: new Date().toISOString(),
-  };
-  try {
-    const existing = JSON.parse(localStorage.getItem('pm_pending_orders') || '[]');
-    existing.unshift(orderData);
-    localStorage.setItem('pm_pending_orders', JSON.stringify(existing.slice(0, 50)));
-  } catch(e) {}
-
-  // Coba simpan ke DB juga — tidak blocking
+  // Coba simpan ke DB — tidak blocking jika tabel belum ada
   try {
     await sb.from('subscriptions').insert({
       workspace_id: me.id,
       plan,
       status: 'pending',
-      amount: orderData.amount,
+      amount: plan === 'pro' ? 100000 : 299000,
       payment_ref: orderId,
     });
   } catch(e) {
-    console.warn('subscriptions DB:', e.message);
+    console.warn('subscriptions insert:', e.message);
+    // Lanjut tampilkan instruksi walau DB gagal
   }
 
   // Selalu tampilkan instruksi pembayaran
@@ -331,87 +314,27 @@ async function openAktivasiModal() {
 async function loadPendingOrders() {
   const el = document.getElementById('pendingOrderList');
   if (!el) return;
-
-  // Gabungkan dari DB dan localStorage
-  let orders = [];
-
-  // Query dari Supabase — tanpa join agar tidak terpengaruh RLS profiles
   try {
     const { data, error } = await sb.from('subscriptions')
-      .select('id, workspace_id, plan, amount, status, payment_ref, created_at')
+      .select('*, profiles(full_name, email)')
       .eq('status', 'pending')
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(10);
 
-    if (error) throw error;
-
-    if (data?.length) {
-      orders = data.map(o => {
-        // Enrich dengan data profil dari allProfs yang sudah di-load di memori
-        const prof = allProfs.find(p => p.id === o.workspace_id);
-        return {
-          id:           o.id,
-          user_name:    prof?.full_name || prof?.email || o.workspace_id,
-          user_email:   prof?.email || '',
-          plan:         o.plan,
-          amount:       o.amount,
-          payment_ref:  o.payment_ref,
-          created_at:   o.created_at,
-          from_db:      true,
-          workspace_id: o.workspace_id,
-        };
-      });
+    if (error || !data?.length) {
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-4);padding:6px 0">Tidak ada order pending.</div>';
+      return;
     }
-  } catch(e) {
-    console.warn('subscriptions query:', e.message);
-    el.innerHTML = `<div style="font-size:12px;color:var(--rose);padding:6px 0">
-      ⚠ Gagal memuat order: ${e.message}<br/>
-      <span style="color:var(--text-4)">Pastikan SQL policy subscriptions sudah dijalankan di Supabase.</span>
-    </div>`;
-    return;
-  }
 
-  // Tambahkan dari localStorage (order yang belum masuk DB)
-  try {
-    const local = JSON.parse(localStorage.getItem('pm_pending_orders') || '[]');
-    local.forEach(o => {
-      // Hindari duplikat berdasarkan order ID
-      if (!orders.find(x => x.payment_ref === o.id || x.id === o.id)) {
-        orders.push({
-          id:          o.id,
-          user_name:   o.user_name,
-          user_email:  o.user_email,
-          user_phone:  o.user_phone,
-          plan:        o.plan,
-          amount:      o.amount,
-          payment_ref: o.id,
-          created_at:  o.created_at,
-          workspace_id: o.workspace_id,
-          from_local:  true,
-        });
-      }
-    });
-  } catch(e) {}
-
-  if (!orders.length) {
-    el.innerHTML = '<div style="font-size:12px;color:var(--text-4);padding:6px 0">Tidak ada order pending.</div>';
-    return;
-  }
-
-  // Sort terbaru dulu
-  orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-  el.innerHTML = orders.map(o => {
-      const user = o.user_name || o.workspace_id || '—';
-      const phone = o.user_phone ? ` · ${o.user_phone}` : '';
+    el.innerHTML = data.map(o => {
+      const user = o.profiles?.full_name || o.profiles?.email || o.workspace_id;
       const date = new Date(o.created_at).toLocaleDateString('id-ID', {day:'numeric',month:'short',year:'numeric'});
       const planLabel = PLANS[o.plan]?.name || o.plan;
-      const src = o.from_local ? ' 📱' : '';
       return `
         <div class="order-item">
           <div class="order-info">
-            <div class="order-user">${user}${src}</div>
-            <div class="order-meta">${planLabel} · Rp ${(o.amount||0).toLocaleString('id-ID')} · ${date}${phone}</div>
+            <div class="order-user">${user}</div>
+            <div class="order-meta">${planLabel} · Rp ${o.amount.toLocaleString('id-ID')} · ${date}</div>
             <div class="order-ref">${o.payment_ref}</div>
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
@@ -434,14 +357,8 @@ async function approveOrder(orderId, userId, plan) {
   try {
     // Aktivasi plan 1 bulan
     await activatePlan(userId, plan, 1);
-    // Update status di DB jika ada
-    try { await sb.from('subscriptions').update({ status: 'active' }).eq('id', orderId); } catch(e) {}
-    // Hapus dari localStorage
-    try {
-      const local = JSON.parse(localStorage.getItem('pm_pending_orders') || '[]');
-      const updated = local.filter(o => o.id !== orderId && o.id !== orderId);
-      localStorage.setItem('pm_pending_orders', JSON.stringify(updated));
-    } catch(e) {}
+    // Update status order
+    await sb.from('subscriptions').update({ status: 'active' }).eq('id', orderId);
     showToast('Plan berhasil diaktifkan!', '✅');
     await loadPendingOrders();
   } catch(e) {
@@ -451,12 +368,7 @@ async function approveOrder(orderId, userId, plan) {
 
 async function rejectOrder(orderId) {
   if (!confirm('Tolak order ini?')) return;
-  try { await sb.from('subscriptions').update({ status: 'cancelled' }).eq('id', orderId); } catch(e) {}
-  // Hapus dari localStorage
-  try {
-    const local = JSON.parse(localStorage.getItem('pm_pending_orders') || '[]');
-    localStorage.setItem('pm_pending_orders', JSON.stringify(local.filter(o => o.id !== orderId)));
-  } catch(e) {}
+  await sb.from('subscriptions').update({ status: 'cancelled' }).eq('id', orderId);
   showToast('Order ditolak', '🗑️');
   await loadPendingOrders();
 }
