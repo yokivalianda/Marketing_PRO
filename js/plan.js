@@ -6,28 +6,34 @@
 async function loadPlan() {
   if (!sb || !me) return;
   try {
-    const { data } = await sb.from('profiles')
+    const { data, error } = await sb.from('profiles')
       .select('plan, plan_expires, trial_ends')
       .eq('id', me.id).single();
-    if (!data) return;
+
+    if (error) { console.warn('loadPlan:', error.message); myPlan = 'free'; updatePlanUI(); return; }
+    if (!data)  { myPlan = 'free'; updatePlanUI(); return; }
 
     planExpires = data.plan_expires ? new Date(data.plan_expires) : null;
     trialEnds   = data.trial_ends   ? new Date(data.trial_ends)   : null;
 
-    // Tentukan plan aktif
     const now = new Date();
     if (data.plan === 'trial' && trialEnds && trialEnds > now) {
       myPlan = 'trial';
     } else if (['pro','business'].includes(data.plan) && (!planExpires || planExpires > now)) {
       myPlan = data.plan;
     } else {
+      // Plan expired — auto-downgrade ke free di DB
+      if (['pro','business'].includes(data.plan) && planExpires && planExpires <= now) {
+        sb.from('profiles').update({ plan: 'free', plan_expires: null }).eq('id', me.id).then(() => {});
+      }
       myPlan = 'free';
     }
 
     updatePlanUI();
   } catch(e) {
-    console.warn('loadPlan:', e.message);
+    console.warn('loadPlan exception:', e.message);
     myPlan = 'free';
+    updatePlanUI();
   }
 }
 
@@ -57,16 +63,17 @@ function getDaysLeft() {
 
 // ── CEK LIMIT KONSUMEN ────────────────────────────
 function checkKonsumenLimit() {
+  if (myProf?.role === 'admin') return true; // Admin tidak kena limit
   if (isPro()) return true;
-  const myKons = myProf?.role === 'admin'
-    ? allKons.length
-    : allKons.filter(k => k.owner_id === me.id).length;
+  const myKons = allKons.filter(k => k.owner_id === me.id).length;
   return myKons < PLANS.free.maxKons;
 }
 
 // ── INTERCEPT FITUR BERBAYAR ─────────────────────
 // Panggil sebelum menjalankan fitur Pro — return true jika boleh lanjut
 function requirePro(featureName, cb) {
+  // Kalau plan belum loaded, izinkan dulu (fail-open saat init)
+  if (typeof myPlan === 'undefined') { if (cb) cb(); return true; }
   if (canUse(featureName)) { if (cb) cb(); return true; }
   openUpgradeModal(featureName);
   return false;
@@ -117,6 +124,8 @@ function updatePlanUI() {
 const FEATURE_LABELS = {
   export:           '📊 Export Excel / PDF / CSV',
   upload_foto:      '📎 Upload Foto Berkas',
+  filter_bulan:     '📆 Filter Bulan',
+  target:           '🎯 Target Penjualan Bulanan',
   filter_lanjutan:  '🔍 Filter Lanjutan',
   target:           '🎯 Target Penjualan',
   notifikasi_push:  '🔔 Notifikasi Push',
@@ -203,17 +212,19 @@ async function activatePlan(userId, plan, months) {
   const expires = new Date();
   expires.setMonth(expires.getMonth() + months);
 
-  const { error } = await sb.from('profiles').update({
+  const { data: rows, error } = await sb.from('profiles').update({
     plan,
     plan_expires: expires.toISOString(),
     trial_ends: null,
-  }).eq('id', userId);
+  }).eq('id', userId).select('id');
 
-  if (!error) {
+  if (error) {
+    showToast('Gagal: ' + error.message, '❌');
+  } else if (!rows || rows.length === 0) {
+    showToast('Gagal — jalankan SQL policy admin di setup.sql dulu', '❌');
+  } else {
     showToast(`Plan ${PLANS[plan]?.name} aktif hingga ${expires.toLocaleDateString('id-ID')}`, '✅');
     await loadPlan();
-  } else {
-    showToast('Gagal aktivasi: ' + error.message, '❌');
   }
 }
 
@@ -398,8 +409,15 @@ async function submitAktivasi() {
       updateData.trial_ends   = null;
     }
 
-    const { error } = await sb.from('profiles').update(updateData).eq('id', userId);
+    const { data: updatedRows, error } = await sb
+      .from('profiles').update(updateData).eq('id', userId).select('id');
     if (error) throw error;
+    // Cek apakah benar-benar terupdate (RLS bisa blokir diam-diam)
+    if (!updatedRows || updatedRows.length === 0) {
+      throw new Error('Gagal update — pastikan SQL policy admin sudah dijalankan di Supabase.
+
+Jalankan bagian "MONETISASI" terbaru di setup.sql');
+    }
 
     // Catat di subscriptions
     if (!['free','trial'].includes(plan)) {
@@ -426,8 +444,12 @@ async function submitAktivasi() {
 
     showToast(`${planLabel} aktif untuk ${userName}`, '✅');
 
-    // Kalau mengaktifkan diri sendiri, reload plan
-    if (userId === me.id) { await loadPlan(); renderPlanInfo(); }
+    // Reload data plans
+    await loadProfs();   // refresh allProfs agar data plan user lain terupdate
+    if (userId === me.id) {
+      await loadPlan();
+      renderPlanInfo();
+    }
 
   } catch(e) {
     errEl.textContent = 'Gagal: ' + e.message;

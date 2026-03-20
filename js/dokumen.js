@@ -8,7 +8,7 @@ const STORAGE_BUCKET = 'dokumen';
 
 // ── UPLOAD FOTO ──────────────────────────────────
 async function uploadFotoDokumen(konsumenId, berkasKey, file) {
-  if (!requirePro('upload_foto')) return null;
+  if (typeof requirePro === 'function' && !requirePro('upload_foto')) return null;
   const ext  = file.name.split('.').pop().toLowerCase();
   const safe = ['jpg','jpeg','png','gif','webp','pdf','heic','heif'];
   if (!safe.includes(ext)) {
@@ -136,6 +136,7 @@ function promptEditBerkas(konsumenId, key, currentLabel) {
 
 // ── TRIGGER FILE INPUT ────────────────────────────
 function triggerUploadFoto(konsumenId, berkasKey) {
+  if (typeof requirePro === 'function' && !requirePro('upload_foto')) return;
   const inp = document.getElementById(`fileInput_${berkasKey}`);
   if (inp) inp.click();
 }
@@ -149,7 +150,7 @@ async function handleFotoUpload(konsumenId, berkasKey, input) {
   const maxFoto = PLANS[myPlan]?.maxFoto ?? 0;
   if (maxFoto === 0) {
     // Plan gratis — tidak bisa upload sama sekali
-    requirePro('upload_foto');
+    if (typeof requirePro === 'function') requirePro('upload_foto');
     input.value = '';
     return;
   }

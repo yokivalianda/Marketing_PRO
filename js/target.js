@@ -252,10 +252,12 @@ function renderTargetAdminGrid() {
 
 // ── MODAL EDIT TARGET ────────────────────────────
 function openEditTargetSelf(tahun, bulan) {
+  if (typeof requirePro === 'function' && !requirePro('target')) return;
   openEditTargetAdmin(me.id, myProf?.full_name || me.email, tahun, bulan);
 }
 
 function openEditTargetAdmin(userId, namaUser, tahun, bulan) {
+  if (typeof requirePro === 'function' && !requirePro('target')) return;
   const cur = getTargetBulan(userId, tahun, bulan);
   const row = allTarget.find(t => t.user_id === userId && t.tahun === tahun && t.bulan === bulan);
 
@@ -316,6 +318,7 @@ async function saveTargetModal() {
 
 // ── BULK SET TARGET (Admin — semua marketing sekaligus) ───────────────────────
 function openSetTargetBulk() {
+  if (typeof requirePro === 'function' && !requirePro('target')) return;
   const now    = new Date();
   const tahun  = now.getFullYear();
   const bulan  = now.getMonth() + 1;
