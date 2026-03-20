@@ -74,6 +74,8 @@ async function afterLogin(user) {
   setupAdminUI();
   await loadTarget();
   if (typeof setupTargetAdminLink === "function") setupTargetAdminLink();
+  await loadPlan();
+  renderPlanInfo();
   renderDash(); renderKons();
   if (typeof renderMonthFilter === "function") renderMonthFilter();
   // Init push notification setelah login
@@ -245,8 +247,15 @@ async function saveKons() {
     } else {
       obj.owner_id   = me.id;
       obj.owner_name = myProf?.full_name || me.email;
-      obj.berkas = [];  // marketing isi sendiri via Tambah Item Berkas
+      obj.berkas = [];
       obj.log = [{ action: 'Konsumen ditambahkan', time: new Date().toISOString(), note: obj.catatan }];
+      // Cek limit konsumen untuk plan free
+      if (!checkKonsumenLimit()) {
+        setBtnLoading('btnSave', false, 'Simpan Data');
+        closeModal('modalAdd');
+        openUpgradeModal('limit_konsumen');
+        return;
+      }
       const { error } = await sb.from('konsumen').insert(obj);
       if (error) throw error;
       showToast('Konsumen ditambahkan', '✅');
@@ -506,6 +515,7 @@ async function updateRole(uid, role) {
 
 // ── EXPORT CSV ───────────────────────────────────
 function exportCSV() {
+  if (!requirePro('export')) return;
   const headers = ['Nama','HP','Unit','Kavling','Status','Harga','DP','Tgl Booking','Tgl Follow-up','KPR','Sumber','Marketing','Catatan'];
   const rows = allKons.map(k => [
     k.nama, k.hp, k.unit || '', k.kavling || '',
@@ -525,6 +535,7 @@ function exportCSV() {
 
 // ── EXPORT EXCEL XLSX ────────────────────────────
 function exportXLSX() {
+  if (!requirePro('export')) return;
   if (typeof XLSX === 'undefined') {
     showToast('Memuat library Excel...', '⏳');
     const s = document.createElement('script');
@@ -691,6 +702,7 @@ function getPeriodLabel() {
 
 // ── EXPORT PDF via jsPDF ─────────────────────────
 function exportPDF() {
+  if (!requirePro('export')) return;
   if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
     showToast('Memuat library PDF...', '⏳');
     const script = document.createElement('script');
@@ -826,6 +838,7 @@ function showSetupGuide() {
 
 // ── IMPORT EXCEL ──────────────────────────────────
 function openImportModal() {
+  if (!requirePro('import')) return;
   document.getElementById('importDropzone').classList.remove('dragover');
   document.getElementById('importFileInput').value = '';
   document.getElementById('importPreview').innerHTML = '';

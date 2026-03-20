@@ -7,6 +7,7 @@ let pushEnabled = false;
 
 // ── INIT ─────────────────────────────────────────
 async function initPush() {
+  if (!requirePro('notifikasi_push')) return;
   if (!('Notification' in window)) {
     updatePushUI(false, 'unsupported'); return;
   }
