@@ -1,8 +1,0 @@
-https://mmpubrcuasdebzzanlfs.supabase.co
-
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tcHVicmN1YXNkZWJ6emFubGZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4MDAzNTMsImV4cCI6MjA4OTM3NjM1M30.C5e-B0kak1C997FeJmClobvNSp4PyVfmbxWYZHg2p_Q
-
-https://mmpubrcuasdebzzanlfs.supabase.co/auth/v1/callback
-
-sandi aplikasi
-ttjq haoh ljgb qcmo
