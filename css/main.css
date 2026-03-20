@@ -1925,10 +1925,10 @@ html.light #trialBanner { background: rgba(99,102,241,.07); }
 /* Plan info card di pengaturan */
 .plan-info-card {
   padding: 14px 16px;
-  background: var(--glass-10);
+  background: var(--bg-overlay);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-lg);
-  margin: 0 18px 10px;
+  margin-bottom: 10px;
 }
 .plan-info-head {
   display: flex; align-items: flex-start;
