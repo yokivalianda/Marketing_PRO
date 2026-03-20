@@ -206,12 +206,12 @@ html.light select option { background: #ffffff; color: #0f0f1a; }
 .header-name { font-size: 17px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
 .header-name em { font-style: normal; color: var(--brand-light); }
 .header-right { display: flex; align-items: center; gap: 7px; flex-shrink: 1; min-width: 0; }
-.pill-user { display: flex; align-items: center; gap: 6px; background: var(--glass-10); border: 1px solid var(--glass-border); border-radius: var(--r-full); padding: 5px 10px 5px 5px; cursor: default; min-width: 0; flex-shrink: 1; max-width: min(170px, 40vw); }
+.pill-user { display: flex; align-items: center; gap: 6px; background: var(--glass-10); border: 1px solid var(--glass-border); border-radius: var(--r-full); padding: 5px 12px 5px 5px; cursor: default; flex-shrink: 0; }
 .pill-avatar { width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.pill-uname { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-.pill-role { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; padding: 2px 7px; border-radius: var(--r-full); background: var(--amber-soft); color: var(--amber); flex-shrink: 0; }
+.pill-uname { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill-role { display: none; }
 .pill-role.admin { background: var(--rose-soft); color: var(--rose); }
-@media (max-width: 359px) { .pill-role { display: none; } }
+
 
 .hbtn { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--glass-10); border: 1px solid var(--glass-border); color: var(--text-2); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; position: relative; flex-shrink: 0; }
 .hbtn:active { transform: scale(.88); }
