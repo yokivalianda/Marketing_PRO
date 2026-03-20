@@ -132,7 +132,7 @@ function toggleSort() {
 
 // ── FILTER LANJUTAN ──────────────────────────────
 function toggleFilterAdv() {
-  if (!requirePro('filter_lanjutan')) return;
+  if (typeof requirePro === 'function' && !requirePro('filter_lanjutan')) return;
   const panel = document.getElementById('filterAdvPanel');
   const btn   = document.getElementById('filterAdvBtn');
   if (!panel) return;
@@ -252,6 +252,7 @@ function applyAdvFilters(list) {
 let curMonthKey = ''; // format: YYYY-MM
 
 function toggleMonthFilter() {
+  if (typeof requirePro === 'function' && !requirePro('filter_bulan')) return;
   const bar = document.getElementById('monthFilterBar');
   const btn = document.getElementById('monthFilterBtn');
   if (!bar) return;

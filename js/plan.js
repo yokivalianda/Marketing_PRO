@@ -117,6 +117,7 @@ function updatePlanUI() {
 const FEATURE_LABELS = {
   export:           '📊 Export Excel / PDF / CSV',
   upload_foto:      '📎 Upload Foto Berkas',
+  filter_bulan:     '📆 Filter Bulan',
   filter_lanjutan:  '🔍 Filter Lanjutan',
   target:           '🎯 Target Penjualan',
   notifikasi_push:  '🔔 Notifikasi Push',

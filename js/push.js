@@ -7,7 +7,7 @@ let pushEnabled = false;
 
 // ── INIT ─────────────────────────────────────────
 async function initPush() {
-  if (!requirePro('notifikasi_push')) return;
+  if (typeof requirePro === 'function' && !requirePro('notifikasi_push')) return;
   if (!('Notification' in window)) {
     updatePushUI(false, 'unsupported'); return;
   }
@@ -23,8 +23,16 @@ async function initPush() {
 
 // ── TOGGLE ───────────────────────────────────────
 async function togglePushNotification(on) {
-  if (on) await enablePushNotification();
-  else         disablePushNotification();
+  if (on) {
+    if (typeof requirePro === 'function' && !requirePro('notifikasi_push')) {
+      const tog = document.getElementById('pushToggle');
+      if (tog) tog.checked = false;
+      return;
+    }
+    await enablePushNotification();
+  } else {
+    disablePushNotification();
+  }
 }
 
 async function enablePushNotification() {
