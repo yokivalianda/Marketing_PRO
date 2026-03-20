@@ -68,6 +68,50 @@ async function doLogin() {
   }
 }
 
+// ── GOOGLE LOGIN ────────────────────────────────
+async function doLoginGoogle() {
+  setBtnLoading('btnGoogle', true, 'Menghubungkan...');
+  hideAuthErr();
+  try {
+    const redirectTo = window.location.origin + window.location.pathname;
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        }
+      }
+    });
+    if (error) throw error;
+    // Browser akan redirect ke Google — loading state tetap
+  } catch(e) {
+    showAuthErr(e.message || 'Login Google gagal. Coba lagi.');
+    setBtnLoading('btnGoogle', false, '');
+  }
+}
+
+// Handle redirect balik dari Google OAuth
+async function handleOAuthCallback() {
+  const { data: { session }, error } = await sb.auth.getSession();
+  if (error || !session) return;
+
+  // Pastikan profil ada di tabel profiles
+  const user = session.user;
+  const { data: prof } = await sb.from('profiles').select('id').eq('id', user.id).single();
+  if (!prof) {
+    const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    await sb.from('profiles').insert({
+      id: user.id,
+      email: user.email,
+      full_name: name,
+      role: 'marketing',
+      target: 5
+    });
+  }
+}
+
 // ── REGISTER ────────────────────────────────────
 async function doRegister() {
   const name  = document.getElementById('inRegName').value.trim();

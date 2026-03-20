@@ -1792,3 +1792,45 @@ html.is-offline .live-dot {
   color: #fff;
   border-color: var(--rose);
 }
+
+/* ════════════════════════════════════════
+   GOOGLE LOGIN BUTTON
+════════════════════════════════════════ */
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 14px 0;
+  color: var(--text-4); font-size: 12px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: ''; flex: 1;
+  height: 0.5px; background: var(--glass-border);
+}
+
+.btn-google {
+  width: 100%;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 16px;
+  background: var(--color-background-primary, #fff);
+  border: 1.5px solid var(--glass-border);
+  border-radius: var(--r-md);
+  color: var(--text-1);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s;
+}
+.btn-google:hover {
+  background: var(--glass-10);
+  border-color: var(--glass-border-hi);
+  transform: translateY(-1px);
+}
+.btn-google:active { transform: scale(.98); }
+html.light .btn-google {
+  background: #ffffff;
+  border-color: #e0e0e8;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+html.light .btn-google:hover {
+  background: #f8f8fc;
+  border-color: #c8c8d8;
+}
