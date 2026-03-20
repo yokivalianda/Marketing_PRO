@@ -1,16 +1,16 @@
-# 🎯 MarketPro — CRM Tim Marketing Properti
+# PropMap — CRM Tim Marketing Properti
 
 <div align="center">
 
-![version](https://img.shields.io/badge/versi-4.0-6366f1?style=for-the-badge)
+![version](https://img.shields.io/badge/PropMap-v4.2-6366f1?style=for-the-badge)
 ![Supabase](https://img.shields.io/badge/Supabase-Realtime-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![PWA](https://img.shields.io/badge/PWA-Installable-5A0FC8?style=for-the-badge)
 ![License](https://img.shields.io/badge/Lisensi-MIT-10b981?style=for-the-badge)
 
 **Aplikasi CRM web real-time untuk monitoring dan pengelolaan data konsumen properti.**  
-Install di HP (PWA), multi-user, sinkronisasi real-time, dan kini hadir dengan fitur kalender, grafik, upload dokumen, dan import Excel.
+Install di HP (PWA), multi-user, sinkronisasi real-time, dan hadir dengan fitur lengkap: kalender, grafik pipeline, upload dokumen, import Excel, target penjualan, mode offline, dan backup data.
 
-[🚀 **Coba Demo**](demo.html) · [📱 **Buka Aplikasi**](https://marketing-pro-id.vercel.app/)
+[🚀 **Coba Demo**](demo.html) · [📱 **Buka Aplikasi**](https://propmadev.netlify.app/)
 
 </div>
 
@@ -72,8 +72,8 @@ Install di HP (PWA), multi-user, sinkronisasi real-time, dan kini hadir dengan f
 ## 📋 Pipeline Konsumen
 
 ```
-📋 Booking  →  💰 Proses DP  →  📁 Kumpul Berkas  →  ✅ Selesai
-                                                        ❌ Batal
+📍 Prospek  →  📋 Booking  →  💰 Proses DP  →  📁 Kumpul Berkas  →  🏦 SP3K/ACC  →  ✅ Selesai
+                                                                                         ❌ Batal
 ```
 
 ---
@@ -111,13 +111,16 @@ marketpro/
 │   └── main.css            # Semua styling (design tokens, komponen, dark/light)
 ├── js/
 │   ├── config.js           # Konfigurasi Supabase & state global
-│   ├── helpers.js          # Utility: format rupiah, tanggal, tema, PWA
+│   ├── helpers.js          # Utility: format rupiah, tanggal, label status
 │   ├── auth.js             # Login, register, reset password
-│   ├── data.js             # CRUD Supabase, realtime, import/export
-│   ├── ui.js               # Render dashboard, konsumen, navigasi
-│   ├── laporan.js          # Chart.js, laporan KPI, periode filter
-│   ├── kalender.js         # Kalender follow-up
-│   └── dokumen.js          # Upload/hapus foto dokumen, lightbox viewer
+│   ├── data.js             # CRUD Supabase, realtime, import/export, optimistic lock
+│   ├── ui.js               # Dashboard, konsumen, filter bulan, filter lanjutan
+│   ├── laporan.js          # Chart.js, KPI, export PDF/Excel/CSV
+│   ├── kalender.js         # Kalender follow-up bulanan
+│   ├── dokumen.js          # Upload foto, lightbox viewer
+│   ├── target.js           # Target penjualan bulanan per marketing
+│   ├── backup.js           # Backup & restore data JSON
+│   └── offline.js          # IndexedDB cache, sync queue, background sync
 └── screenshots/
     ├── screen-01-dashboard-dark.svg
     ├── screen-02-konsumen-dark.svg
@@ -249,7 +252,7 @@ A: Tidak. Row Level Security di PostgreSQL memastikan setiap marketing hanya bis
 A: Supabase free tier mendukung hingga 50.000 baris dan 500MB storage. Untuk 6–20 orang dengan ratusan konsumen, ini lebih dari cukup.
 
 **Q: Bisa dipakai offline?**  
-A: Tampilan aplikasi tetap muncul (Service Worker cache), namun data butuh koneksi internet karena database ada di Supabase cloud.
+A: Ya! PropMap punya mode offline lengkap. Data konsumen di-cache di IndexedDB — saat offline, data terakhir tetap tampil. Tambah/edit konsumen saat offline akan masuk antrian sync otomatis saat koneksi kembali.
 
 **Q: Bisa dipakai di laptop/browser desktop?**  
 A: Ya, tampilan responsif dengan sidebar navigasi dan konten terpusat di desktop.
@@ -261,20 +264,25 @@ A: `.xlsx`, `.xls`, dan `.csv`. Sistem otomatis mendeteksi nama kolom walaupun b
 A: Di Supabase Storage bucket `dokumen`. Bisa dilihat di **Supabase Dashboard → Storage → dokumen**.
 
 **Q: Jika dua marketing edit data yang sama bersamaan?**  
-A: Data terakhir yang tersimpan yang menang (last-write-wins). Perubahan tersinkronisasi real-time ke semua perangkat.
+A: PropMap punya optimistic locking — jika ada konflik, sistem mendeteksi perbedaan dan menampilkan modal dengan diff perubahan. User bisa pilih pakai data terbaru atau simpan paksa.
 
 ---
 
 ## 🗺 Roadmap
 
-- [ ] Web Push Notification ke HP
-- [ ] Kalender jadwal follow-up dengan reminder push
-- [ ] Multi-proyek (satu marketing handle beberapa proyek)
+- [x] Web Push Notification ke HP
+- [x] Kalender jadwal follow-up dengan reminder push
+- [x] Filter laporan berdasarkan rentang tanggal kustom
+- [x] Optimistic locking untuk mencegah konflik edit bersamaan
+- [x] Mode offline dengan IndexedDB + background sync
+- [x] Backup & restore data JSON
+- [x] Target penjualan bulanan per marketing
+- [x] Export Excel multi-sheet (XLSX)
+- [x] Filter lanjutan (harga, sumber, KPR, berkas, follow-up)
+- [x] Filter bulan konsumen (booking/input/follow-up)
 - [ ] Integrasi WhatsApp Business API
-- [ ] Filter laporan berdasarkan rentang tanggal kustom
-- [ ] Optimistic locking untuk mencegah konflik edit bersamaan
-- [ ] Template berkas KPR per bank (BTN, BNI, BRI, dll)
-- [ ] Foto konsumen / profil picture
+- [ ] Template berkas KPR per bank
+- [ ] Foto profil konsumen
 
 ---
 
@@ -299,7 +307,7 @@ git push origin fitur/nama-fitur
 ---
 
 <div align="center">
-  <strong>MarketPro v4.0</strong><br/>
+  <strong>PropMap v4.0</strong><br/>
   Dibuat dengan ❤️ untuk tim marketing properti Indonesia<br/><br/>
   <a href="demo.html">Demo</a> ·
   <a href="https://supabase.com">Supabase</a> ·

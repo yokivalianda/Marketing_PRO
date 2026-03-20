@@ -3,7 +3,7 @@
 // IndexedDB untuk cache data + queue operasi pending
 // ═══════════════════════════════════════════════
 
-const IDB_NAME    = 'marketpro-offline';
+const IDB_NAME    = 'propmap-offline';
 const IDB_VER     = 1;
 const STORE_KONS  = 'konsumen';
 const STORE_QUEUE = 'sync_queue';

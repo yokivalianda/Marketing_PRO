@@ -1,16 +1,22 @@
 {
-  "name": "MarketPro — CRM Tim Marketing",
-  "short_name": "MarketPro",
+  "name": "PropMap — CRM Properti",
+  "short_name": "PropMap",
   "description": "Aplikasi monitoring konsumen real-time untuk tim marketing properti",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#080d1a",
-  "theme_color": "#080d1a",
+  "theme_color": "#6366f1",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%233b82f6'/><text y='130' x='96' font-size='110' text-anchor='middle'>🎯</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%236366f1'/><path d='M96 28L28 80V164H76V120H116V164H164V80L96 28Z' fill='white' opacity='0.9'/><circle cx='148' cy='52' r='28' fill='%236366f1'/><circle cx='148' cy='52' r='17' fill='white'/><circle cx='148' cy='52' r='7' fill='%236366f1'/></svg>",
       "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='110' fill='%236366f1'/><path d='M256 72L72 212V440H200V320H312V440H440V212L256 72Z' fill='white' opacity='0.9'/><circle cx='396' cy='136' r='76' fill='%236366f1'/><circle cx='396' cy='136' r='46' fill='white'/><circle cx='396' cy='136' r='19' fill='%236366f1'/></svg>",
+      "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     }

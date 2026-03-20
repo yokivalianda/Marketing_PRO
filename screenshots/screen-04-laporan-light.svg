@@ -13,7 +13,7 @@
   <rect y="44" width="390" height="56" fill="rgba(245,245,250,0.92)"/>
   <rect y="99" width="390" height="1" fill="rgba(0,0,0,0.08)"/>
   <rect x="18" y="60" width="34" height="34" rx="10" fill="url(#brand)"/>
-  <text x="35" y="82" font-family="serif" font-size="18" text-anchor="middle" fill="white">🎯</text>
+  <rect x="16" y="60" width="30" height="30" rx="8" fill="#6366f1"/><path d="M31 69.15 L25.15 74.35 L25.15 80.85 L29.05 80.85 L29.05 76.3 L32.95 76.3 L32.95 80.85 L36.85 80.85 L36.85 74.35 Z" fill="white" opacity="0.9"/><circle cx="35.16" cy="70.06" r="2.86" fill="#6366f1"/><circle cx="35.16" cy="70.06" r="1.8200000000000003" fill="white"/><circle cx="35.16" cy="70.06" r="0.715" fill="#6366f1"/>
   <text x="60" y="76" font-family="SF Pro Display, system-ui" font-size="17" font-weight="800" letter-spacing="-1" fill="#0f0f1a">Market<tspan fill="#6366f1">Pro</tspan></text>
   <rect x="200" y="62" width="108" height="28" rx="14" fill="rgba(0,0,0,0.04)" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
   <circle cx="214" cy="76" r="10" fill="url(#brand)"/>

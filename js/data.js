@@ -669,7 +669,7 @@ function _doExportXLSX() {
     }
 
     // Download
-    const fileName = `MarketPro-Laporan-${new Date().toISOString().slice(0,10)}.xlsx`;
+    const fileName = `PropMap-Laporan-${new Date().toISOString().slice(0,10)}.xlsx`;
     XLSX.writeFile(wb, fileName);
     showToast('Laporan Excel berhasil diunduh', '📊');
 

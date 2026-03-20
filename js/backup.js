@@ -50,7 +50,7 @@ async function doBackup() {
     const json     = JSON.stringify(payload, null, 2);
     const blob     = new Blob([json], { type: 'application/json;charset=utf-8' });
     const date     = new Date().toISOString().slice(0, 10);
-    const fileName = `MarketPro-Backup-${date}.json`;
+    const fileName = `PropMap-Backup-${date}.json`;
     const a        = document.createElement('a');
     a.href         = URL.createObjectURL(blob);
     a.download     = fileName;
@@ -212,7 +212,7 @@ async function confirmRestore() {
 
 // ── MODAL BACKUP ──────────────────────────────────
 function openBackupModal() {
-  const lastBackup = localStorage.getItem('mp_last_backup_' + me.id);
+  const lastBackup = localStorage.getItem('pm_last_backup_' + me.id);
   const lastBackupStr = lastBackup
     ? new Date(lastBackup).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })
     : 'Belum pernah backup';
@@ -294,7 +294,7 @@ function openBackupModal() {
 }
 
 function doBackupAndRecord() {
-  localStorage.setItem('mp_last_backup_' + me.id, new Date().toISOString());
+  localStorage.setItem('pm_last_backup_' + me.id, new Date().toISOString());
   doBackup();
 }
 

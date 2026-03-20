@@ -1,7 +1,7 @@
-// MarketPro v4.2 — Service Worker
+// PropMap v4.2 — Service Worker
 // App-shell caching + Offline support + Push Notification
 
-const CACHE_VER = 'marketpro-v4-2';
+const CACHE_VER = 'propmap-v4-2';
 const SHELL = [
   './', './index.html', './manifest.json',
   './css/main.css',
@@ -64,8 +64,8 @@ self.addEventListener('fetch', e => {
 // ── PUSH ─────────────────────────────────────────
 self.addEventListener('push', e => {
   let d = {};
-  try { d = e.data?.json() || {}; } catch { d = { title: e.data?.text() || 'MarketPro' }; }
-  e.waitUntil(self.registration.showNotification(d.title || 'MarketPro', {
+  try { d = e.data?.json() || {}; } catch { d = { title: e.data?.text() || 'PropMap' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'PropMap', {
     body: d.body || '', icon: d.icon || '/manifest.json',
     badge: '/manifest.json', tag: d.tag || 'mp-' + Date.now(),
     data: d.data || {}, vibrate: [200, 100, 200],
@@ -94,7 +94,7 @@ self.addEventListener('notificationclick', e => {
 self.addEventListener('message', e => {
   if (e.data?.type === 'SHOW_NOTIFICATION') {
     const d = e.data;
-    self.registration.showNotification(d.title || 'MarketPro', {
+    self.registration.showNotification(d.title || 'PropMap', {
       body: d.body || '', icon: d.icon || '/manifest.json',
       badge: '/manifest.json', tag: d.tag || 'mp-' + Date.now(),
       data: { konsumenId: d.data?.konsumenId, url: d.url },
