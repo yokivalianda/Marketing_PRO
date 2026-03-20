@@ -10,7 +10,7 @@
 **Aplikasi CRM web real-time untuk monitoring dan pengelolaan data konsumen properti.**
 Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan sistem monetisasi plan Gratis / Pro / Business.
 
-[🚀 **Coba Demo**](demo.html) · [📱 **Buka Aplikasi**](https://propmapdev.netlify.app/)
+[🚀 **Coba Demo**](https://propmapid.netlify.app/demo) · [📱 **Buka Aplikasi**](https://propmapid.netlify.app/)
 
 </div>
 
@@ -53,7 +53,7 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 
 ---
 
-## 💰 Langganan Paket Bulanan
+## 💰 Paket Langganan per Bulan/Tahun
 
 | | Gratis | Pro | Business |
 |---|---|---|---|
