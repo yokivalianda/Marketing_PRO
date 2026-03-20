@@ -7,7 +7,7 @@ const BACKUP_VERSION = '4.2';
 
 // ── BACKUP ────────────────────────────────────────
 async function doBackup() {
-  if (typeof requirePro === 'function' && !requirePro('backup')) return;
+  if (!requirePro('backup')) return;
   setBtnLoading('btnBackup', true, 'Membuat backup...');
   try {
     // 1. Ambil semua konsumen (admin: semua, marketing: milik sendiri)

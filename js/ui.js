@@ -6,10 +6,9 @@ function switchPage(p) {
   document.getElementById('tab-' + p).classList.add('on');
   curPage = p;
   document.getElementById('scrollArea').scrollTop = 0;
-  if (p === 'dashboard')   renderDash();
-  if (p === 'laporan')     { renderLapKpi(); renderCharts(); }
-  if (p === 'kalender')    renderKalender();
-  if (p === 'pengaturan')  { if (typeof renderPlanInfo === 'function') renderPlanInfo(); }
+  if (p === 'dashboard') renderDash();
+  if (p === 'laporan')   { renderLapKpi(); renderCharts(); }
+  if (p === 'kalender')  renderKalender();
 }
 
 // ── DASHBOARD ─────────────────────────────────────
@@ -133,7 +132,7 @@ function toggleSort() {
 
 // ── FILTER LANJUTAN ──────────────────────────────
 function toggleFilterAdv() {
-  if (typeof requirePro === 'function' && !requirePro('filter_lanjutan')) return;
+  if (!requirePro('filter_lanjutan')) return;
   const panel = document.getElementById('filterAdvPanel');
   const btn   = document.getElementById('filterAdvBtn');
   if (!panel) return;

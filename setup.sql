@@ -23,13 +23,6 @@ CREATE POLICY "Semua user bisa baca profiles"
 CREATE POLICY "User bisa update profile sendiri"
   ON profiles FOR UPDATE USING (auth.uid() = id);
 
--- Admin bisa update semua profiles (untuk aktivasi plan)
-CREATE POLICY "Admin update semua profiles"
-  ON profiles FOR UPDATE
-  USING (
-    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin')
-  );
-
 CREATE POLICY "User bisa insert profile sendiri"
   ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
@@ -333,29 +326,3 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 COMMENT ON TABLE subscriptions IS 'History langganan PropMap per workspace';
-
--- ════════════════════════════════════════════════════════
--- FIX RLS POLICY — Jalankan ini di Supabase SQL Editor
--- WAJIB agar Admin bisa aktivasi plan user lain
--- ════════════════════════════════════════════════════════
-
--- Hapus policy lama jika sudah ada
-DROP POLICY IF EXISTS "Admin update semua profiles" ON profiles;
-
--- Buat ulang dengan benar
-CREATE POLICY "Admin update semua profiles"
-  ON profiles FOR UPDATE
-  USING (
-    auth.uid() = id
-    OR EXISTS (
-      SELECT 1 FROM profiles p2
-      WHERE p2.id = auth.uid() AND p2.role = 'admin'
-    )
-  )
-  WITH CHECK (
-    auth.uid() = id
-    OR EXISTS (
-      SELECT 1 FROM profiles p2
-      WHERE p2.id = auth.uid() AND p2.role = 'admin'
-    )
-  );
