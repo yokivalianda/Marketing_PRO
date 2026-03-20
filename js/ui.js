@@ -513,6 +513,8 @@ function openEditModal(id) {
   const k = allKons.find(x => x.id === id); if (!k) return;
   document.getElementById('mAddTitle').textContent = 'Edit Konsumen';
   document.getElementById('editId').value = id;
+  // Simpan timestamp untuk optimistic locking
+  document.getElementById('editUpdatedAt').value = k.updated_at || '';
   document.getElementById('btnHapus').style.display = 'block';
   document.getElementById('fNama').value      = k.nama;
   document.getElementById('fHP').value        = k.hp;

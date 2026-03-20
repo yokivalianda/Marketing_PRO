@@ -741,6 +741,18 @@
   </div>
 </div>
 
+<!-- ════ MODAL KONFLIK EDIT ════ -->
+<div class="modal-bg" id="modalConflict">
+  <div class="modal-sheet">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" style="color:var(--amber)">⚠️ Konflik Edit Terdeteksi</div>
+      <button class="sheet-close" onclick="closeModal('modalConflict')">✕</button>
+    </div>
+    <div class="sheet-body" id="conflictBody" style="padding:0 18px 24px"></div>
+  </div>
+</div>
+
 <div class="modal-bg" id="modalAdd">
   <div class="modal-sheet">
     <div class="sheet-pill"></div>
@@ -750,6 +762,7 @@
     </div>
     <div class="sheet-body">
       <input type="hidden" id="editId"/>
+        <input type="hidden" id="editUpdatedAt"/>
       <div class="field">
         <label class="field-label">Nama Lengkap *</label>
         <input type="text" class="field-input" id="fNama" placeholder="Nama konsumen"/>

@@ -211,6 +211,29 @@ async function saveKons() {
   try {
     if (eid) {
       const ex = allKons.find(k => k.id === eid);
+
+      // ── OPTIMISTIC LOCKING ───────────────────────
+      // Bandingkan updated_at yang disimpan saat buka form vs yang ada di DB sekarang
+      const savedUpdatedAt = document.getElementById('editUpdatedAt')?.value || '';
+      if (savedUpdatedAt) {
+        const { data: fresh, error: fetchErr } = await sb
+          .from('konsumen').select('updated_at, nama, status, harga, dp, catatan')
+          .eq('id', eid).single();
+
+        if (!fetchErr && fresh) {
+          const dbTime   = new Date(fresh.updated_at).getTime();
+          const formTime = new Date(savedUpdatedAt).getTime();
+
+          if (dbTime > formTime) {
+            // KONFLIK — ada perubahan dari user lain sejak form dibuka
+            setBtnLoading('btnSave', false, 'Simpan Data');
+            showConflictModal(eid, ex, fresh, obj);
+            return;
+          }
+        }
+      }
+      // ── END OPTIMISTIC LOCKING ───────────────────
+
       obj.log = [...(ex?.log || [])];
       if (ex && ex.status !== obj.status) obj.log.push({ action: `Status: ${sLabel(ex.status)} → ${sLabel(obj.status)}`, time: new Date().toISOString(), note: '' });
       if (ex && ex.tgl_followup !== obj.tgl_followup && obj.tgl_followup) {
@@ -248,6 +271,103 @@ async function hapusKons() {
   } else {
     showToast('Gagal menghapus', '❌');
   }
+}
+
+// ── CONFLICT MODAL ───────────────────────────────
+function showConflictModal(id, localData, serverData, pendingObj) {
+  // Simpan pending obj untuk opsi force save
+  window._conflictPending = { id, pendingObj };
+
+  const diffRows = [];
+
+  const fields = [
+    { key: 'nama',    label: 'Nama' },
+    { key: 'status',  label: 'Status',  fmt: sLabel },
+    { key: 'harga',   label: 'Harga',   fmt: fRpFull },
+    { key: 'dp',      label: 'DP',      fmt: fRpFull },
+    { key: 'catatan', label: 'Catatan' },
+  ];
+
+  fields.forEach(f => {
+    const localVal  = localData?.[f.key];
+    const serverVal = serverData?.[f.key];
+    const pendingVal = pendingObj?.[f.key];
+    if (String(serverVal || '') !== String(localVal || '')) {
+      diffRows.push({ label: f.label, server: f.fmt ? f.fmt(serverVal) : (serverVal || '—'), yours: f.fmt ? f.fmt(pendingVal) : (pendingVal || '—') });
+    }
+  });
+
+  document.getElementById('conflictBody').innerHTML = `
+    <div style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.6">
+      <strong>${serverData.nama || localData?.nama}</strong> sudah diubah oleh pengguna lain
+      sejak Anda membuka form edit.
+    </div>
+    ${diffRows.length ? `
+    <div style="font-size:11px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Perbedaan yang terdeteksi</div>
+    <div class="conflict-table">
+      <div class="ct-header">
+        <span>Field</span><span>Di Database</span><span>Perubahan Anda</span>
+      </div>
+      ${diffRows.map(r => `
+        <div class="ct-row">
+          <span class="ct-field">${r.label}</span>
+          <span class="ct-server">${r.server}</span>
+          <span class="ct-yours">${r.yours}</span>
+        </div>`).join('')}
+    </div>` : '<div style="font-size:12px;color:var(--text-3)">Data berubah tapi tidak terdeteksi perbedaan di field utama.</div>'}
+    <div class="conflict-actions">
+      <button class="conflict-btn-reload" onclick="reloadAndDiscard('${id}')">
+        🔄 Pakai Data Terbaru
+        <span style="font-size:10px;color:var(--text-3);font-weight:400;display:block;margin-top:1px">Perubahan Anda dibatalkan</span>
+      </button>
+      <button class="conflict-btn-force" onclick="forceOverwrite()">
+        ⚡ Simpan Paksa
+        <span style="font-size:10px;color:var(--text-3);font-weight:400;display:block;margin-top:1px">Timpa perubahan terbaru</span>
+      </button>
+    </div>`;
+
+  openModal('modalConflict');
+}
+
+async function reloadAndDiscard(id) {
+  closeModal('modalConflict');
+  closeModal('modalAdd');
+  // Refresh data dari server
+  await loadKons();
+  renderKons(); renderDash();
+  // Buka ulang form dengan data terbaru
+  setTimeout(() => openEditModal(id), 300);
+  showToast('Form diperbarui dengan data terbaru', 'ℹ️');
+  window._conflictPending = null;
+}
+
+async function forceOverwrite() {
+  const { id, pendingObj } = window._conflictPending || {};
+  if (!id || !pendingObj) return;
+
+  closeModal('modalConflict');
+  setBtnLoading('btnSave', true, 'Menyimpan...');
+
+  try {
+    const ex = allKons.find(k => k.id === id);
+    pendingObj.log = [...(ex?.log || [])];
+    pendingObj.log.push({ action: 'Data ditimpa (force save)', time: new Date().toISOString(), note: '' });
+    if (ex && ex.status !== pendingObj.status) {
+      pendingObj.log.push({ action: `Status: ${sLabel(ex.status)} → ${sLabel(pendingObj.status)}`, time: new Date().toISOString(), note: '' });
+    }
+
+    // Update TANPA cek updated_at (force)
+    const { error } = await sb.from('konsumen').update(pendingObj).eq('id', id);
+    if (error) throw error;
+
+    closeModal('modalAdd');
+    showToast('Data berhasil disimpan (paksa)', '✅');
+  } catch(e) {
+    showToast('Gagal simpan paksa: ' + e.message, '❌');
+  }
+
+  setBtnLoading('btnSave', false, 'Simpan Data');
+  window._conflictPending = null;
 }
 
 async function toggleBerkas(id, key) {
