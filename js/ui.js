@@ -132,7 +132,7 @@ function toggleSort() {
 
 // ── FILTER LANJUTAN ──────────────────────────────
 function toggleFilterAdv() {
-  if (!requirePro('filter_lanjutan')) return;
+  if (typeof requirePro === 'function' && !requirePro('filter_lanjutan')) return;
   const panel = document.getElementById('filterAdvPanel');
   const btn   = document.getElementById('filterAdvBtn');
   if (!panel) return;
