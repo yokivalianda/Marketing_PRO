@@ -105,7 +105,8 @@ function quickToggleTheme() {
 }
 function initTheme() {
   const saved = localStorage.getItem('mp_theme');
-  const preferLight = saved ? saved === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+  // Default: light — hanya ikuti sistem jika user belum pernah pilih tema
+  const preferLight = saved ? saved === 'light' : true;
   applyTheme(preferLight, false);
 }
 
