@@ -68,6 +68,7 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 | Backup & restore | ✕ | ✓ (data sendiri) | ✓ (seluruh tim) |
 | Mode offline | ✕ | ✓ | ✓ |
 | Import Excel/CSV | ✕ | ✓ | ✓ |
+| Template KPR per Bank | X | X | ✓ |
 
 > Semua user baru otomatis mendapat **trial Pro 14 hari gratis**.
 
