@@ -525,7 +525,7 @@ function exportCSV() {
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `marketpro-${new Date().toISOString().slice(0,10)}.csv`;
+  a.download = `propmap-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   showToast('Data diekspor ke CSV', '📤');
 }
@@ -614,7 +614,7 @@ function _doExportXLSX() {
     const totalDP      = k.reduce((s, x) => s + (x.dp || 0), 0);
 
     const ringkasanData = [
-      ['LAPORAN RINGKASAN MARKETPRO', ''],
+      ['LAPORAN RINGKASAN PROPMAP', ''],
       ['Tanggal Export', today],
       ['Periode', getPeriodLabel()],
       ['', ''],
@@ -801,7 +801,7 @@ function _doExportPDF() {
     doc.text(`... dan ${k.length - 60} konsumen lainnya`, 14, y + 4);
   }
 
-  doc.save(`marketpro-laporan-${now.toISOString().slice(0,10)}.pdf`);
+  doc.save(`propmap-laporan-${now.toISOString().slice(0,10)}.pdf`);
   showToast('Laporan PDF berhasil diunduh', '📄');
 }
 

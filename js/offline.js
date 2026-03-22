@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════
-// MODE OFFLINE — MarketPro v4.2
+// MODE OFFLINE — PropMap v4.2
 // IndexedDB untuk cache data + queue operasi pending
 // ═══════════════════════════════════════════════
 
