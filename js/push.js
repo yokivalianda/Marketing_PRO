@@ -7,7 +7,7 @@ let pushEnabled = false;
 
 // VAPID Public Key — harus sama dengan yang di Supabase Secrets
 // Generate di: https://vapidkeys.com atau jalankan: npx web-push generate-vapid-keys
-const VAPID_PUBLIC_KEY = 'GANTI_DENGAN_VAPID_PUBLIC_KEY_ANDA';
+const VAPID_PUBLIC_KEY = 'BHCSu2sdmkDMc6uoULKu22FwdjiLwTqOHd4gzdLXrdl9uAPRJKnuL5kfA7rK9-cZybu-4uErX307r5C0urp4qd0';
 
 // Konversi VAPID key ke Uint8Array untuk PushManager
 function urlBase64ToUint8Array(base64String) {
