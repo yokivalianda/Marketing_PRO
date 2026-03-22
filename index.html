@@ -915,10 +915,10 @@
           <div class="upc-desc">Untuk developer skala besar</div>
           <div class="upc-features">
             <div class="upc-feat">✓ Semua fitur Pro</div>
-            <div class="upc-feat">✓ Pengguna tidak terbatas</div>
             <div class="upc-feat">✓ Upload foto berkas tidak terbatas</div>
-            <div class="upc-feat">✓ Prioritas support</div>
-            <div class="upc-feat">✓ Onboarding tim</div>
+            <div class="upc-feat">✓ Backup & restore seluruh data tim</div>
+            <div class="upc-feat">✓ Template checklist berkas KPR per bank</div>
+            <div class="upc-feat">✓ Konsultasi setup & onboarding tim</div>
           </div>
           <button class="btn-secondary" onclick="choosePlan('business')" style="width:100%;margin-top:14px">
             Pilih Business →
@@ -1037,15 +1037,31 @@
         </div>
         <div class="checkout-payment-info">
           <div class="cpi-title">Transfer ke rekening berikut:</div>
-          <div class="cpi-bank">🏦 BANK JAGO SYARIAH · 5087 8612 5417</div>
-          <div class="cpi-name">A.N. YOKI VALIANDA</div>
-          <div class="cpi-note">Sertakan Order ID sebagai berita transfer.<br/>
-          Akun diaktifkan dalam 1×24 jam setelah pembayaran dikonfirmasi.</div>
+          <div class="cpi-bank-row">
+            <div>
+              <div class="cpi-bank">🏦 Bank Jago Syariah · 508786125417</div>
+              <div class="cpi-name">a.n. YOKI VALIANDA</div>
+            </div>
+            <button class="cpi-copy-btn" onclick="copyRekening('508786125417', this)" title="Salin nomor rekening">
+              📋 Salin
+            </button>
+          </div>
+          <div class="cpi-divider"></div>
+          <div class="cpi-order-row">
+            <div>
+              <div class="cpi-label">Berita Transfer / Order ID</div>
+              <div class="cpi-order-id" id="cpiOrderId"></div>
+            </div>
+            <button class="cpi-copy-btn" onclick="copyOrderId(this)" title="Salin Order ID">
+              📋 Salin
+            </button>
+          </div>
+          <div class="cpi-note">Akun diaktifkan dalam 1×24 jam setelah pembayaran dikonfirmasi.</div>
         </div>
-        <div style="margin-top:14px;font-size:12px;color:var(--text-3)">
+        <div style="margin-top:14px;font-size:12px;color:var(--text-3);text-align:center">
           Konfirmasi via WhatsApp ke<br/>
           <a href="https://wa.me/6289699934870" style="color:var(--brand-light);font-weight:700">
-            +62 896-9993-4870
+            +6289699934870
           </a>
         </div>
         <button class="btn-secondary" onclick="closeModal('modalCheckout')" style="width:100%;margin-top:16px">
@@ -1288,6 +1304,43 @@
       style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center">‹</button>
     <button id="viewerNext" onclick="viewerNext()"
       style="position:absolute;right:12px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center">›</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: CONFIRM (ganti native confirm) ══ -->
+<div class="modal-bg" id="modalConfirm">
+  <div class="modal-sheet" style="max-width:400px;margin:auto">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="confirmTitle">Konfirmasi</div>
+    </div>
+    <div class="sheet-body" style="padding:0 18px 24px">
+      <div id="confirmMsg" style="font-size:14px;color:var(--text-2);line-height:1.7;padding:8px 0 20px"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn-secondary" id="btnConfirmNo">Batal</button>
+        <button class="btn-primary"   id="btnConfirmOk">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: PROMPT (ganti native prompt) ══ -->
+<div class="modal-bg" id="modalPrompt">
+  <div class="modal-sheet" style="max-width:400px;margin:auto">
+    <div class="sheet-pill"></div>
+    <div class="sheet-head">
+      <div class="sheet-title" id="promptTitle">Isi Kolom</div>
+    </div>
+    <div class="sheet-body" style="padding:0 18px 24px">
+      <div class="field" style="padding-bottom:20px">
+        <label class="field-label" id="promptLabel">Nilai</label>
+        <input type="text" class="field-input" id="promptInput" placeholder="Ketik di sini..."/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button class="btn-secondary" id="btnPromptNo">Batal</button>
+        <button class="btn-primary"   id="btnPromptOk">Simpan</button>
+      </div>
+    </div>
   </div>
 </div>
 

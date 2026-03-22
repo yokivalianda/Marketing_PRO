@@ -38,7 +38,8 @@ const PLANS = {
 // Fitur yang hanya tersedia di Pro ke atas
 const PRO_FEATURES = [
   'export','upload_foto','filter_lanjutan','filter_bulan',
-  'target','notifikasi_push','backup','offline','import'
+  'target','notifikasi_push','backup','offline','import',
+  'kpr_template'
 ];
 
 let myPlan = 'free';       // plan aktif user/workspace

@@ -33,6 +33,8 @@ async function loadPlan() {
 
 // ── CEK AKSES FITUR ───────────────────────────────
 function canUse(feature) {
+  // kpr_template khusus Business saja
+  if (feature === 'kpr_template') return myPlan === 'business';
   if (['pro','trial','business'].includes(myPlan)) return true;
   return !PRO_FEATURES.includes(feature);
 }
@@ -124,6 +126,7 @@ const FEATURE_LABELS = {
   export:           '📊 Export Excel / PDF / CSV',
   upload_foto:      '📎 Upload Foto Berkas',
   filter_bulan:     '📆 Filter Bulan',
+  kpr_template:     '🏦 Template Checklist KPR (Business)',
   filter_lanjutan:  '🔍 Filter Lanjutan',
   target:           '🎯 Target Penjualan',
   notifikasi_push:  '🔔 Notifikasi Push',
@@ -201,11 +204,37 @@ async function submitCheckout() {
   document.getElementById('checkoutForm').style.display    = 'none';
   document.getElementById('checkoutSuccess').style.display = 'block';
   document.getElementById('checkoutOrderId').textContent   = orderId;
+  const cpiOid = document.getElementById('cpiOrderId');
+  if (cpiOid) cpiOid.textContent = orderId;
   document.getElementById('checkoutPlanDisplay').textContent = PLANS[plan]?.name;
   document.getElementById('checkoutPriceDisplay').textContent =
     'Rp ' + (plan === 'pro' ? '100.000' : '299.000');
 
   setBtnLoading('btnCheckout', false, 'Lanjut Pembayaran →');
+}
+
+// ── COPY TO CLIPBOARD ─────────────────────────────
+function copyRekening(noRek, btn) {
+  navigator.clipboard.writeText(noRek).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Disalin!';
+    btn.style.color = 'var(--emerald)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+    showToast('Nomor rekening disalin', '📋');
+  }).catch(() => showToast('Gagal menyalin — salin manual', '⚠️'));
+}
+
+function copyOrderId(btn) {
+  const el = document.getElementById('cpiOrderId') || document.getElementById('checkoutOrderId');
+  const text = el?.textContent?.trim();
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Disalin!';
+    btn.style.color = 'var(--emerald)';
+    setTimeout(() => { btn.textContent = orig; btn.style.color = ''; }, 2000);
+    showToast('Order ID disalin', '📋');
+  }).catch(() => showToast('Gagal menyalin — salin manual', '⚠️'));
 }
 
 // ── AKTIVASI MANUAL OLEH ADMIN (setelah konfirmasi bayar) ─
@@ -287,6 +316,32 @@ function renderPlanInfo() {
         </div>
       </div>` : ''}
     </div>`;
+}
+
+// ── COPY HELPERS ─────────────────────────────────
+function copyRekening(noRek, btn) {
+  navigator.clipboard.writeText(noRek).then(() => {
+    const ori = btn.innerHTML;
+    btn.innerHTML = '✅ Tersalin!';
+    btn.style.background = 'rgba(16,185,129,.15)';
+    btn.style.color = 'var(--emerald)';
+    setTimeout(() => { btn.innerHTML = ori; btn.style.background = ''; btn.style.color = ''; }, 2000);
+  }).catch(() => {
+    // Fallback untuk browser lama
+    const el = document.createElement('textarea');
+    el.value = noRek;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.innerHTML = '✅ Tersalin!';
+    setTimeout(() => { btn.innerHTML = '📋 Salin'; }, 2000);
+  });
+}
+
+function copyOrderId(btn) {
+  const orderId = document.getElementById('cpiOrderId')?.textContent || '';
+  copyRekening(orderId, btn);
 }
 
 // ── PANEL AKTIVASI (Admin only) ───────────────────

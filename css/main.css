@@ -206,12 +206,12 @@ html.light select option { background: #ffffff; color: #0f0f1a; }
 .header-name { font-size: 17px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
 .header-name em { font-style: normal; color: var(--brand-light); }
 .header-right { display: flex; align-items: center; gap: 7px; flex-shrink: 1; min-width: 0; }
-.pill-user { display: flex; align-items: center; gap: 6px; background: var(--glass-10); border: 1px solid var(--glass-border); border-radius: var(--r-full); padding: 5px 10px 5px 5px; cursor: default; min-width: 0; flex-shrink: 1; max-width: min(170px, 40vw); }
+.pill-user { display: flex; align-items: center; gap: 6px; background: var(--glass-10); border: 1px solid var(--glass-border); border-radius: var(--r-full); padding: 5px 12px 5px 5px; cursor: default; flex-shrink: 0; }
 .pill-avatar { width: 26px; height: 26px; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.pill-uname { font-size: 12px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
-.pill-role { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; padding: 2px 7px; border-radius: var(--r-full); background: var(--amber-soft); color: var(--amber); flex-shrink: 0; }
+.pill-uname { font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill-role { display: none; }
 .pill-role.admin { background: var(--rose-soft); color: var(--rose); }
-@media (max-width: 359px) { .pill-role { display: none; } }
+
 
 .hbtn { width: 40px; height: 40px; border-radius: var(--r-sm); background: var(--glass-10); border: 1px solid var(--glass-border); color: var(--text-2); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; position: relative; flex-shrink: 0; }
 .hbtn:active { transform: scale(.88); }
@@ -1925,10 +1925,10 @@ html.light #trialBanner { background: rgba(99,102,241,.07); }
 /* Plan info card di pengaturan */
 .plan-info-card {
   padding: 14px 16px;
-  background: var(--glass-10);
+  background: var(--bg-overlay);
   border: 1px solid var(--glass-border);
   border-radius: var(--r-lg);
-  margin: 0 18px 10px;
+  margin-bottom: 10px;
 }
 .plan-info-head {
   display: flex; align-items: flex-start;
@@ -2034,4 +2034,51 @@ html.light #trialBanner { background: rgba(99,102,241,.07); }
   background: var(--rose-soft); border: 1px solid rgba(244,63,94,.2);
   color: var(--rose); font-size: 11px; font-weight: 700;
   cursor: pointer; font-family: var(--font-body);
+}
+
+/* ── Copy rekening ───────────────────────────────── */
+.cpi-bank-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 10px;
+  margin-bottom: 4px;
+}
+.cpi-copy-btn {
+  padding: 5px 12px; border-radius: var(--r-full);
+  background: var(--glass-10);
+  border: 1px solid var(--glass-border);
+  color: var(--text-2); font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  white-space: nowrap; flex-shrink: 0;
+  transition: all .15s;
+}
+.cpi-copy-btn:hover { background: var(--brand-soft); color: var(--brand-light); }
+.cpi-divider { height: 1px; background: var(--glass-border); margin: 10px 0; }
+.cpi-order-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 10px;
+  margin-bottom: 8px;
+}
+.cpi-label { font-size: 10px; color: var(--text-4); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+.cpi-order-id {
+  font-size: 13px; font-weight: 700; color: var(--text-1);
+  font-family: var(--font-mono); letter-spacing: .5px;
+}
+
+/* ── Template KPR button ─────────────────────────── */
+.berkas-template-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: var(--r-full);
+  background: rgba(16,185,129,.1);
+  border: 1px solid rgba(16,185,129,.25);
+  color: var(--emerald); font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: var(--font-body);
+  transition: all .15s;
+}
+.berkas-template-btn:hover {
+  background: var(--emerald); color: #fff;
+}
+.berkas-add-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 10px 0 4px;
 }
