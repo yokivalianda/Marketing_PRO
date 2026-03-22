@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════
-// WEB PUSH NOTIFICATION — MarketPro v4
+// WEB PUSH NOTIFICATION — PropMap v4
 // Pendekatan: Notification API langsung via SW
 // ═══════════════════════════════════════════════
 
@@ -54,7 +54,7 @@ async function enablePushNotification() {
   showToast('Notifikasi diaktifkan!', '🔔');
 
   // Kirim notifikasi test langsung
-  showNotif('🎉 MarketPro — Notifikasi Aktif', 'Anda akan menerima reminder follow-up, berkas, dan DP secara otomatis.');
+  showNotif('🎉 PropMap — Notifikasi Aktif', 'Anda akan menerima reminder follow-up, berkas, dan DP secara otomatis.');
 }
 
 function disablePushNotification() {

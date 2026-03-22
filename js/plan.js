@@ -420,7 +420,8 @@ async function loadPendingOrders() {
 }
 
 async function approveOrder(orderId, userId, plan) {
-  if (!confirm(`Aktifkan plan ${PLANS[plan]?.name} untuk user ini?`)) return;
+  const ok = await showConfirm(`Aktifkan plan <strong>${PLANS[plan]?.name}</strong> untuk user ini?`, '✅ Aktifkan Plan', 'Ya, Aktifkan', false);
+  if (!ok) return;
   try {
     // Aktivasi plan 1 bulan
     await activatePlan(userId, plan, 1);
@@ -434,7 +435,8 @@ async function approveOrder(orderId, userId, plan) {
 }
 
 async function rejectOrder(orderId) {
-  if (!confirm('Tolak order ini?')) return;
+  const ok = await showConfirm('Tolak dan batalkan order ini?', '✕ Tolak Order', 'Ya, Tolak', true);
+  if (!ok) return;
   await sb.from('subscriptions').update({ status: 'cancelled' }).eq('id', orderId);
   showToast('Order ditolak', '🗑️');
   await loadPendingOrders();

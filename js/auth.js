@@ -225,7 +225,8 @@ async function doSetNewPassword() {
 
 // ── LOGOUT ───────────────────────────────────────
 async function doLogout() {
-  if (!confirm('Yakin ingin keluar?')) return;
+  const ok = await showConfirm('Akhiri sesi dan keluar dari PropMap?', '🚪 Keluar', 'Ya, Keluar', false);
+  if (!ok) return;
   if (rtChan) { sb.removeChannel(rtChan); rtChan = null; }
   await sb.auth.signOut();
   me = null; myProf = null; allKons = []; allProfs = [];

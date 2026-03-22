@@ -257,11 +257,15 @@ async function saveKons() {
 }
 
 async function hapusKons() {
-  if (!confirm('Yakin hapus konsumen ini?')) return;
-  const id = document.getElementById('editId').value;
-  const { error } = await sb.from('konsumen').delete().eq('id', id);
+  const eid = document.getElementById('editId')?.value;
+  if (!eid) return;
+  const k = allKons.find(x => x.id === eid);
+  const nama = k?.nama || 'konsumen ini';
+  const ok = await showConfirm(`Hapus data <strong>${nama}</strong>?<br><br>Semua data termasuk berkas dan log akan dihilangkan permanen.`, '🗑️ Hapus Konsumen', 'Ya, Hapus', true);
+  if (!ok) return;
+  const { error } = await sb.from('konsumen').delete().eq('id', eid);
   if (!error) {
-    allKons = allKons.filter(k => k.id !== id);
+    allKons = allKons.filter(k => k.id !== eid);
     closeModal('modalAdd');
     closeModal('modalDetail');
     renderKons();
@@ -445,15 +449,16 @@ async function editBerkas(id, key, newLabel) {
 }
 
 // ── HAPUS ITEM BERKAS ─────────────────────────────
-async function hapusBerkasItem(id, key) {
-  const k = allKons.find(x => x.id === id); if (!k) return;
-  const item = normBerkas(k.berkas).find(b => b.key === key);
-  if (!confirm(`Hapus item berkas "${item?.label || key}"?`)) return;
+async function hapusBerkasItem(konsumenId, key) {
+  const k = allKons.find(x => x.id === konsumenId);
+  const item = normBerkas(k?.berkas).find(b => b.key === key);
+  const ok = await showConfirm(`Hapus item berkas <strong>"${item?.label || key}"</strong>?`, '🗑️ Hapus Berkas', 'Ya, Hapus', true);
+  if (!ok) return;
   const berkas = normBerkas(k.berkas).filter(b => b.key !== key);
   const log = [...(k.log||[]), { action: `Berkas dihapus: ${item?.label || key}`, time: new Date().toISOString(), note: '' }];
-  const { error } = await sb.from('konsumen').update({ berkas, log }).eq('id', id);
+  const { error } = await sb.from('konsumen').update({ berkas, log }).eq('id', konsumenId);
   if (!error) {
-    const i = allKons.findIndex(x => x.id === id);
+    const i = allKons.findIndex(x => x.id === konsumenId);
     if (i >= 0) allKons[i] = { ...allKons[i], berkas, log };
     showToast(`"${item?.label}" dihapus`, '🗑️');
   } else {
@@ -463,7 +468,8 @@ async function hapusBerkasItem(id, key) {
 }
 
 async function addLog(id) {
-  const note = prompt('Tambah catatan:'); if (!note) return;
+  const note = await showPrompt('Tambah catatan aktivitas:', '', '📝 Tambah Catatan');
+  if (!note) return;
   const k = allKons.find(x => x.id === id); if (!k) return;
   const log = [...(k.log || []), { action: 'Catatan ditambahkan', time: new Date().toISOString(), note }];
   await sb.from('konsumen').update({ log }).eq('id', id);

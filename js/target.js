@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════
-// TARGET PENJUALAN BULANAN — MarketPro v4.2
+// TARGET PENJUALAN BULANAN — PropMap v4.2
 // ═══════════════════════════════════════════════
 
 const BULAN_NAMA = ['Januari','Februari','Maret','April','Mei','Juni',

@@ -135,7 +135,11 @@ async function confirmRestore() {
 
   // Konfirmasi ulang
   const total = payload.konsumen.length;
-  if (!confirm(`Restore ${total} konsumen dari backup?\n\nData yang ada saat ini akan DITIMPA. Pastikan Anda sudah membuat backup terbaru sebelum melanjutkan.`)) return;
+  const ok = await showConfirm(
+    `Pulihkan <strong>${total} konsumen</strong> dari file backup?<br><br>Data yang ada saat ini akan <strong>DITIMPA</strong>. Pastikan Anda sudah membuat backup terbaru sebelum melanjutkan.`,
+    '⚠️ Konfirmasi Restore', 'Ya, Pulihkan Data', true
+  );
+  if (!ok) return;
 
   setBtnLoading('btnRestoreConfirm', true, 'Memulihkan...');
 
