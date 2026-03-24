@@ -219,8 +219,8 @@ function showNotif(title, body, opts = {}) {
 
   const options = {
     body,
-    icon:    opts.icon    || 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f3af.png',
-    badge:   opts.badge   || 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f514.png',
+    icon:    opts.icon    || '/icons/icon-192.png',
+    badge:   opts.badge   || '/icons/icon-72.png',
     tag:     opts.tag     || 'mp-' + Date.now(),
     vibrate: [200, 100, 200],
     data:    opts.data    || {},
