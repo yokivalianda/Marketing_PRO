@@ -155,7 +155,7 @@ function openUpgradePage() {
 async function choosePlan(plan) {
   closeModal('modalUpgrade');
   // Tampilkan modal checkout
-  const prices = { pro: 100000, business: 299000 };
+  const prices = { pro: 50000, business: 299000 };
   const price  = prices[plan];
   const label  = PLANS[plan]?.name;
 
@@ -192,7 +192,7 @@ async function submitCheckout() {
       workspace_id: me.id,
       plan,
       status: 'pending',
-      amount: plan === 'pro' ? 100000 : 299000,
+      amount: plan === 'pro' ? 50000 : 299000,
       payment_ref: orderId,
     });
   } catch(e) {
@@ -208,7 +208,7 @@ async function submitCheckout() {
   if (cpiOid) cpiOid.textContent = orderId;
   document.getElementById('checkoutPlanDisplay').textContent = PLANS[plan]?.name;
   document.getElementById('checkoutPriceDisplay').textContent =
-    'Rp ' + (plan === 'pro' ? '100.000' : '299.000');
+    'Rp ' + (plan === 'pro' ? '50.000' : '299.000');
 
   setBtnLoading('btnCheckout', false, 'Lanjut Pembayaran →');
 }
@@ -487,7 +487,7 @@ async function submitAktivasi() {
         workspace_id: userId,
         plan,
         status: 'active',
-        amount: plan === 'pro' ? 100000 : 299000,
+        amount: plan === 'pro' ? 50000 : 299000,
         payment_ref: `MANUAL-${Date.now()}`,
         started_at: new Date().toISOString(),
         expires_at: expires ? expires.toISOString() : null,

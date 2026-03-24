@@ -374,3 +374,16 @@ CREATE POLICY "Admin update subscription"
 
 -- Tambah kolom device_name ke push_subscriptions (untuk yang sudah install sebelumnya)
 ALTER TABLE push_subscriptions ADD COLUMN IF NOT EXISTS device_name text;
+
+-- ════════════════════════════════════════════════════════
+-- FIX push_subscriptions — hapus constraint lama, buat ulang
+-- Jalankan di Supabase SQL Editor
+-- ════════════════════════════════════════════════════════
+ALTER TABLE push_subscriptions ADD COLUMN IF NOT EXISTS device_name text;
+
+-- Hapus constraint UNIQUE lama yang mungkin konflik
+ALTER TABLE push_subscriptions DROP CONSTRAINT IF EXISTS push_subscriptions_user_id_endpoint_key;
+ALTER TABLE push_subscriptions DROP CONSTRAINT IF EXISTS push_subscriptions_user_id_key;
+
+-- Buat constraint baru: 1 user = 1 subscription (per device bisa update)
+CREATE UNIQUE INDEX IF NOT EXISTS push_subscriptions_user_id_idx ON push_subscriptions(user_id);

@@ -57,7 +57,7 @@ Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan siste
 
 | | Gratis | Pro | Business |
 |---|---|---|---|
-| **Harga** | Rp 0 | Rp 100.000/bln | Rp 299.000/bln |
+| **Harga** | Rp 0 | Rp 50.000/bln | Rp 299.000/bln |
 | **Konsumen** | Maks 20 | Tidak terbatas | Tidak terbatas |
 | **Trial** | — | 14 hari gratis | - |
 | Export Excel/PDF/CSV | ✕ | ✓ | ✓ |

@@ -52,13 +52,17 @@ async function savePushSubscription(subscription) {
   const deviceName = getDeviceName();
 
   try {
-    await sb.from('push_subscriptions').upsert({
+    // Hapus dulu data lama user ini, baru insert baru
+    // Hindari konflik UNIQUE constraint (user_id, endpoint)
+    await sb.from('push_subscriptions').delete().eq('user_id', me.id);
+    const { error } = await sb.from('push_subscriptions').insert({
       user_id:     me.id,
       endpoint:    subscription.endpoint,
       p256dh,
       auth:        authStr,
       device_name: deviceName,
-    }, { onConflict: 'user_id' });
+    });
+    if (error) throw error;
     console.log('Push subscription saved:', deviceName);
     renderPushDeviceList();
   } catch(e) {
@@ -159,20 +163,31 @@ async function enablePushNotification() {
 
   // Subscribe ke PushManager untuk push dari server
   try {
-    if ('serviceWorker' in navigator && VAPID_PUBLIC_KEY !== 'GANTI_DENGAN_VAPID_PUBLIC_KEY_ANDA') {
-      const reg = await navigator.serviceWorker.ready;
-      let sub = await reg.pushManager.getSubscription();
-      if (!sub) {
-        sub = await reg.pushManager.subscribe({
-          userVisibleOnly: true,
-          applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-        });
-      }
-      await savePushSubscription(sub);
+    if (!('PushManager' in window)) throw new Error('Browser tidak mendukung Web Push');
+    if (VAPID_PUBLIC_KEY === 'GANTI_DENGAN_VAPID_PUBLIC_KEY_ANDA') throw new Error('VAPID key belum diisi');
+
+    const reg = await navigator.serviceWorker.ready;
+    if (!reg.pushManager) throw new Error('PushManager tidak tersedia');
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      });
     }
+    await savePushSubscription(sub);
+    console.log('Push subscription berhasil ✅');
+
   } catch(e) {
     console.warn('PushManager subscribe failed:', e.message);
-    // Tetap aktifkan notifikasi lokal meski server push gagal
+
+    // Deteksi Brave / browser yang blokir push
+    const isBraveBrowser = navigator.brave && await navigator.brave.isBrave().catch(() => false);
+    if (isBraveBrowser || e.message?.includes('push service')) {
+      showToast('Notifikasi lokal aktif. Untuk push server, pakai Chrome atau matikan Brave Shield.', '⚠️');
+    }
+    // Notifikasi lokal tetap aktif meski server push gagal
   }
 
   // Kirim notifikasi test langsung
@@ -204,8 +219,8 @@ function showNotif(title, body, opts = {}) {
 
   const options = {
     body,
-    icon:    opts.icon    || 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f3af.png',
-    badge:   opts.badge   || 'https://raw.githubusercontent.com/twitter/twemoji/master/assets/72x72/1f514.png',
+    icon:    opts.icon    || '/icons/icon-192.png',
+    badge:   opts.badge   || '/icons/icon-72.png',
     tag:     opts.tag     || 'mp-' + Date.now(),
     vibrate: [200, 100, 200],
     data:    opts.data    || {},
