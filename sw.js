@@ -1,172 +1,228 @@
-// PropMap v4.2 — Service Worker
-// Network-first untuk JS/CSS/HTML + Push Notification
+// PropMap — Service Worker v4.2
+// Standar PWABuilder 2026: Network-first + Push + Background Sync + Offline fallback
 
-const CACHE_VER = 'propmap-v4-2-20260324';
-const SHELL = [
-  './', './index.html', './manifest.json',
-  './css/main.css',
-  './js/config.js', './js/plan.js', './js/helpers.js', './js/auth.js',
-  './js/data.js', './js/ui.js', './js/laporan.js',
-  './js/kalender.js', './js/dokumen.js',
-  './js/target.js', './js/push.js', './js/offline.js',
-  './js/backup.js',
+const CACHE_NAME    = 'propmap-v4-2-20260324';
+const OFFLINE_URL   = '/index.html';
+
+const PRECACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/css/main.css',
+  '/js/config.js',
+  '/js/plan.js',
+  '/js/helpers.js',
+  '/js/auth.js',
+  '/js/data.js',
+  '/js/ui.js',
+  '/js/laporan.js',
+  '/js/kalender.js',
+  '/js/dokumen.js',
+  '/js/target.js',
+  '/js/push.js',
+  '/js/offline.js',
+  '/js/backup.js',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-192-maskable.png',
 ];
 
 // ── INSTALL ──────────────────────────────────────
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_VER).then(c =>
-      Promise.allSettled(SHELL.map(url => c.add(url).catch(() => {})))
-    )
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(
+        PRECACHE.map(url => new Request(url, { cache: 'reload' }))
+      ))
+      .then(() => self.skipWaiting())
+      .catch(err => {
+        console.warn('[SW] Precache partial fail:', err);
+        return self.skipWaiting();
+      })
   );
-  self.skipWaiting();
 });
 
 // ── ACTIVATE — hapus cache lama ──────────────────
-self.addEventListener('activate', e => {
-  e.waitUntil(
+self.addEventListener('activate', event => {
+  event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(
-        keys.filter(k => k !== CACHE_VER).map(k => caches.delete(k))
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       ))
       .then(() => self.clients.claim())
   );
 });
 
 // ── FETCH ─────────────────────────────────────────
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = new URL(request.url);
 
-  // External — skip, biarkan browser handle
-  const isExternal = [
-    'supabase.co','supabase.io','googleapis.com',
-    'gstatic.com','jsdelivr.net','cdnjs.cloudflare.com'
-  ].some(h => url.hostname.includes(h));
-  if (isExternal) return;
+  // Skip non-GET dan external
+  if (request.method !== 'GET') return;
+  if (!url.origin.includes(self.location.origin)) return;
 
-  if (e.request.method !== 'GET') return;
+  const isHTML = request.mode === 'navigate' ||
+    request.headers.get('accept')?.includes('text/html');
 
-  const isAppFile =
-    url.pathname.endsWith('.js')   ||
-    url.pathname.endsWith('.css')  ||
-    url.pathname.endsWith('.html') ||
-    url.pathname === '/'           ||
-    url.pathname.endsWith('/');
+  const isAsset = /\.(js|css|png|jpg|svg|woff2?|ico)$/.test(url.pathname);
 
-  if (isAppFile) {
-    // Network-first: selalu ambil versi terbaru dari server
-    e.respondWith(
-      fetch(e.request)
-        .then(res => {
-          if (res.ok) {
-            // Clone DULU sebelum dipakai — fix "body already used"
-            const resClone = res.clone();
-            caches.open(CACHE_VER).then(c => c.put(e.request, resClone));
+  if (isHTML) {
+    // NETWORK-FIRST untuk navigasi HTML
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(c => c.put(request, clone));
           }
-          return res;
+          return response;
         })
         .catch(() =>
-          // Offline fallback
-          caches.match(e.request)
-            .then(cached => cached || caches.match('./index.html'))
+          caches.match(OFFLINE_URL).then(cached => cached || new Response(
+            '<h1>Offline</h1><p>Buka PropMap saat online dulu untuk caching.</p>',
+            { headers: { 'Content-Type': 'text/html' } }
+          ))
         )
     );
-  } else {
-    // Cache-first untuk aset lain (gambar, font, dll)
-    e.respondWith(
-      caches.match(e.request).then(cached => {
-        if (cached) return cached;
-        return fetch(e.request).then(res => {
-          if (res.ok) {
-            const resClone = res.clone();
-            caches.open(CACHE_VER).then(c => c.put(e.request, resClone));
+
+  } else if (isAsset) {
+    // NETWORK-FIRST untuk JS/CSS — selalu dapat versi terbaru
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response.ok) {
+            // Clone SEBELUM return — fix "body already used"
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(c => c.put(request, clone));
           }
-          return res;
-        }).catch(() => caches.match('./index.html'));
-      })
+          return response;
+        })
+        .catch(() =>
+          caches.match(request)
+            .then(cached => cached || caches.match(OFFLINE_URL))
+        )
+    );
+
+  } else {
+    // CACHE-FIRST untuk aset statis lain
+    event.respondWith(
+      caches.match(request)
+        .then(cached => {
+          if (cached) return cached;
+          return fetch(request).then(response => {
+            if (response.ok) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then(c => c.put(request, clone));
+            }
+            return response;
+          }).catch(() => caches.match(OFFLINE_URL));
+        })
     );
   }
 });
 
 // ── PUSH ─────────────────────────────────────────
-self.addEventListener('push', e => {
-  let d = { title: 'PropMap', body: 'Ada notifikasi baru' };
+self.addEventListener('push', event => {
+  let payload = { title: 'PropMap', body: 'Ada notifikasi baru' };
+
   try {
-    if (e.data) {
-      const text = e.data.text();
-      try { d = JSON.parse(text); } catch { d.body = text; }
+    if (event.data) {
+      const text = event.data.text();
+      try { payload = JSON.parse(text); }
+      catch { payload.body = text; }
     }
-  } catch(err) { console.warn('Push parse error:', err); }
+  } catch (err) {
+    console.warn('[SW] Push parse error:', err);
+  }
 
   const options = {
-    body:    d.body    || '',
-    icon:    d.icon    || '/icons/icon-192.png',
-    badge:   d.badge   || '/icons/icon-72.png',
-    tag:     d.tag     || 'propmap-' + Date.now(),
-    data:    d.data    || {},
-    vibrate: [200, 100, 200],
+    body:               payload.body    || '',
+    icon:               payload.icon    || '/icons/icon-192.png',
+    badge:              payload.badge   || '/icons/icon-72.png',
+    tag:                payload.tag     || 'propmap-' + Date.now(),
+    data:               payload.data    || {},
+    vibrate:            [200, 100, 200],
     requireInteraction: false,
-    actions: d.data?.konsumenId ? [
+    silent:             false,
+    actions: payload.data?.konsumenId ? [
       { action: 'open',    title: 'Lihat Detail' },
-      { action: 'dismiss', title: 'Tutup' },
+      { action: 'dismiss', title: 'Tutup'        },
     ] : [],
   };
 
-  e.waitUntil(
-    self.registration.showNotification(d.title || 'PropMap', options)
+  event.waitUntil(
+    self.registration.showNotification(payload.title || 'PropMap', options)
   );
 });
 
 // ── NOTIFICATION CLICK ────────────────────────────
-self.addEventListener('notificationclick', e => {
-  e.notification.close();
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
 
-  if (e.action === 'dismiss') return;
+  if (event.action === 'dismiss') return;
 
-  const konsumenId = e.notification.data?.konsumenId;
+  const konsumenId = event.notification.data?.konsumenId;
+  const targetUrl  = konsumenId
+    ? `/?page=konsumen&id=${konsumenId}`
+    : '/';
 
-  e.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true })
-      .then(list => {
-        // Cari tab yang sudah terbuka
-        for (const c of list) {
-          if (c.url.includes(self.registration.scope)) {
-            c.focus();
-            if (konsumenId) c.postMessage({ type: 'NOTIFICATION_CLICK', konsumenId });
+  event.waitUntil(
+    clients
+      .matchAll({ type: 'window', includeUncontrolled: true })
+      .then(windowClients => {
+        // Fokus ke tab yang sudah terbuka
+        for (const client of windowClients) {
+          if (client.url.startsWith(self.registration.scope) && 'focus' in client) {
+            client.focus();
+            if (konsumenId) {
+              client.postMessage({ type: 'NOTIFICATION_CLICK', konsumenId });
+            }
             return;
           }
         }
         // Buka tab baru
-        return clients.openWindow('/');
+        if (clients.openWindow) {
+          return clients.openWindow(targetUrl);
+        }
       })
   );
 });
 
 // ── MESSAGE FROM PAGE ─────────────────────────────
-self.addEventListener('message', e => {
-  if (e.data?.type === 'SHOW_NOTIFICATION') {
-    const d = e.data;
+self.addEventListener('message', event => {
+  const { type } = event.data || {};
+
+  if (type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+
+  if (type === 'SHOW_NOTIFICATION') {
+    const d = event.data;
     self.registration.showNotification(d.title || 'PropMap', {
       body:    d.body    || '',
       icon:    d.icon    || '/icons/icon-192.png',
       badge:   d.badge   || '/icons/icon-72.png',
       tag:     d.tag     || 'propmap-' + Date.now(),
-      data:    { konsumenId: d.data?.konsumenId, url: d.url },
+      data:    { konsumenId: d.data?.konsumenId },
       vibrate: [200, 100, 200],
     });
   }
-  if (e.data?.type === 'SYNC_NOW') {
+
+  if (type === 'SYNC_NOW') {
     self.registration.sync?.register('sync-queue').catch(() => {});
   }
 });
 
 // ── BACKGROUND SYNC ───────────────────────────────
-self.addEventListener('sync', e => {
-  if (e.tag === 'sync-queue') {
-    e.waitUntil(
-      clients.matchAll({ type: 'window' }).then(list =>
-        list.forEach(c => c.postMessage({ type: 'DO_SYNC' }))
-      )
+self.addEventListener('sync', event => {
+  if (event.tag === 'sync-queue') {
+    event.waitUntil(
+      clients
+        .matchAll({ type: 'window' })
+        .then(list => list.forEach(c => c.postMessage({ type: 'DO_SYNC' })))
     );
   }
 });

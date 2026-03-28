@@ -1,36 +1,105 @@
 {
+  "id": "/",
   "name": "PropMap — CRM Properti",
   "short_name": "PropMap",
   "description": "Aplikasi monitoring konsumen real-time untuk tim marketing properti",
-  "start_url": "./index.html",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#080d1a",
-  "theme_color": "#6366f1",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait-primary",
+  "background_color": "#6366f1",
+  "theme_color": "#6366f1",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-72.png",
       "sizes": "72x72",
       "type": "image/png",
-      "purpose": "badge"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-72-maskable.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "categories": [
-    "business",
-    "productivity"
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Buka halaman dashboard",
+      "url": "/?page=dashboard",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Konsumen",
+      "short_name": "Konsumen",
+      "description": "Lihat daftar konsumen",
+      "url": "/?page=konsumen",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+    }
   ],
-  "lang": "id",
-  "dir": "ltr"
+  "screenshots": [
+    {
+      "src": "/screenshots/screen-01-dashboard-dark.svg",
+      "sizes": "390x844",
+      "type": "image/svg+xml",
+      "platform": "narrow",
+      "label": "Dashboard PropMap"
+    },
+    {
+      "src": "/screenshots/screen-02-konsumen-dark.svg",
+      "sizes": "390x844",
+      "type": "image/svg+xml",
+      "platform": "narrow",
+      "label": "Daftar Konsumen"
+    }
+  ]
 }
