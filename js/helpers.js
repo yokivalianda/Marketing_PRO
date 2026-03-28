@@ -182,7 +182,8 @@ function triggerInstall() {
     showToast('Gunakan menu browser untuk install', 'ℹ️');
   }
 }
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+// SW registration dipindah ke inline <script> di index.html agar terdeteksi PWABuilder
+// if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 
 // ── BTN LOADING ───────────────────────────────────
 function setBtnLoading(id, loading, txt) {
