@@ -62,6 +62,8 @@ async function savePushSubscription(subscription) {
       updated_at:  new Date().toISOString(),
     }, { onConflict: 'user_id,endpoint' });
     if (error) throw error;
+    // Simpan endpoint device ini ke localStorage untuk identifikasi
+    localStorage.setItem('pm_push_endpoint', subscription.endpoint);
     console.log('Push subscription saved:', deviceName);
     renderPushDeviceList();
   } catch(e) {
@@ -86,6 +88,7 @@ async function removePushSubscription() {
       // Fallback: hapus semua device user ini
       await sb.from('push_subscriptions').delete().eq('user_id', me.id);
     }
+    localStorage.removeItem('pm_push_endpoint');
     renderPushDeviceList();
   } catch(e) {
     console.warn('Remove push subscription failed:', e.message);
@@ -107,10 +110,8 @@ async function renderPushDeviceList() {
       return;
     }
 
-    // Dapatkan endpoint device ini untuk highlight
-    const reg = await navigator.serviceWorker.ready.catch(() => null);
-    const thisSub = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
-    const thisEndpoint = thisSub?.endpoint || '';
+    // Dapatkan endpoint device ini dari localStorage (lebih reliable dari getSubscription)
+    const thisEndpoint = localStorage.getItem('pm_push_endpoint') || '';
 
     el.innerHTML = data.map(d => {
       const nama    = d.device_name || 'Device tidak diketahui';
