@@ -52,17 +52,18 @@ async function savePushSubscription(subscription) {
   const deviceName = getDeviceName();
 
   try {
-    // Hapus dulu data lama user ini, baru insert baru
-    // Hindari konflik UNIQUE constraint (user_id, endpoint)
-    await sb.from('push_subscriptions').delete().eq('user_id', me.id);
-    const { error } = await sb.from('push_subscriptions').insert({
+    // Upsert by (user_id, endpoint) — tiap device simpan baris sendiri
+    const { error } = await sb.from('push_subscriptions').upsert({
       user_id:     me.id,
       endpoint:    subscription.endpoint,
       p256dh,
       auth:        authStr,
       device_name: deviceName,
-    });
+      updated_at:  new Date().toISOString(),
+    }, { onConflict: 'user_id,endpoint' });
     if (error) throw error;
+    // Simpan endpoint device ini ke localStorage untuk identifikasi
+    localStorage.setItem('pm_push_endpoint', subscription.endpoint);
     console.log('Push subscription saved:', deviceName);
     renderPushDeviceList();
   } catch(e) {
@@ -74,7 +75,20 @@ async function savePushSubscription(subscription) {
 async function removePushSubscription() {
   if (!sb || !me) return;
   try {
-    await sb.from('push_subscriptions').delete().eq('user_id', me.id);
+    // Ambil endpoint device ini
+    const reg = await navigator.serviceWorker.ready.catch(() => null);
+    const sub = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
+    if (sub) {
+      // Hapus hanya subscription device ini
+      await sb.from('push_subscriptions')
+        .delete()
+        .eq('user_id', me.id)
+        .eq('endpoint', sub.endpoint);
+    } else {
+      // Fallback: hapus semua device user ini
+      await sb.from('push_subscriptions').delete().eq('user_id', me.id);
+    }
+    localStorage.removeItem('pm_push_endpoint');
     renderPushDeviceList();
   } catch(e) {
     console.warn('Remove push subscription failed:', e.message);
@@ -87,28 +101,61 @@ async function renderPushDeviceList() {
   if (!el || !sb || !me) return;
   try {
     const { data } = await sb.from('push_subscriptions')
-      .select('device_name, created_at')
-      .eq('user_id', me.id);
+      .select('id, device_name, endpoint, created_at')
+      .eq('user_id', me.id)
+      .order('created_at', { ascending: false });
+
     if (!data?.length) {
-      el.textContent = 'Belum ada device terdaftar';
+      el.innerHTML = '<div style="font-size:12px;color:var(--text-4)">Belum ada device terdaftar</div>';
       return;
     }
+
+    // Dapatkan endpoint device ini dari localStorage (lebih reliable dari getSubscription)
+    const thisEndpoint = localStorage.getItem('pm_push_endpoint') || '';
+
     el.innerHTML = data.map(d => {
-      const nama   = d.device_name || 'Device tidak diketahui';
-      const tgl    = d.created_at
+      const nama    = d.device_name || 'Device tidak diketahui';
+      const tgl     = d.created_at
         ? new Date(d.created_at).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
         : '';
-      return `<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--glass-border)">
-        <span style="font-size:16px">📱</span>
-        <div>
-          <div style="font-size:13px;font-weight:600;color:var(--text-1)">${nama}</div>
-          ${tgl ? `<div style="font-size:11px;color:var(--text-4)">Terdaftar ${tgl}</div>` : ''}
-        </div>
-        <span style="margin-left:auto;font-size:10px;background:rgba(16,185,129,.12);color:var(--emerald);padding:2px 8px;border-radius:20px;font-weight:700">Aktif</span>
-      </div>`;
+      const isThis  = d.endpoint === thisEndpoint;
+      const icon    = nama.toLowerCase().includes('iphone') || nama.toLowerCase().includes('ipad') ? '📱' :
+                      nama.toLowerCase().includes('android') ? '📱' : '💻';
+      return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--glass-border)">
+          <span style="font-size:18px">${icon}</span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;font-weight:600;color:var(--text-1)">${nama}</div>
+            <div style="font-size:11px;color:var(--text-4)">${tgl ? 'Terdaftar ' + tgl : ''}</div>
+          </div>
+          ${isThis
+            ? `<span style="font-size:10px;background:rgba(16,185,129,.12);color:var(--emerald);padding:2px 8px;border-radius:20px;font-weight:700;flex-shrink:0">Device ini</span>`
+            : `<button onclick="removeDeviceSubscription('${d.id}')"
+                style="font-size:10px;background:rgba(244,63,94,.1);color:var(--rose);border:none;padding:2px 8px;border-radius:20px;cursor:pointer;font-weight:700;font-family:var(--font-body);flex-shrink:0">
+                Hapus
+              </button>`
+          }
+        </div>`;
     }).join('');
   } catch(e) {
-    el.textContent = 'Gagal memuat device';
+    el.innerHTML = '<div style="font-size:12px;color:var(--text-4)">Gagal memuat device</div>';
+    console.warn('renderPushDeviceList:', e);
+  }
+}
+
+// Hapus subscription device lain (bukan device ini)
+async function removeDeviceSubscription(subscriptionId) {
+  if (!confirm('Hapus device ini dari daftar notifikasi?')) return;
+  try {
+    const { error } = await sb.from('push_subscriptions')
+      .delete()
+      .eq('id', subscriptionId)
+      .eq('user_id', me.id);
+    if (error) throw error;
+    showToast('Device dihapus', '🗑️');
+    renderPushDeviceList();
+  } catch(e) {
+    showToast('Gagal: ' + e.message, '❌');
   }
 }
 
