@@ -12,28 +12,6 @@
 <title>PropMap</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <link rel="stylesheet" href="css/main.css"/>
-<!-- Service Worker Registration — inline agar terdeteksi PWABuilder -->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then(function (reg) {
-          console.log('[SW] Registered, scope:', reg.scope);
-          reg.addEventListener('updatefound', function () {
-            var newWorker = reg.installing;
-            newWorker.addEventListener('statechange', function () {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-              }
-            });
-          });
-        })
-        .catch(function (err) {
-          console.warn('[SW] Registration failed:', err);
-        });
-    });
-  }
-</script>
 </head>
 <body>
 
@@ -1418,5 +1396,11 @@ window.addEventListener('load', () => {
   }
 });
 </script>
+  <!-- PWABuilder update component — deteksi SW baru otomatis -->
+  <script type="module">
+    import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+    const el = document.createElement('pwa-update');
+    document.body.appendChild(el);
+  </script>
 </body>
 </html>

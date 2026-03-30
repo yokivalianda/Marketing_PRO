@@ -14,6 +14,8 @@
   "dir": "ltr",
   "categories": ["business", "productivity"],
   "prefer_related_applications": false,
+  "related_applications": [],
+  "protocol_handlers": [],
   "icons": [
     {
       "src": "/icons/icon-72.png",
@@ -74,32 +76,52 @@
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
-      "description": "Buka halaman dashboard",
+      "description": "Buka halaman dashboard utama",
       "url": "/?page=dashboard",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     },
     {
       "name": "Konsumen",
       "short_name": "Konsumen",
-      "description": "Lihat daftar konsumen",
+      "description": "Lihat dan kelola daftar konsumen",
       "url": "/?page=konsumen",
-      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Kalender",
+      "short_name": "Kalender",
+      "description": "Jadwal follow-up konsumen",
+      "url": "/?page=kalender",
+      "icons": [{ "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }]
     }
   ],
   "screenshots": [
     {
-      "src": "/screenshots/screen-01-dashboard-dark.svg",
+      "src": "/screenshots/screen-01-dashboard-dark.png",
       "sizes": "390x844",
-      "type": "image/svg+xml",
-      "platform": "narrow",
+      "type": "image/png",
+      "form_factor": "narrow",
       "label": "Dashboard PropMap"
     },
     {
-      "src": "/screenshots/screen-02-konsumen-dark.svg",
+      "src": "/screenshots/screen-02-konsumen-dark.png",
       "sizes": "390x844",
-      "type": "image/svg+xml",
-      "platform": "narrow",
+      "type": "image/png",
+      "form_factor": "narrow",
       "label": "Daftar Konsumen"
+    },
+    {
+      "src": "/screenshots/screen-04-laporan-light.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Laporan & Target"
     }
-  ]
+  ],
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }

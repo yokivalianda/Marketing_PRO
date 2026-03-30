@@ -182,8 +182,27 @@ function triggerInstall() {
     showToast('Gunakan menu browser untuk install', 'ℹ️');
   }
 }
-// SW registration dipindah ke inline <script> di index.html agar terdeteksi PWABuilder
-// if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then(reg => {
+        console.log('[SW] Registered:', reg.scope);
+        // Kirim pesan ke SW saat ada versi baru
+        reg.addEventListener('updatefound', () => {
+          const newWorker = reg.installing;
+          if (newWorker) {
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // SW baru tersedia — langsung aktifkan tanpa reload
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+              }
+            });
+          }
+        });
+      })
+      .catch(err => console.warn('[SW] Registration failed:', err));
+  });
+}
 
 // ── BTN LOADING ───────────────────────────────────
 function setBtnLoading(id, loading, txt) {

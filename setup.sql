@@ -387,3 +387,22 @@ ALTER TABLE push_subscriptions DROP CONSTRAINT IF EXISTS push_subscriptions_user
 
 -- Buat constraint baru: 1 user = 1 subscription (per device bisa update)
 CREATE UNIQUE INDEX IF NOT EXISTS push_subscriptions_user_id_idx ON push_subscriptions(user_id);
+
+-- ════════════════════════════════════════════════════════
+-- FIX MULTI-DEVICE PUSH — 1 user bisa banyak device
+-- Jalankan di Supabase SQL Editor
+-- ════════════════════════════════════════════════════════
+
+-- 1. Tambah kolom device_name jika belum ada
+ALTER TABLE push_subscriptions ADD COLUMN IF NOT EXISTS device_name text;
+ALTER TABLE push_subscriptions ADD COLUMN IF NOT EXISTS updated_at timestamptz DEFAULT now();
+
+-- 2. Hapus constraint lama yang batasi 1 user = 1 subscription
+ALTER TABLE push_subscriptions DROP CONSTRAINT IF EXISTS push_subscriptions_user_id_key;
+DROP INDEX IF EXISTS push_subscriptions_user_id_idx;
+
+-- 3. Pastikan constraint UNIQUE adalah (user_id, endpoint)
+--    sehingga 1 user bisa punya banyak device tapi tidak duplikat per endpoint
+ALTER TABLE push_subscriptions DROP CONSTRAINT IF EXISTS push_subscriptions_user_id_endpoint_key;
+ALTER TABLE push_subscriptions ADD CONSTRAINT push_subscriptions_user_id_endpoint_key
+  UNIQUE (user_id, endpoint);
