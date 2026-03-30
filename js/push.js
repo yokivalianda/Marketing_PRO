@@ -75,20 +75,28 @@ async function savePushSubscription(subscription) {
 async function removePushSubscription() {
   if (!sb || !me) return;
   try {
-    // Ambil endpoint device ini
-    const reg = await navigator.serviceWorker.ready.catch(() => null);
-    const sub = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
-    if (sub) {
-      // Hapus hanya subscription device ini
+    // Ambil endpoint dari localStorage (lebih reliable)
+    const savedEndpoint = localStorage.getItem('pm_push_endpoint');
+
+    if (savedEndpoint) {
       await sb.from('push_subscriptions')
         .delete()
         .eq('user_id', me.id)
-        .eq('endpoint', sub.endpoint);
+        .eq('endpoint', savedEndpoint);
+      localStorage.removeItem('pm_push_endpoint');
     } else {
-      // Fallback: hapus semua device user ini
-      await sb.from('push_subscriptions').delete().eq('user_id', me.id);
+      // Tidak ada endpoint tersimpan — tidak hapus apapun dari DB
+      // Cukup unsubscribe dari browser saja
+      const reg = await navigator.serviceWorker.ready.catch(() => null);
+      const sub = reg ? await reg.pushManager.getSubscription().catch(() => null) : null;
+      if (sub) {
+        await sb.from('push_subscriptions')
+          .delete()
+          .eq('user_id', me.id)
+          .eq('endpoint', sub.endpoint);
+      }
     }
-    localStorage.removeItem('pm_push_endpoint');
+
     renderPushDeviceList();
   } catch(e) {
     console.warn('Remove push subscription failed:', e.message);
@@ -166,10 +174,12 @@ async function initPush() {
     updatePushUI(false, 'unsupported'); return;
   }
   const perm = Notification.permission;
-  if (perm === 'denied')  { updatePushUI(false, 'denied');  return; }
+  if (perm === 'denied') { updatePushUI(false, 'denied'); return; }
   if (perm === 'granted') {
-    pushEnabled = true;
-    updatePushUI(true, 'granted');
+    // Cek apakah user sengaja nonaktifkan di device ini
+    const isDisabled = localStorage.getItem('pm_push_disabled') === '1';
+    pushEnabled = !isDisabled;
+    updatePushUI(!isDisabled, 'granted');
     renderPushDeviceList();
   } else {
     updatePushUI(false, 'default');
@@ -207,6 +217,7 @@ async function enablePushNotification() {
   pushEnabled = true;
   updatePushUI(true, 'granted');
   showToast('Notifikasi diaktifkan!', '🔔');
+  localStorage.removeItem('pm_push_disabled');
 
   // Subscribe ke PushManager untuk push dari server
   try {
@@ -244,19 +255,12 @@ async function enablePushNotification() {
 async function disablePushNotification() {
   pushEnabled = false;
   updatePushUI(false, 'granted');
-  showToast('Notifikasi dinonaktifkan', '🔕');
+  showToast('Notifikasi dinonaktifkan di device ini 🔕', '');
 
-  // Unsubscribe dari PushManager dan hapus dari DB
-  try {
-    if ('serviceWorker' in navigator) {
-      const reg = await navigator.serviceWorker.ready;
-      const sub = await reg.pushManager.getSubscription();
-      if (sub) await sub.unsubscribe();
-    }
-    await removePushSubscription();
-  } catch(e) {
-    console.warn('Unsubscribe failed:', e.message);
-  }
+  // TIDAK unsubscribe dari browser & TIDAK hapus dari DB
+  // Supaya device lain tetap menerima notifikasi
+  // Cukup tandai di localStorage bahwa device ini sedang nonaktif
+  localStorage.setItem('pm_push_disabled', '1');
 }
 
 // ── SHOW NOTIFICATION ─────────────────────────────
