@@ -29,14 +29,26 @@ function getDeviceName() {
   else if (/mac/i.test(ua))      os = 'Mac';
   else if (/linux/i.test(ua))    os = 'Linux';
 
+  // [FIX #12] Brave UA tidak mengandung 'Brave' — deteksi via navigator.brave
+  // dilakukan async di savePushSubscription, di sini fallback ke Chrome/Edge
   let browser = 'Browser';
   if (/edg/i.test(ua))           browser = 'Edge';
   else if (/chrome/i.test(ua))   browser = 'Chrome';
   else if (/firefox/i.test(ua))  browser = 'Firefox';
   else if (/safari/i.test(ua))   browser = 'Safari';
-  else if (/brave/i.test(ua))    browser = 'Brave';
 
   return `${os} · ${browser}`;
+}
+
+// [FIX #12] Async Brave detection — update device name jika terdeteksi Brave
+async function getDeviceNameAsync() {
+  let name = getDeviceName();
+  try {
+    if (navigator.brave && await navigator.brave.isBrave()) {
+      name = name.replace(/Chrome|Browser/, 'Brave');
+    }
+  } catch(_) {}
+  return name;
 }
 
 async function savePushSubscription(subscription) {
@@ -49,7 +61,8 @@ async function savePushSubscription(subscription) {
     .replace(/\+/g, '-').replace(/\//g, '_');
   const authStr = btoa(String.fromCharCode(...new Uint8Array(auth)))
     .replace(/\+/g, '-').replace(/\//g, '_');
-  const deviceName = getDeviceName();
+  // [FIX #12] Gunakan async Brave detection
+  const deviceName = await getDeviceNameAsync();
 
   try {
     // Upsert by (user_id, endpoint) — tiap device simpan baris sendiri
@@ -256,11 +269,19 @@ async function disablePushNotification() {
   pushEnabled = false;
   updatePushUI(false, 'granted');
   showToast('Notifikasi dinonaktifkan di device ini 🔕', '');
-
-  // TIDAK unsubscribe dari browser & TIDAK hapus dari DB
-  // Supaya device lain tetap menerima notifikasi
-  // Cukup tandai di localStorage bahwa device ini sedang nonaktif
   localStorage.setItem('pm_push_disabled', '1');
+
+  // [FIX #4] Hapus subscription dari DB agar server tidak kirim push ke device ini
+  await removePushSubscription();
+
+  // [FIX #4] Unsubscribe dari PushManager browser
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) await sub.unsubscribe();
+  } catch(e) {
+    console.warn('PushManager unsubscribe failed:', e);
+  }
 }
 
 // ── SHOW NOTIFICATION ─────────────────────────────
@@ -302,16 +323,20 @@ function checkAndSendPushReminders() {
   if (!pushEnabled || Notification.permission !== 'granted') return;
 
   const today    = new Date();
-  const todayStr = today.toDateString();
+  // [FIX #5] Gunakan midnight lokal untuk perbandingan tanggal yang akurat
+  const todayMid = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  // [FIX #6] Gunakan format ISO untuk key localStorage agar bisa di-cleanup
+  const todayISO = today.toISOString().split('T')[0];
 
   allKons.forEach(k => {
     // ── Follow-up hari ini
     if (k.tgl_followup) {
       const fd   = new Date(k.tgl_followup + 'T00:00:00');
-      const diff = Math.round((fd - new Date(todayStr)) / 86400000);
+      // [FIX #5] Bandingkan dengan midnight lokal, bukan toDateString()
+      const diff = Math.round((fd - todayMid) / 86400000);
 
       if (diff === 0) {
-        const key = `notif-fu-today-${k.id}-${todayStr}`;
+        const key = `notif-fu-today-${k.id}-${todayISO}`;
         if (!localStorage.getItem(key)) {
           localStorage.setItem(key, '1');
           showNotif(
@@ -324,7 +349,7 @@ function checkAndSendPushReminders() {
 
       // Follow-up besok (kirim setelah jam 17)
       if (diff === 1 && today.getHours() >= 17) {
-        const key = `notif-fu-tmr-${k.id}-${todayStr}`;
+        const key = `notif-fu-tmr-${k.id}-${todayISO}`;
         if (!localStorage.getItem(key)) {
           localStorage.setItem(key, '1');
           showNotif(
@@ -385,6 +410,34 @@ function checkAndSendPushReminders() {
       }
     }
   });
+
+  // [FIX #6] Cleanup localStorage key notifikasi yang sudah lewat 7 hari
+  cleanupOldNotifKeys();
+}
+
+// [FIX #6] Hapus key localStorage notifikasi lama (> 7 hari)
+function cleanupOldNotifKeys() {
+  const lastCleanup = localStorage.getItem('pm_notif_cleanup');
+  const todayISO    = new Date().toISOString().split('T')[0];
+  // Jalankan cleanup maksimal sekali per hari
+  if (lastCleanup === todayISO) return;
+  localStorage.setItem('pm_notif_cleanup', todayISO);
+
+  const now    = Date.now();
+  const cutoff = 7 * 86400000; // 7 hari dalam ms
+  const toRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith('notif-')) continue;
+    // Cari tanggal ISO (YYYY-MM-DD) di dalam key
+    const match = key.match(/(\d{4}-\d{2}-\d{2})/);
+    if (match) {
+      const keyDate = new Date(match[1] + 'T00:00:00').getTime();
+      if (now - keyDate > cutoff) toRemove.push(key);
+    }
+  }
+  toRemove.forEach(k => localStorage.removeItem(k));
+  if (toRemove.length) console.log(`[Push] Cleaned up ${toRemove.length} old notification keys`);
 }
 
 // ── UPDATE UI ─────────────────────────────────────

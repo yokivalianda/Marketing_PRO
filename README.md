@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/badge/Lisensi-MIT-10b981?style=for-the-badge)
 
 **Aplikasi CRM web real-time untuk monitoring dan pengelolaan data konsumen properti.**
-Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan sistem monetisasi plan Gratis / Pro / Business.
+Install di HP (PWA), multi-user, sinkronisasi real-time — lengkap dengan paket langganan Gratis / PRO / Business
 
 [🚀 **Coba Demo**](https://propmapid.netlify.app/demo) · [📱 **Buka Aplikasi**](https://propmapid.netlify.app)
 
@@ -173,61 +173,6 @@ PropMap/
 │   └── SETUP_GOOGLE_EMAIL.md  # Panduan Google OAuth & Gmail SMTP
 └── screenshots/            # 6 screenshot SVG untuk README
 ```
-
----
-
-## 🚀 Cara Setup
-
-### Prasyarat
-- Akun [Supabase](https://supabase.com) — gratis
-- Akun [Vercel](https://vercel.com) atau [Netlify](https://netlify.com) — gratis
-
-### Langkah 1 — Setup database di Supabase
-
-Buka **Supabase → SQL Editor** → paste seluruh isi [`setup.sql`](./setup.sql) → klik **Run**.
-
-Script membuat: tabel `profiles`, `konsumen`, `target_bulanan`, `subscriptions`, `push_subscriptions`, storage bucket `dokumen`, RLS policies lengkap, dan auto-timestamp trigger.
-
-### Langkah 2 — Konfigurasi `js/config.js`
-
-```javascript
-const SUPABASE_URL      = 'https://xxxxxxxxxxxx.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...';
-```
-
-Ambil dari **Supabase → Project Settings → API**.
-
-### Langkah 3 — Deploy ke Hosting
-
-**Netlify:** Drag & drop folder ke [app.netlify.com/drop](https://app.netlify.com/drop)
-
-**Vercel:** `npx vercel deploy` atau drag & drop di [vercel.com/new](https://vercel.com/new)
-
-### Langkah 4 — Buat Akun Admin Pertama
-
-1. Buka aplikasi → daftar akun baru
-2. Buka **Supabase → Table Editor → `profiles`**
-3. Ubah kolom `role` dari `marketing` → `admin`
-
-Atau via SQL:
-```sql
-UPDATE profiles SET role = 'admin' WHERE email = 'email_anda@contoh.com';
-```
-
-### Langkah 5 — Update Detail Pembayaran
-
-Edit `index.html` bagian modal checkout (cari `checkout-payment-info`):
-
-```html
-<div class="cpi-bank">🏦 BCA · 1234567890</div>       ← ganti nomor rekening
-<div class="cpi-name">a.n. PropMap Indonesia</div>     ← ganti nama pemilik
-<a href="https://wa.me/6281234567890">                 ← ganti nomor WhatsApp
-```
-
-### Langkah 6 (Opsional) — Login Google & Custom Email
-
-Ikuti panduan di [`assets/SETUP_GOOGLE_EMAIL.md`](./assets/SETUP_GOOGLE_EMAIL.md)
-
 ---
 
 ## 📖 Panduan Penggunaan
@@ -257,14 +202,6 @@ Ikuti panduan di [`assets/SETUP_GOOGLE_EMAIL.md`](./assets/SETUP_GOOGLE_EMAIL.md
 | Backup seluruh tim | Pengaturan → Panel Admin → **💾 Backup & Restore** |
 | Kelola pengguna | Pengaturan → **👥 Kelola Pengguna** |
 
-### Alur Aktivasi Plan
-
-```
-User klik Upgrade → Isi form checkout → Transfer bank
-  → Konfirmasi WhatsApp ke Admin → Admin buka Aktivasi Plan
-  → Klik ✓ Aktifkan → Plan aktif otomatis
-```
-
 ### Install di HP
 
 **Android (Chrome):** Menu ⋮ → *Tambahkan ke layar utama*
@@ -284,51 +221,6 @@ A: Prospek belum dihitung di Total Konsumen dashboard. Booking sudah ada komitme
 **Q: Bisa dipakai offline?**
 A: Ya. Data ter-cache di IndexedDB, tambah/edit saat offline masuk antrian sync otomatis.
 
-**Q: Supabase project pause / tidak bisa login?**
-A: Free tier auto-pause setelah 7 hari tidak aktif. Buka [supabase.com/dashboard](https://supabase.com/dashboard) → pilih project → klik **Restore project**.
-
-**Q: Bagaimana cara aktivasi plan setelah user bayar?**
-A: Admin buka **Pengaturan → Panel Admin → 💳 Aktivasi Plan** → order pending muncul otomatis → klik ✓ Aktifkan. Atau gunakan form Aktivasi Manual untuk kasus di luar order normal.
-
-**Q: Foto berkas disimpan di mana?**
-A: Di Supabase Storage bucket `dokumen`. Bisa dilihat di Supabase Dashboard → Storage.
-
----
-
-## 🗺 Roadmap
-
-- [x] Real-time sync WebSocket
-- [x] PWA installable
-- [x] Dark / light mode (default light)
-- [x] Login Google OAuth
-- [x] Konfirmasi email + reset password
-- [x] Template email branded
-- [x] 7 status pipeline
-- [x] Filter lanjutan + filter bulan
-- [x] Kalender follow-up
-- [x] Upload foto berkas ke cloud
-- [x] Export Excel XLSX 3-sheet
-- [x] Export PDF & CSV
-- [x] Import Excel/CSV
-- [x] Mode offline (IndexedDB + background sync)
-- [x] Backup & restore JSON (Admin + Marketing Pro)
-- [x] Optimistic locking
-- [x] Web Push Notification
-- [x] Target penjualan bulanan
-- [x] Ranking tim
-- [x] Sistem monetisasi 3 tier (Gratis / Pro / Business)
-- [x] Trial Pro 14 hari otomatis
-- [x] Modal upgrade + checkout pembayaran
-- [x] Salin nomor rekening & Order ID
-- [x] Panel aktivasi plan Admin
-- [x] Template checklist berkas KPR per bank (Business)
-- [ ] Integrasi payment gateway (Midtrans / Xendit)
-- [ ] Integrasi WhatsApp Business API
-- [ ] Template berkas KPR per bank
-- [ ] Notifikasi real-time di desktop
-
----
-
 ## 📄 Lisensi
 
 [MIT License](LICENSE) — bebas digunakan, dimodifikasi, dan didistribusikan.
@@ -338,7 +230,5 @@ A: Di Supabase Storage bucket `dokumen`. Bisa dilihat di Supabase Dashboard → 
 <div align="center">
   <strong>PropMap v4.2</strong><br/>
   Dibuat dengan ❤️ untuk tim marketing properti Indonesia<br/><br/>
-  <a href="demo.html">Demo</a> ·
-  <a href="https://supabase.com">Supabase</a> ·
-  <a href="https://vercel.com">Vercel</a>
+  <a href="demo.html">Demo</a>
 </div>
