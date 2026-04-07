@@ -245,7 +245,7 @@ async function saveKons() {
     } else {
       obj.owner_id   = me.id;
       obj.owner_name = myProf?.full_name || me.email;
-      obj.berkas = [];
+      obj.berkas = { ktp: false, kk: false, slip: false, tabungan: false, npwp: false, surat: false };
       obj.log = [{ action: 'Konsumen ditambahkan', time: new Date().toISOString(), note: obj.catatan }];
       // Cek limit konsumen untuk plan free
       if (!checkKonsumenLimit()) {
@@ -598,7 +598,7 @@ function _doExportXLSX() {
     ];
 
     // Style header (bold + background)
-    const headerStyle = { font: { bold: true }, fill: { fgColor: { rgb: '6366F1' } }, font: { bold: true, color: { rgb: 'FFFFFF' } } };
+    const headerStyle = { font: { bold: true, color: { rgb: 'FFFFFF' } }, fill: { fgColor: { rgb: '6366F1' } } };
     konsHeaders.forEach((_, ci) => {
       const cellRef = XLSX.utils.encode_cell({ r: 0, c: ci });
       if (wsKons[cellRef]) wsKons[cellRef].s = headerStyle;
@@ -1078,7 +1078,7 @@ async function confirmImport() {
       ...r,
       owner_id:   me.id,
       owner_name: myProf?.full_name || me.email,
-      berkas:     [],
+      berkas:     { ktp: false, kk: false, slip: false, tabungan: false, npwp: false, surat: false },
       log:        [{ action: 'Diimport dari Excel', time: new Date().toISOString(), note: r.catatan || '' }],
     }));
     const { error } = await sb.from('konsumen').insert(batch);

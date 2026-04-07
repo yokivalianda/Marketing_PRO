@@ -216,7 +216,7 @@ function renderCharts() {
       months.push({ label: d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' }), year: d.getFullYear(), month: d.getMonth() });
     }
     const dataSelesai = months.map(m => allKons.filter(x => {
-      const d = new Date(x.created_at);
+      const d = new Date(x.updated_at || x.created_at);
       return x.status === 'selesai' && d.getFullYear() === m.year && d.getMonth() === m.month;
     }).length);
     const dataBaru = months.map(m => allKons.filter(x => {

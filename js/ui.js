@@ -220,7 +220,8 @@ function resetFilterAdv() {
 function applyAdvFilters(list) {
   const f   = getAdvFilters();
   const now = new Date();
-  const todayStr = now.toDateString();
+  const todayIso = now.toISOString().slice(0, 10);
+  const todayMid = new Date(todayIso + 'T00:00:00');
 
   if (f.sumber)   list = list.filter(k => k.sumber === f.sumber);
   if (f.kpr)      list = list.filter(k => k.kpr === f.kpr);
@@ -246,9 +247,9 @@ function applyAdvFilters(list) {
       const fd = k.tgl_followup ? new Date(k.tgl_followup + 'T00:00:00') : null;
       if (f.followup === 'belum-ada')   return !k.tgl_followup;
       if (!fd) return false;
-      if (f.followup === 'hari-ini')    return fd.toDateString() === todayStr;
+      if (f.followup === 'hari-ini')    return fd.getTime() === todayMid.getTime();
       if (f.followup === 'minggu-ini')  return fd >= startWeek && fd <= endWeek;
-      if (f.followup === 'terlambat')   return fd < new Date(todayStr);
+      if (f.followup === 'terlambat')   return fd < todayMid;
       return true;
     });
   }
@@ -413,7 +414,7 @@ function cardHtml(k) {
   const bList = normBerkas(k.berkas);
   const bOk   = bList.filter(b => b.done).length;
   const bTot  = bList.length;
-  const hasFollowup = k.tgl_followup && new Date(k.tgl_followup) >= new Date(new Date().toDateString());
+  const hasFollowup = k.tgl_followup && new Date(k.tgl_followup + 'T00:00:00') >= new Date(new Date().toISOString().slice(0,10) + 'T00:00:00');
   return `<div class="kons-card st-${k.status}" ${k._pending ? 'data-pending="true"' : ''} onclick="openDetail('${k.id}')">
     <div class="card-top">
       <div>
@@ -553,17 +554,17 @@ function openEditModal(id) {
 // ── NOTIFIKASI ───────────────────────────────────
 function buildReminders() {
   const today = new Date(); const r = [];
-  const todayStr = today.toDateString();
+  const todayMid = new Date(today.toISOString().slice(0, 10) + 'T00:00:00');
   allKons.forEach(k => {
     if (k.tgl_followup) {
-      const fd = new Date(k.tgl_followup);
-      const diff = Math.floor((fd - today) / 86400000);
+      const fd = new Date(k.tgl_followup + 'T00:00:00');
+      const diff = Math.round((fd - todayMid) / 86400000);
       if (diff === 0) r.push({ ico: '📅', txt: `${k.nama} — Follow-up HARI INI!`, col: 'var(--rose)' });
       else if (diff === 1) r.push({ ico: '📅', txt: `${k.nama} — Follow-up besok (${fDateShort(k.tgl_followup)})`, col: 'var(--amber)' });
       else if (diff > 0 && diff <= 3) r.push({ ico: '📅', txt: `${k.nama} — Follow-up ${diff} hari lagi`, col: 'var(--brand-light)' });
     }
     if (k.status === 'booking' && k.tgl_booking) {
-      const d = Math.floor((today - new Date(k.tgl_booking)) / 86400000);
+      const d = Math.round((todayMid - new Date(k.tgl_booking + 'T00:00:00')) / 86400000);
       if (d >= 7) r.push({ ico: '⏰', txt: `${k.nama} — Booking ${d} hari lalu, follow up!`, col: 'var(--amber)' });
     }
     if (k.status === 'berkas') {
