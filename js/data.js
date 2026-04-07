@@ -60,7 +60,12 @@ async function afterLogin(user) {
   let { data: prof } = await sb.from('profiles').select('*').eq('id', user.id).single();
   if (!prof) {
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
-    await sb.from('profiles').insert({ id: user.id, email: user.email, full_name: name, role: 'marketing', target: 5 });
+    const trialEnds = new Date();
+    trialEnds.setDate(trialEnds.getDate() + 14);
+    await sb.from('profiles').insert({
+      id: user.id, email: user.email, full_name: name, role: 'marketing', target: 5,
+      plan: 'trial', trial_ends: trialEnds.toISOString(),
+    });
     ({ data: prof } = await sb.from('profiles').select('*').eq('id', user.id).single());
   }
   myProf = prof;
