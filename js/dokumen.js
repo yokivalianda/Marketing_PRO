@@ -110,11 +110,17 @@ async function openKPRTemplateModal(konsumenId, kprValue) {
 
   const template = KPR_TEMPLATES[kprValue];
   if (!template) {
-    showToast('Template tidak tersedia untuk bank ini', '⚠️');
+    showToast('Template tidak tersedia untuk bank ini', '\u26a0\ufe0f');
     return;
   }
 
-  if (!confirm(`Terapkan template checklist ${template.label}?\n\n${template.items.length} item akan ditambahkan:\n• ${template.items.slice(0,5).join('\n• ')}${template.items.length > 5 ? '\n• ...' : ''}\n\nItem yang sudah ada tidak akan dihapus.`)) return;
+  const previewItems = template.items.slice(0, 5).map(i => '\u2022 ' + i).join('\n');
+  const moreText = template.items.length > 5 ? `\n\u2022 ... +${template.items.length - 5} item lainnya` : '';
+  const ok = await showConfirm(
+    `Terapkan template checklist <strong>${template.label}</strong>?\n\n${template.items.length} item akan ditambahkan:\n${previewItems}${moreText}\n\nItem yang sudah ada tidak akan dihapus.`,
+    '\ud83c\udfe6 Template KPR', `Terapkan ${template.label}`, false
+  );
+  if (!ok) return;
 
   applyKPRTemplate(konsumenId, kprValue, template);
 }

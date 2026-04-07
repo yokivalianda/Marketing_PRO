@@ -58,6 +58,7 @@ async function afterLogin(user) {
   me = user;
   setLoadTxt('Memuat profil...');
   let { data: prof } = await sb.from('profiles').select('*').eq('id', user.id).single();
+  const isNewUser = !prof;
   if (!prof) {
     const name = user.user_metadata?.full_name || user.email.split('@')[0];
     const trialEnds = new Date();
@@ -88,6 +89,7 @@ async function afterLogin(user) {
   setTimeout(() => { if(typeof initPush === 'function') initPush(); }, 1000);
   setTimeout(() => { if(typeof checkAndSendPushReminders === 'function') checkAndSendPushReminders(); }, 2000);
   initTheme();
+  if (typeof maybeShowOnboarding === 'function') maybeShowOnboarding(isNewUser);
 }
 
 // ── HEADER & ADMIN UI ───────────────────────────
