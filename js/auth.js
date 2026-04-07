@@ -135,12 +135,16 @@ async function handleOAuthCallback() {
   const { data: prof } = await sb.from('profiles').select('id').eq('id', user.id).single();
   if (!prof) {
     const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email.split('@')[0];
+    const trialEnds = new Date();
+    trialEnds.setDate(trialEnds.getDate() + 14);
     await sb.from('profiles').insert({
       id: user.id,
       email: user.email,
       full_name: name,
       role: 'marketing',
-      target: 5
+      target: 5,
+      plan: 'trial',
+      trial_ends: trialEnds.toISOString(),
     });
   }
 }
@@ -165,7 +169,12 @@ async function doRegister() {
       showVerifyPanel(email);
     } else {
       // Email confirm dinonaktifkan di Supabase — langsung masuk
-      await sb.from('profiles').upsert({ id: data.user.id, email, full_name: name, role: 'marketing', target: 5 });
+      const trialEnds = new Date();
+      trialEnds.setDate(trialEnds.getDate() + 14);
+      await sb.from('profiles').upsert({
+        id: data.user.id, email, full_name: name, role: 'marketing', target: 5,
+        plan: 'trial', trial_ends: trialEnds.toISOString(),
+      });
       showToast('Akun dibuat! Silakan masuk.', '✅');
       switchAuthTab('masuk');
       document.getElementById('inEmail').value = email;
